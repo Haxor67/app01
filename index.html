@@ -99,6 +99,7 @@
   <div id="hurt"></div>
   <div id="dmgDir"><div class="ind"></div></div>
   <div id="msg"></div>
+  <div id="netstat" style="display:none;position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:1px;text-shadow:0 0 6px #000;color:#7dff4d;">● กำลังเชื่อมต่อ…</div>
   <div id="bossWrap" style="display:none;position:absolute;top:54px;left:50%;transform:translateX(-50%);width:62%;max-width:520px;text-align:center;">
     <div style="font-size:13px;letter-spacing:3px;color:#ff5a4a;text-shadow:0 0 8px #000;margin-bottom:4px;">จอมอสูรแห่งความตาย</div>
     <div style="height:12px;background:rgba(0,0,0,.5);border:1px solid #803030;border-radius:6px;overflow:hidden;"><div id="bossbar" style="height:100%;width:100%;background:linear-gradient(90deg,#5a0000,#ff2a1a);"></div></div>
@@ -473,7 +474,13 @@ function dropCoins(pos,n){ n=Math.min(n||1,6); for(let i=0;i<n;i++){
 const zombies=[],bloodBursts=[],tracers=[],shells=[],smokePuffs=[];
 let kills=0,wave=1,targetZombies=8;
 let zidCounter=1; const guestZ=new Map();
-const net={on:false,isHost:false,peer:null,conn:null,connected:false,seed:0,_won:false,lastSend:0,zsnapAcc:0,
+const PEERCFG={config:{iceServers:[
+  {urls:'stun:stun.l.google.com:19302'},
+  {urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},
+  {urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'},
+  {urls:'turn:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'}
+]}};
+const net={on:false,isHost:false,peer:null,conn:null,connected:false,seed:0,_won:false,lastSend:0,zsnapAcc:0,lastRecv:0,warned:false,
   remote:{present:false,pos:new THREE.Vector3(),tpos:new THREE.Vector3(),yaw:0,hp:100,down:false,avatar:null,lastPos:new THREE.Vector3(),phase:0}};
 function setCoopStatus(t){ const e=el('coopStatus'); if(e) e.textContent=t; }
 function netSend(o){ try{ if(net.conn&&net.connected) net.conn.send(JSON.stringify(o)); }catch(e){} }
@@ -521,7 +528,7 @@ function guestUpdateZombies(dt){ guestZ.forEach((o,id)=>{ const g=o.grp,u=g.user
   u.armL.root.rotation.x=-1.35+sw*0.12; u.armR.root.rotation.x=-1.35-sw*0.12; u.headPivot.rotation.z=Math.sin(o.phase*0.7)*0.13; });
 }
 function checkCoopOver(){ if(net.on&&net.isHost&&player.down&&net.remote.down){ netSend({t:'over'}); gameOver(); } }
-function onData(raw){ let d; try{ d=JSON.parse(raw); }catch(e){ return; }
+function onData(raw){ net.lastRecv=performance.now(); let d; try{ d=JSON.parse(raw); }catch(e){ return; }
   switch(d.t){
     case 'seed': net.seed=d.seed; beginPlay(d.seed,false); break;
     case 'p': net.remote.present=true; net.remote.tpos.set(d.x,d.y,d.z); net.remote.yaw=d.yaw; net.remote.hp=d.hp; net.remote.down=!!d.down; if(net.isHost) checkCoopOver(); break;
@@ -536,16 +543,18 @@ function onData(raw){ let d; try{ d=JSON.parse(raw); }catch(e){ return; }
   }
 }
 function setupConn(conn){ net.conn=conn;
-  conn.on('open',()=>{ net.connected=true; setCoopStatus('เชื่อมต่อแล้ว! กำลังเริ่ม…');
+  const onOpen=()=>{ net.connected=true; net.lastRecv=performance.now(); setCoopStatus('เชื่อมต่อแล้ว! กำลังเริ่ม…');
     net.remote.avatar=net.remote.avatar||makeAvatar();
-    if(net.isHost){ net.seed=(RNG()*1e9)|0; netSend({t:'seed',seed:net.seed}); beginPlay(net.seed,true); } });
+    if(net.isHost){ net.seed=(RNG()*1e9)|0; netSend({t:'seed',seed:net.seed}); beginPlay(net.seed,true); } };
+  if(conn.open) onOpen(); else conn.on('open',onOpen);
   conn.on('data',onData);
   conn.on('close',()=>{ net.connected=false; net.remote.present=false; if(state==='play') showMsg('เพื่อนหลุดการเชื่อมต่อ',3000); });
   conn.on('error',()=>{});
 }
 function hostGame(){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด PeerJS ไม่ได้ — เปิดไฟล์ในเบราว์เซอร์ + ต่อเน็ต'); return; }
   net.on=true; net.isHost=true; const code='ZF'+Math.floor(1000+Math.random()*9000); setCoopStatus('กำลังสร้างห้อง…');
-  net.peer=new Peer(code);
+  if(net.peer){try{net.peer.destroy();}catch(e){}}
+  net.peer=new Peer(code,PEERCFG);
   net.peer.on('open',id=>{ el('roomCode').textContent=id; setCoopStatus('บอกรหัสนี้ให้เพื่อน แล้วรอเพื่อนเข้า…'); });
   net.peer.on('connection',conn=>{ setCoopStatus('เพื่อนกำลังเข้าร่วม…'); setupConn(conn); });
   net.peer.on('error',e=>{ setCoopStatus('ผิดพลาด: '+((e&&e.type)||'')+' (ลองเปิดในเบราว์เซอร์ + มีเน็ต)'); });
@@ -553,7 +562,8 @@ function hostGame(){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด 
 function joinGame(code){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด PeerJS ไม่ได้ — เปิดไฟล์ในเบราว์เซอร์ + ต่อเน็ต'); return; }
   if(!code){ setCoopStatus('ใส่รหัสห้องก่อน'); return; }
   net.on=true; net.isHost=false; setCoopStatus('กำลังเชื่อมต่อ '+code+' …');
-  net.peer=new Peer();
+  if(net.peer){try{net.peer.destroy();}catch(e){}}
+  net.peer=new Peer(PEERCFG);
   net.peer.on('open',()=>{ const conn=net.peer.connect(code,{reliable:true}); setupConn(conn); });
   net.peer.on('error',e=>{ setCoopStatus('เชื่อมต่อไม่ได้: '+((e&&e.type)||'')+' (เช็ครหัส/เน็ต)'); });
 }
@@ -837,7 +847,13 @@ function updatePlayer(dt){
   }
   hurtEl.style.opacity=Math.max(0,(70-player.hp)/70);
 
-  if(net.on){ net.lastSend+=dt; if(net.lastSend>0.06){ net.lastSend=0; sendPlayerState(player.down); } updateRemoteAvatar(dt); }
+  if(net.on){ net.lastSend+=dt; if(net.lastSend>0.05){ net.lastSend=0; sendPlayerState(player.down); } updateRemoteAvatar(dt);
+    const ns=el('netstat'); if(ns){ const age=performance.now()-(net.lastRecv||0);
+      if(net.connected && age<1500){ ns.textContent='● ซิงค์กับเพื่อนแล้ว'; ns.style.color='#7dff4d'; }
+      else if(net.connected){ ns.textContent='● รอข้อมูลจากเพื่อน…'; ns.style.color='#ffcf66'; }
+      else { ns.textContent='● กำลังเชื่อมต่อ…'; ns.style.color='#ff6a4a'; } }
+    if(!net.isHost && net.connected && !net.warned && (performance.now()-(net.lastRecv||0))>3000 && guestZ.size===0){
+      net.warned=true; showMsg('ต่อติดแต่ไม่มีข้อมูล — ให้ทั้งคู่เปิดผ่านลิงก์ GitHub Pages ในเบราว์เซอร์จริง (ไม่ใช่ในแอป)',5500); } }
   if(!player.down && state==='play'){ const now=performance.now()/1000; if(firing){ if(weapon.auto) tryFire(now); else if(!firePrev) tryFire(now); } }
   firePrev=firing;
 }
@@ -954,6 +970,7 @@ function resetState(){
   if(scene.fog){ scene.fog.color.setHex(0x141d18); scene.fog.density=0.03; } if(scene.background) scene.background.setHex(0x141d18);
   if(ambLight)ambLight.intensity=0.4; if(hemiLight)hemiLight.intensity=0.6; setExitColor(false);
   const sb=el('shopBtn'); if(sb) sb.style.display=net.on?'none':'block';
+  net.warned=false; const nsv=el('netstat'); if(nsv) nsv.style.display=net.on?'block':'none';
 }
 function beginPlay(seed,doSpawn){
   buildWorld(seed); resetState();
