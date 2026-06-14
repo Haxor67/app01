@@ -634,8 +634,8 @@ function broadcastStat(){ if(net.on&&net.isHost) netSend({t:'stat',kills:kills,s
 function bmsg(text,ms){ showMsg(text,ms||2500); if(net.on&&net.isHost) netSend({t:'msg',m:text,ms:ms||2500}); }
 function onData(raw){ net.lastRecv=performance.now(); let d; try{ d=JSON.parse(raw); }catch(e){ return; }
   switch(d.t){
-    case 'hello': net.myId=d.id; net.seed=d.seed; net.connected=true; if(net._joinTO){clearTimeout(net._joinTO);net._joinTO=null;} showLobby(false); netSend({t:'jname',name:myName}); break;
-    case 'jname': if(net.isHost){ if(!net.lobby[d.id])net.lobby[d.id]={name:'ผู้เล่น',ready:false}; net.lobby[d.id].name=(d.name||'ผู้เล่น'); hostBroadcastRoster(); } break;
+    case 'hello': net.myId=d.id; net.seed=d.seed; net.connected=true; if(net._joinTO){clearTimeout(net._joinTO);net._joinTO=null;} showLobby(false); netSend({t:'jname',id:net.myId,name:myName}); break;
+    case 'jname': if(net.isHost && d.id!==undefined){ if(!net.lobby[d.id])net.lobby[d.id]={name:'ผู้เล่น',ready:false}; net.lobby[d.id].name=(d.name||'ผู้เล่น'); hostBroadcastRoster(); } break;
     case 'ready': if(net.isHost){ if(net.lobby[d.id]){ net.lobby[d.id].ready=!!d.ready; hostBroadcastRoster(); } } break;
     case 'roster': if(!net.isHost){ renderLobby(d.list); } break;
     case 'interready': if(net.isHost){ net.interReady[d.id]=!!d.ready; hostInterRoster(); } break;
@@ -705,6 +705,7 @@ function hostGame(){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด 
 }
 function joinGame(code){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด PeerJS ไม่ได้ — เปิดไฟล์ในเบราว์เซอร์ + ต่อเน็ต'); return; }
   if(!code){ setCoopStatus('ใส่รหัสห้องก่อน'); return; }
+  { const m=(code.match(/(\d{4})/)||[])[1]; if(m) code='ZF'+m; }
   net.on=true; net.isHost=false; net.conns=[]; net.players={}; net.connected=false; net._joinTries=0; setCoopStatus('กำลังเชื่อมต่อ '+code+' …');
   if(net.peer){try{net.peer.destroy();}catch(e){}}
   net.peer=new Peer(peerConfig());
