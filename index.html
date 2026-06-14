@@ -148,7 +148,7 @@
 
 <div id="coop" class="screen" style="display:none;">
   <h1 style="font-size:clamp(26px,6vw,46px);">CO-OP<span class="sub">เล่นกับเพื่อนใน Wi‑Fi เดียวกัน</span></h1>
-  <p class="story" style="font-size:13px;">เปิดไฟล์นี้บนสองเครื่อง · เครื่องหนึ่งกด "สร้างห้อง" แล้วบอกรหัสให้อีกเครื่อง "เข้าร่วม"<br><b style="color:#ffcf66;">แนะนำเปิดในเบราว์เซอร์จริง และต่อเน็ตตอนจับคู่</b></p>
+  <p class="story" style="font-size:13px;">เครื่องหนึ่งกด "สร้างห้อง" บอกรหัสให้อีกเครื่อง "เข้าร่วม"<br><b style="color:#ffcf66;">⚠ ต้องอยู่เน็ตเดียวกัน!</b> ถ้าใช้เน็ตมือถือคนละเครื่อง ให้เปิด <b style="color:#7dff4d;">Personal Hotspot</b> เครื่องนึง แล้วอีกเครื่องมาเกาะ Wi‑Fi นั้น<br>(หรือใส่ TURN ด้านล่าง เพื่อเล่นข้ามเน็ตได้)</p>
   <input id="coopName" maxlength="12" placeholder="ใส่ชื่อของคุณ" style="pointer-events:auto;text-align:center;font-size:16px;padding:10px;width:210px;margin-bottom:14px;border-radius:4px;border:1px solid rgba(125,255,77,.4);background:#0c1410;color:#eafff0;" />
   <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:flex-start;">
     <button class="start-btn" id="hostBtn" style="background:linear-gradient(180deg,#2f6b34,#163d1c);">สร้างห้อง</button>
@@ -159,7 +159,18 @@
   </div>
   <div style="margin-top:18px;font-size:14px;color:#cfd6cf;">รหัสห้องของคุณ: <b id="roomCode" style="color:var(--toxic);letter-spacing:3px;">—</b></div>
   <div id="coopStatus" style="margin-top:10px;font-size:13px;color:#9fb6a0;min-height:18px;">เลือกสร้างห้อง หรือเข้าร่วม</div>
-  <button class="start-btn" id="coopBack" style="margin-top:20px;padding:10px 26px;font-size:14px;background:rgba(255,255,255,.08);box-shadow:none;">ย้อนกลับ</button>
+  <div style="margin-top:14px;max-width:380px;width:100%;">
+    <div id="turnToggle" style="pointer-events:auto;cursor:pointer;font-size:13px;color:#7ddfff;text-decoration:underline;">⚙ ตั้งค่า TURN (เล่นข้ามเครือข่าย/เน็ตมือถือ)</div>
+    <div id="turnBox" style="display:none;margin-top:10px;text-align:left;background:rgba(0,0,0,.3);border:1px solid rgba(125,255,77,.2);border-radius:10px;padding:12px;">
+      <div style="font-size:11.5px;color:#c8d2c8;line-height:1.6;margin-bottom:8px;">อยู่คนละเน็ตต้องมี TURN · สมัครฟรีที่ <b style="color:#7dff4d;">metered.ca</b> (ฟรี ~5GB/เดือน) → เอาค่า urls / username / credential มาวาง แล้วกดบันทึก (เก็บในเครื่องนี้ ทุกคนที่จะเล่นด้วยกันต้องใส่ค่าเดียวกัน)</div>
+      <input id="turnUrl" placeholder="turn:xxx.relay.metered.ca:80" style="pointer-events:auto;width:100%;box-sizing:border-box;margin:3px 0;padding:8px;border-radius:4px;border:1px solid rgba(125,255,77,.3);background:#0c1410;color:#eafff0;font-size:12px;" />
+      <input id="turnUser" placeholder="username" style="pointer-events:auto;width:100%;box-sizing:border-box;margin:3px 0;padding:8px;border-radius:4px;border:1px solid rgba(125,255,77,.3);background:#0c1410;color:#eafff0;font-size:12px;" />
+      <input id="turnCred" placeholder="credential / password" style="pointer-events:auto;width:100%;box-sizing:border-box;margin:3px 0;padding:8px;border-radius:4px;border:1px solid rgba(125,255,77,.3);background:#0c1410;color:#eafff0;font-size:12px;" />
+      <button class="start-btn" id="turnSave" style="margin-top:8px;padding:8px 18px;font-size:13px;">บันทึก TURN</button>
+      <span id="turnStatus" style="font-size:11px;color:#9fb6a0;margin-left:8px;"></span>
+    </div>
+  </div>
+  <button class="start-btn" id="coopBack" style="margin-top:18px;padding:10px 26px;font-size:14px;background:rgba(255,255,255,.08);box-shadow:none;">ย้อนกลับ</button>
 </div>
 
 <div id="lobby" class="screen" style="display:none;">
@@ -554,12 +565,18 @@ let zidCounter=1; const guestZ=new Map();
 const PEERCFG={config:{iceServers:[
   {urls:'stun:stun.l.google.com:19302'},
   {urls:'stun:stun1.l.google.com:19302'},
-  {urls:'stun:stun2.l.google.com:19302'},
-  {urls:'stun:stun3.l.google.com:19302'},
+  {urls:'stun:stun.cloudflare.com:3478'},
+  {urls:'turn:freestun.net:3478',username:'free',credential:'free'},
+  {urls:'turn:freestun.net:3478?transport=tcp',username:'free',credential:'free'},
+  {urls:'turns:freestun.net:5350',username:'free',credential:'free'},
+  {urls:'turns:freestun.net:5350?transport=tcp',username:'free',credential:'free'},
   {urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},
   {urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'},
   {urls:'turn:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'}
-]}};
+],iceCandidatePoolSize:4}};
+function lsGet(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return ''; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function peerConfig(){ const ice=PEERCFG.config.iceServers.slice(); const u=lsGet('zf_turn_url'); if(u){ u.split(',').map(x=>x.trim()).filter(Boolean).forEach(uu=>ice.push({urls:uu,username:lsGet('zf_turn_user'),credential:lsGet('zf_turn_cred')})); } return {config:{iceServers:ice,iceCandidatePoolSize:4}}; }
 const net={on:false,isHost:false,peer:null,myId:0,seed:0,connected:false,_won:false,
   lastSend:0,zsnapAcc:0,lastRecv:0,warned:false,nextPid:1,
   conns:[], players:{}, lobby:{}, myReady:false, interReady:{}, myInterReady:false };
@@ -685,24 +702,24 @@ function bindHostPeer(){
   net.peer.on('open',id=>{ el('roomCode').textContent=id; net.lobby={0:{name:myName,ready:true}}; setCoopStatus('บอกรหัสให้เพื่อน (สูงสุด 4 คน)…'); showLobby(true); });
   net.peer.on('connection',conn=>{ if(net.conns.length>=3){ try{conn.close();}catch(e){} return; } const pid=net.nextPid++; setCoopStatus('ผู้เล่นกำลังเข้าร่วม…'); setupConn(conn,pid); });
   net.peer.on('disconnected',()=>{ setCoopStatus('สัญญาณหลุดชั่วคราว — กำลังต่อใหม่…'); try{net.peer.reconnect();}catch(e){} });
-  net.peer.on('error',e=>{ const t=(e&&e.type)||''; if(t==='unavailable-id'&&net._hostTries<5){ net._hostTries++; try{net.peer.destroy();}catch(x){} net.peer=new Peer('ZF'+Math.floor(1000+Math.random()*9000),PEERCFG); bindHostPeer(); } else if(t==='network'||t==='disconnected'||t==='server-error'){ setCoopStatus('เน็ตมีปัญหา ('+t+') — ลองใหม่อีกครั้ง'); } else { setCoopStatus('สร้างห้องไม่ได้: '+t); } });
+  net.peer.on('error',e=>{ const t=(e&&e.type)||''; if(t==='unavailable-id'&&net._hostTries<5){ net._hostTries++; try{net.peer.destroy();}catch(x){} net.peer=new Peer('ZF'+Math.floor(1000+Math.random()*9000),peerConfig()); bindHostPeer(); } else if(t==='network'||t==='disconnected'||t==='server-error'){ setCoopStatus('เน็ตมีปัญหา ('+t+') — ลองใหม่อีกครั้ง'); } else { setCoopStatus('สร้างห้องไม่ได้: '+t); } });
 }
 function hostGame(){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด PeerJS ไม่ได้ — เปิดไฟล์ในเบราว์เซอร์ + ต่อเน็ต'); return; }
   net.on=true; net.isHost=true; net.myId=0; net.seed=(RNG()*1e9)|0; net.nextPid=1; net.conns=[]; net.players={}; net.lobby={0:{name:myName,ready:true}}; net._hostTries=0;
   setCoopStatus('กำลังสร้างห้อง…'); if(net.peer){try{net.peer.destroy();}catch(e){}}
-  net.peer=new Peer('ZF'+Math.floor(1000+Math.random()*9000),PEERCFG); bindHostPeer();
+  net.peer=new Peer('ZF'+Math.floor(1000+Math.random()*9000),peerConfig()); bindHostPeer();
 }
 function joinGame(code){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด PeerJS ไม่ได้ — เปิดไฟล์ในเบราว์เซอร์ + ต่อเน็ต'); return; }
   if(!code){ setCoopStatus('ใส่รหัสห้องก่อน'); return; }
   net.on=true; net.isHost=false; net.conns=[]; net.players={}; net.connected=false; net._joinTries=0; setCoopStatus('กำลังเชื่อมต่อ '+code+' …');
   if(net.peer){try{net.peer.destroy();}catch(e){}}
-  net.peer=new Peer(PEERCFG);
+  net.peer=new Peer(peerConfig());
   const attempt=()=>{ if(net.connected)return; let conn; try{ conn=net.peer.connect(code,{reliable:true}); }catch(e){ return; } setupConn(conn,0);
     if(net._joinTO)clearTimeout(net._joinTO);
-    net._joinTO=setTimeout(()=>{ if(net.connected)return; net._joinTries++; if(net._joinTries<5){ setCoopStatus('ยังไม่ติด… กำลังลองใหม่ ('+net._joinTries+'/4)'); try{conn.close();}catch(e){} attempt(); } else { setCoopStatus('เชื่อมต่อไม่สำเร็จ — ต้องอยู่ Wi‑Fi/ฮอตสปอตเดียวกันกับโฮสต์ แล้วกด “เข้าร่วม” ใหม่'); } },6000); };
+    net._joinTO=setTimeout(()=>{ if(net.connected)return; net._joinTries++; if(net._joinTries<3){ setCoopStatus('กำลังเชื่อมต่อผ่านรีเลย์… ลองใหม่ ('+net._joinTries+'/2)'); try{conn.close();}catch(e){} attempt(); } else { setCoopStatus('เชื่อมต่อไม่สำเร็จ — ลองใหม่ หรือให้ทุกคนต่อ Wi‑Fi/ฮอตสปอตเดียวกัน'); } },16000); };
   net.peer.on('open',()=>{ attempt(); });
   net.peer.on('disconnected',()=>{ try{net.peer.reconnect();}catch(e){} });
-  net.peer.on('error',e=>{ const t=(e&&e.type)||''; if(t==='peer-unavailable'&&net._joinTries<5){ net._joinTries++; setCoopStatus('หาห้องไม่เจอ… ลองใหม่ ('+net._joinTries+'/4)'); setTimeout(()=>{ if(!net.connected) attempt(); },1500); } else { setCoopStatus('เชื่อมต่อไม่ได้: '+t+' (เช็ครหัสให้ตรง + อยู่เน็ตเดียวกัน)'); } });
+  net.peer.on('error',e=>{ const t=(e&&e.type)||''; if(t==='peer-unavailable'&&net._joinTries<3){ net._joinTries++; setCoopStatus('หาห้องไม่เจอ… ลองใหม่ ('+net._joinTries+'/2)'); setTimeout(()=>{ if(!net.connected) attempt(); },2000); } else { setCoopStatus('เชื่อมต่อไม่ได้: '+t+' (เช็ครหัสให้ตรง + อยู่เน็ตเดียวกัน)'); } });
 }
 
 const raycaster=new THREE.Raycaster();
@@ -1550,6 +1567,9 @@ el('startBtn').addEventListener('click',()=>{ audioStart(); goFullscreen(); star
 el('fsBtn').addEventListener('click',toggleFS); el('fsBtn').addEventListener('touchstart',e=>{e.preventDefault();toggleFS();},{passive:false}); if(_isStandalone()){ const _f=el('fsBtn'); if(_f)_f.style.display='none'; }
 el('coopBtn').addEventListener('click',()=>{ startScreen.style.display='none'; coopScreen.style.display='flex'; });
 el('coopBack').addEventListener('click',()=>{ coopScreen.style.display='none'; startScreen.style.display='flex'; });
+el('turnToggle').addEventListener('click',()=>{ const b=el('turnBox'); b.style.display=(b.style.display==='none'||!b.style.display)?'block':'none'; });
+el('turnSave').addEventListener('click',()=>{ lsSet('zf_turn_url',el('turnUrl').value.trim()); lsSet('zf_turn_user',el('turnUser').value.trim()); lsSet('zf_turn_cred',el('turnCred').value.trim()); el('turnStatus').textContent='บันทึกแล้ว ✓ (ใช้ตอนสร้าง/เข้าห้อง)'; });
+try{ el('turnUrl').value=lsGet('zf_turn_url'); el('turnUser').value=lsGet('zf_turn_user'); el('turnCred').value=lsGet('zf_turn_cred'); if(lsGet('zf_turn_url')){ el('turnStatus').textContent='มีค่าที่บันทึกไว้'; } }catch(e){}
 el('readyBtn').addEventListener('click',()=>{ net.myReady=!net.myReady; el('readyBtn').textContent=net.myReady?'ยกเลิกพร้อม':'พร้อม ✓'; el('readyBtn').style.background=net.myReady?'linear-gradient(180deg,#1c8048,#0c4a28)':'linear-gradient(180deg,#2f6b34,#163d1c)'; netSend({t:'ready',id:net.myId,ready:net.myReady}); });
 el('startMatchBtn').addEventListener('click',()=>{ if(!net.isHost)return; const guests=hostList().filter(p=>p.id!==0); if(guests.length>0&&guests.every(p=>p.ready)){ netSend({t:'start',seed:net.seed}); beginPlay(net.seed,true); } else { showMsg('รอเพื่อนกดพร้อมก่อน',1800); } });
 el('lobbyBack').addEventListener('click',()=>{ try{if(net.peer)net.peer.destroy();}catch(e){} net.on=false; net.isHost=false; net.conns=[]; net.lobby={}; el('lobby').style.display='none'; startScreen.style.display='flex'; state='menu'; });
