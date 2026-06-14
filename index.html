@@ -52,7 +52,7 @@
   #msg{position:absolute;top:18%;left:50%;transform:translateX(-50%);font-size:20px;letter-spacing:2px;color:#fff;text-shadow:0 0 12px #000;opacity:0;transition:opacity .3s;text-align:center;}
 
   #touch{position:fixed;inset:0;z-index:25;display:none;pointer-events:none;}
-  #joyZone{position:absolute;left:0;bottom:0;width:44%;height:54%;pointer-events:auto;}
+  #joyZone{position:absolute;left:0;bottom:0;width:52%;height:66%;pointer-events:auto;}
   #joyBase{position:absolute;width:130px;height:130px;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.04);display:none;transform:translate(-50%,-50%);}
   #joyStick{position:absolute;width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.24);border:2px solid rgba(255,255,255,.4);left:50%;top:50%;transform:translate(-50%,-50%);}
   #lookZone{position:absolute;right:0;top:0;width:58%;height:74%;pointer-events:auto;}
@@ -670,7 +670,7 @@ function setupConn(conn,pid){ const entry={conn:conn,pid:pid,open:false}; net.co
   const onOpen=()=>{ entry.open=true; net.connected=true; net.lastRecv=performance.now();
     if(net._joinTO){ clearTimeout(net._joinTO); net._joinTO=null; }
     if(net.isHost){ sendTo(pid,{t:'hello',id:pid,seed:net.seed}); net.lobby[pid]={name:'ผู้เล่น',ready:false}; setCoopStatus('ผู้เล่นเข้าร่วม ('+(net.conns.length+1)+'/4)'); if(state==='lobby') hostBroadcastRoster(); }
-    else setCoopStatus('เชื่อมต่อแล้ว! กำลังเข้าห้องรอ…'); };
+    else { setCoopStatus('เชื่อมต่อแล้ว! กำลังเข้าห้องรอ…'); for(let i=net.conns.length-1;i>=0;i--){ const e=net.conns[i]; if(e!==entry){ try{e.conn.close();}catch(x){} net.conns.splice(i,1); } } } };
   if(conn.open) onOpen(); else conn.on('open',onOpen);
   conn.on('data',onData);
   conn.on('close',()=>{ entry.open=false; const i=net.conns.indexOf(entry); if(i>=0)net.conns.splice(i,1);
@@ -694,7 +694,7 @@ function showLobby(isHost){ state='lobby'; startScreen.style.display='none'; coo
   if(isHost){ el('lobbyCode').textContent=el('roomCode').textContent; renderLobby(hostList()); } else { el('readyBtn').textContent='พร้อม ✓'; net.myReady=false; } }
 function bindHostPeer(){
   net.peer.on('open',id=>{ el('roomCode').textContent=id; net.lobby={0:{name:myName,ready:true}}; setCoopStatus('บอกรหัสให้เพื่อน (สูงสุด 4 คน)…'); showLobby(true); });
-  net.peer.on('connection',conn=>{ if(net.conns.length>=3){ try{conn.close();}catch(e){} return; } const pid=net.nextPid++; setCoopStatus('ผู้เล่นกำลังเข้าร่วม…'); setupConn(conn,pid); });
+  net.peer.on('connection',conn=>{ for(let i=net.conns.length-1;i>=0;i--){ const e=net.conns[i]; if(e.conn&&e.conn.peer===conn.peer){ try{e.conn.close();}catch(x){} delete net.lobby[e.pid]; net.conns.splice(i,1); } } if(net.conns.length>=3){ try{conn.close();}catch(e){} return; } const pid=net.nextPid++; setCoopStatus('ผู้เล่นกำลังเข้าร่วม…'); setupConn(conn,pid); });
   net.peer.on('disconnected',()=>{ setCoopStatus('สัญญาณหลุดชั่วคราว — กำลังต่อใหม่…'); try{net.peer.reconnect();}catch(e){} });
   net.peer.on('error',e=>{ const t=(e&&e.type)||''; if(t==='unavailable-id'&&net._hostTries<5){ net._hostTries++; try{net.peer.destroy();}catch(x){} net.peer=new Peer('ZF'+Math.floor(1000+Math.random()*9000),peerConfig()); bindHostPeer(); } else if(t==='network'||t==='disconnected'||t==='server-error'){ setCoopStatus('เน็ตมีปัญหา ('+t+') — ลองใหม่อีกครั้ง'); } else { setCoopStatus('สร้างห้องไม่ได้: '+t); } });
 }
@@ -1072,7 +1072,7 @@ function setupTouch(){
   joyZone.addEventListener('touchstart',e=>{e.preventDefault();const t=e.changedTouches[0];joyId=t.identifier;jc={x:t.clientX,y:t.clientY};
     joyBase.style.display='block';joyBase.style.left=t.clientX+'px';joyBase.style.top=t.clientY+'px';joyStick.style.left='50%';joyStick.style.top='50%';},{passive:false});
   joyZone.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===joyId){
-    let dx=t.clientX-jc.x,dy=t.clientY-jc.y;const mx=58,len=Math.hypot(dx,dy);if(len>mx){dx=dx/len*mx;dy=dy/len*mx;}
+    let dx=t.clientX-jc.x,dy=t.clientY-jc.y;const mx=44,len=Math.hypot(dx,dy);if(len>mx){dx=dx/len*mx;dy=dy/len*mx;}
     joyStick.style.left=(65+dx)+'px';joyStick.style.top=(65+dy)+'px';moveVec.x=dx/mx;moveVec.y=dy/mx;
     }},{passive:false});
   const je=e=>{for(const t of e.changedTouches)if(t.identifier===joyId){joyId=null;joyBase.style.display='none';moveVec.x=0;moveVec.y=0;}};
