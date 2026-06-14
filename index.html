@@ -148,7 +148,7 @@
 
 <div id="coop" class="screen" style="display:none;">
   <h1 style="font-size:clamp(26px,6vw,46px);">CO-OP<span class="sub">เล่นกับเพื่อนใน Wi‑Fi เดียวกัน</span></h1>
-  <p class="story" style="font-size:13px;">เครื่องหนึ่งกด "สร้างห้อง" บอกรหัสให้อีกเครื่อง "เข้าร่วม"<br><b style="color:#ffcf66;">⚠ ต้องอยู่เน็ตเดียวกัน!</b> ถ้าใช้เน็ตมือถือคนละเครื่อง ให้เปิด <b style="color:#7dff4d;">Personal Hotspot</b> เครื่องนึง แล้วอีกเครื่องมาเกาะ Wi‑Fi นั้น<br>(หรือใส่ TURN ด้านล่าง เพื่อเล่นข้ามเน็ตได้)</p>
+  <p class="story" style="font-size:13px;"><b style="color:#7dff4d;">เครื่องหนึ่งกด "สร้างห้อง"</b> → ได้รหัส → บอกอีกเครื่องพิมพ์รหัสนั้นแล้วกด <b style="color:#7dff4d;">"เข้าร่วม"</b><br>เล่นข้ามเน็ตมือถือได้แล้ว (มี TURN ในตัว) · ถ้าต่อไม่ติด ลองเปิด <b style="color:#ffcf66;">Personal Hotspot</b> เครื่องนึงแล้วอีกเครื่องมาเกาะ</p>
   <input id="coopName" maxlength="12" placeholder="ใส่ชื่อของคุณ" style="pointer-events:auto;text-align:center;font-size:16px;padding:10px;width:210px;margin-bottom:14px;border-radius:4px;border:1px solid rgba(125,255,77,.4);background:#0c1410;color:#eafff0;" />
   <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:flex-start;">
     <button class="start-btn" id="hostBtn" style="background:linear-gradient(180deg,#2f6b34,#163d1c);">สร้างห้อง</button>
@@ -159,17 +159,6 @@
   </div>
   <div style="margin-top:18px;font-size:14px;color:#cfd6cf;">รหัสห้องของคุณ: <b id="roomCode" style="color:var(--toxic);letter-spacing:3px;">—</b></div>
   <div id="coopStatus" style="margin-top:10px;font-size:13px;color:#9fb6a0;min-height:18px;">เลือกสร้างห้อง หรือเข้าร่วม</div>
-  <div style="margin-top:14px;max-width:380px;width:100%;">
-    <div id="turnToggle" style="pointer-events:auto;cursor:pointer;font-size:13px;color:#7ddfff;text-decoration:underline;">⚙ ตั้งค่า TURN (เล่นข้ามเครือข่าย/เน็ตมือถือ)</div>
-    <div id="turnBox" style="display:none;margin-top:10px;text-align:left;background:rgba(0,0,0,.3);border:1px solid rgba(125,255,77,.2);border-radius:10px;padding:12px;">
-      <div style="font-size:11.5px;color:#c8d2c8;line-height:1.6;margin-bottom:8px;">อยู่คนละเน็ตต้องมี TURN · สมัครฟรีที่ <b style="color:#7dff4d;">metered.ca</b> (ฟรี ~5GB/เดือน) → เอาค่า urls / username / credential มาวาง แล้วกดบันทึก (เก็บในเครื่องนี้ ทุกคนที่จะเล่นด้วยกันต้องใส่ค่าเดียวกัน)</div>
-      <input id="turnUrl" placeholder="turn:xxx.relay.metered.ca:80" style="pointer-events:auto;width:100%;box-sizing:border-box;margin:3px 0;padding:8px;border-radius:4px;border:1px solid rgba(125,255,77,.3);background:#0c1410;color:#eafff0;font-size:12px;" />
-      <input id="turnUser" placeholder="username" style="pointer-events:auto;width:100%;box-sizing:border-box;margin:3px 0;padding:8px;border-radius:4px;border:1px solid rgba(125,255,77,.3);background:#0c1410;color:#eafff0;font-size:12px;" />
-      <input id="turnCred" placeholder="credential / password" style="pointer-events:auto;width:100%;box-sizing:border-box;margin:3px 0;padding:8px;border-radius:4px;border:1px solid rgba(125,255,77,.3);background:#0c1410;color:#eafff0;font-size:12px;" />
-      <button class="start-btn" id="turnSave" style="margin-top:8px;padding:8px 18px;font-size:13px;">บันทึก TURN</button>
-      <span id="turnStatus" style="font-size:11px;color:#9fb6a0;margin-left:8px;"></span>
-    </div>
-  </div>
   <button class="start-btn" id="coopBack" style="margin-top:18px;padding:10px 26px;font-size:14px;background:rgba(255,255,255,.08);box-shadow:none;">ย้อนกลับ</button>
 </div>
 
@@ -1572,9 +1561,6 @@ el('startBtn').addEventListener('click',()=>{ audioStart(); goFullscreen(); star
 el('fsBtn').addEventListener('click',toggleFS); el('fsBtn').addEventListener('touchstart',e=>{e.preventDefault();toggleFS();},{passive:false}); if(_isStandalone()){ const _f=el('fsBtn'); if(_f)_f.style.display='none'; }
 el('coopBtn').addEventListener('click',()=>{ startScreen.style.display='none'; coopScreen.style.display='flex'; });
 el('coopBack').addEventListener('click',()=>{ coopScreen.style.display='none'; startScreen.style.display='flex'; });
-el('turnToggle').addEventListener('click',()=>{ const b=el('turnBox'); b.style.display=(b.style.display==='none'||!b.style.display)?'block':'none'; });
-el('turnSave').addEventListener('click',()=>{ lsSet('zf_turn_url',el('turnUrl').value.trim()); lsSet('zf_turn_user',el('turnUser').value.trim()); lsSet('zf_turn_cred',el('turnCred').value.trim()); el('turnStatus').textContent='บันทึกแล้ว ✓ (ใช้ตอนสร้าง/เข้าห้อง)'; });
-try{ el('turnUrl').value=lsGet('zf_turn_url'); el('turnUser').value=lsGet('zf_turn_user'); el('turnCred').value=lsGet('zf_turn_cred'); if(lsGet('zf_turn_url')){ el('turnStatus').textContent='มีค่าที่บันทึกไว้'; } }catch(e){}
 el('readyBtn').addEventListener('click',()=>{ net.myReady=!net.myReady; el('readyBtn').textContent=net.myReady?'ยกเลิกพร้อม':'พร้อม ✓'; el('readyBtn').style.background=net.myReady?'linear-gradient(180deg,#1c8048,#0c4a28)':'linear-gradient(180deg,#2f6b34,#163d1c)'; netSend({t:'ready',id:net.myId,ready:net.myReady}); });
 el('startMatchBtn').addEventListener('click',()=>{ if(!net.isHost)return; const guests=hostList().filter(p=>p.id!==0); if(guests.length>0&&guests.every(p=>p.ready)){ netSend({t:'start',seed:net.seed}); beginPlay(net.seed,true); } else { showMsg('รอเพื่อนกดพร้อมก่อน',1800); } });
 el('lobbyBack').addEventListener('click',()=>{ try{if(net.peer)net.peer.destroy();}catch(e){} net.on=false; net.isHost=false; net.conns=[]; net.lobby={}; el('lobby').style.display='none'; startScreen.style.display='flex'; state='menu'; });
