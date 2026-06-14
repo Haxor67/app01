@@ -3,11 +3,16 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Zombie FPS" />
+<meta name="theme-color" content="#000000" />
 <title>ป่าล่าซอมบี้ — Dead Forest Ops</title>
 <style>
   :root{ --blood:#b3121f; --toxic:#7dff4d; --amber:#ffcf66; }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Trebuchet MS','Segoe UI',sans-serif;color:#e8e8e8;user-select:none;}
+  html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;font-family:'Trebuchet MS','Segoe UI',sans-serif;color:#e8e8e8;user-select:none;}
   #game{position:fixed;inset:0;}
   canvas{display:block;}
 
@@ -1357,7 +1362,10 @@ function beginPlay(seed,doSpawn){
 }
 function fsActive(){ return document.fullscreenElement||document.webkitFullscreenElement; }
 function goFullscreen(){ const e=document.documentElement; const r=e.requestFullscreen||e.webkitRequestFullscreen; if(r){ try{ const p=r.call(e); if(p&&p.catch)p.catch(()=>{}); }catch(x){} } }
-function toggleFS(){ if(fsActive()){ const x=document.exitFullscreen||document.webkitExitFullscreen; if(x)x.call(document); } else goFullscreen(); }
+function _isStandalone(){ return window.navigator.standalone===true || (window.matchMedia&&matchMedia('(display-mode: standalone)').matches); }
+function fsSupported(){ const e=document.documentElement; return !!(e.requestFullscreen||e.webkitRequestFullscreen); }
+function toggleFS(){ if(!fsSupported()){ showFSHelp(); return; } if(fsActive()){ const x=document.exitFullscreen||document.webkitExitFullscreen; if(x)x.call(document); } else goFullscreen(); }
+function showFSHelp(){ let o=document.getElementById('fshelp'); if(o){o.style.display='flex';return;} o=document.createElement('div'); o.id='fshelp'; o.style.cssText='position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;text-align:center;padding:26px;color:#e8e8e8;'; o.innerHTML='<div style=\'max-width:350px;line-height:1.6\'><div style=\'font-size:42px;margin-bottom:6px\'>📱</div><b style=\'font-size:18px\'>เล่นเต็มจอบน iPhone/iPad</b><p style=\'margin:10px 0;color:#bcd\'>Safari บน iPhone ไม่รองรับปุ่มเต็มจอ ทำแบบนี้แทน:</p><ol style=\'text-align:left;color:#cde;font-size:14px;padding-left:22px\'><li>เปิดเกมผ่านลิงก์ใน <b>Safari</b> (ไม่ใช่ในแอปอื่น)</li><li>แตะปุ่ม <b>แชร์ ⬆️</b> ด้านล่างจอ</li><li>เลือก <b>“เพิ่มไปยังหน้าจอโฮม”</b></li><li>เปิดเกมจาก <b>ไอคอนบนหน้าจอโฮม</b> → เต็มจอไร้แถบเบราว์เซอร์</li></ol><p style=\'margin-top:10px;color:#9ab;font-size:12px\'>Android/PC: ปุ่ม ⛶ เต็มจอได้ทันที</p><button id=\'fshelpok\' style=\'margin-top:16px;padding:10px 28px;border-radius:8px;border:1px solid #5a7;background:#1c3a28;color:#dfffe8;font-size:15px\'>เข้าใจแล้ว</button></div>'; document.body.appendChild(o); document.getElementById('fshelpok').addEventListener('click',()=>{o.style.display='none';}); }
 function startGame(){ net.on=false; net.isHost=false; beginPlay((RNG()*1e9)|0,true); }
 function gameOver(){ state='over'; sndLose(); el('overKills').textContent=kills; hud.style.display='none';touchUI.style.display='none'; if(document.pointerLockElement)document.exitPointerLock(); overScreen.style.display='flex'; }
 function win(){ state='win'; sndWin(); try{ el('win').querySelector('h1').textContent = campaignDone?'ผ่านครบ 20 ด่าน!':'อพยพสำเร็จ'; }catch(e){} el('winKills').textContent=kills; el('winHp').textContent=Math.round(player.hp); hud.style.display='none';touchUI.style.display='none'; if(document.pointerLockElement)document.exitPointerLock(); winScreen.style.display='flex'; }
@@ -1414,7 +1422,7 @@ function boot(){ initThree(); initPlayer(); buildGun(); setupDesktop(); if(IS_TO
 function audioStart(){ initAudio(); if(actx&&actx.state==='suspended')actx.resume(); startAmbient();
   if(IS_TOUCH&&screen.orientation&&screen.orientation.lock){try{screen.orientation.lock('landscape').catch(()=>{});}catch(e){}} }
 el('startBtn').addEventListener('click',()=>{ audioStart(); goFullscreen(); startGame(); });
-el('fsBtn').addEventListener('click',toggleFS);
+el('fsBtn').addEventListener('click',toggleFS); el('fsBtn').addEventListener('touchstart',e=>{e.preventDefault();toggleFS();},{passive:false}); if(_isStandalone()){ const _f=el('fsBtn'); if(_f)_f.style.display='none'; }
 el('coopBtn').addEventListener('click',()=>{ startScreen.style.display='none'; coopScreen.style.display='flex'; });
 el('coopBack').addEventListener('click',()=>{ coopScreen.style.display='none'; startScreen.style.display='flex'; });
 el('hostBtn').addEventListener('click',()=>{ audioStart(); goFullscreen(); hostGame(); });
