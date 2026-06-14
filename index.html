@@ -18,6 +18,7 @@
 
   #hud{position:fixed;inset:0;pointer-events:none;z-index:20;display:none;}
   #objective{position:absolute;top:40px;left:50%;transform:translateX(-50%);max-width:88%;text-align:center;font-size:14px;font-weight:bold;letter-spacing:.3px;color:#eafff0;background:rgba(0,0,0,.45);padding:6px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.14);text-shadow:0 0 6px #000;white-space:nowrap;}
+  #powerup{position:absolute;top:72px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:bold;color:#ffe24d;background:rgba(40,30,0,.55);padding:4px 14px;border-radius:14px;border:1px solid rgba(255,210,77,.5);text-shadow:0 0 6px #000;display:none;}
   #crosshair{position:absolute;top:50%;left:50%;width:22px;height:22px;transform:translate(-50%,-50%);opacity:.85;transition:width .05s,height .05s,opacity .1s;}
   #crosshair span{position:absolute;background:rgba(255,255,255,.85);box-shadow:0 0 3px rgba(0,0,0,.9);}
   #crosshair .v{left:50%;width:2px;height:30%;transform:translateX(-50%);}
@@ -84,12 +85,13 @@
   @keyframes rot{0%,40%{transform:rotate(0);}60%,100%{transform:rotate(-90deg);}}
   #rotate p{color:#cfd6cf;font-size:17px;letter-spacing:2px;}
   #shopBtn{position:absolute;top:58px;left:18px;pointer-events:auto;background:rgba(125,255,77,.16);border:1px solid rgba(125,255,77,.5);color:#dfffd0;padding:7px 14px;border-radius:6px;font-size:13px;letter-spacing:1px;}
-  .shophead{font-size:12px;letter-spacing:2px;color:#7dff4d;margin:14px 4px 4px;text-transform:uppercase;}
-  .shoprow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;margin:6px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;}
-  .shoprow .info{font-size:14px;color:#eaeaea;} .shoprow .info small{color:#9aa39a;display:block;font-size:11px;margin-top:2px;}
-  .shopbuy{pointer-events:auto;cursor:pointer;border:none;border-radius:6px;padding:9px 14px;font-size:13px;font-weight:bold;letter-spacing:.5px;white-space:nowrap;}
+  .shophead{display:inline-block;font-size:11px;letter-spacing:2px;color:#08160c;background:linear-gradient(90deg,#7dff4d,#3fd0a0);margin:16px 4px 8px;padding:5px 14px;border-radius:13px;font-weight:bold;}
+  .shoprow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 14px;margin:7px 0;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.1);border-left:3px solid rgba(125,255,77,.55);border-radius:10px;transition:transform .08s;}
+  .shoprow:hover{transform:translateX(2px);border-left-color:#7dff4d;}
+  .shoprow .info{font-size:14px;color:#f2f2f2;font-weight:600;} .shoprow .info small{color:#9aa39a;display:block;font-size:11px;margin-top:3px;font-weight:400;}
+  .shopbuy{pointer-events:auto;cursor:pointer;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:bold;letter-spacing:.5px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.35);transition:filter .1s;} .shopbuy:not(:disabled):hover{filter:brightness(1.15);}
   .shopbuy:disabled{opacity:.55;cursor:default;}
-  .shopbuy.buy{background:#2f6b34;color:#eafff0;} .shopbuy.equip{background:#2f5a6b;color:#eafff0;} .shopbuy.use{background:#444;color:#bbb;} .shopbuy.lock{background:#3a2424;color:#caa;} .shopbuy.up{background:#5a4a1a;color:#ffe8a0;}
+  .shopbuy.buy{background:linear-gradient(180deg,#3a9a48,#1c6030);color:#eafff0;} .shopbuy.equip{background:linear-gradient(180deg,#3a7fa0,#1c4d66);color:#eafff0;} .shopbuy.use{background:#3a3a3a;color:#bbb;} .shopbuy.lock{background:#3a2424;color:#caa;} .shopbuy.up{background:linear-gradient(180deg,#7a6320,#4a3a14);color:#ffe8a0;}
   #deathveil{position:fixed;inset:0;z-index:22;pointer-events:none;opacity:0;transition:opacity 2.5s;box-shadow:inset 0 0 240px 90px rgba(120,0,0,.55);background:radial-gradient(ellipse at center,transparent 50%,rgba(60,0,0,.35) 100%);}
   #lightning{position:fixed;inset:0;z-index:23;pointer-events:none;opacity:0;background:#dfe8ff;transition:opacity .08s;}
 </style>
@@ -107,6 +109,7 @@
   <div id="msg"></div>
   <div id="netstat" style="display:none;position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:1px;text-shadow:0 0 6px #000;color:#7dff4d;">● กำลังเชื่อมต่อ…</div>
   <div id="objective"></div>
+  <div id="powerup"></div>
   <div id="fsBtn" style="position:absolute;top:12px;right:14px;pointer-events:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;">⛶</div>
   <div id="bossWrap" style="display:none;position:absolute;top:54px;left:50%;transform:translateX(-50%);width:62%;max-width:520px;text-align:center;">
     <div style="font-size:13px;letter-spacing:3px;color:#ff5a4a;text-shadow:0 0 8px #000;margin-bottom:4px;">จอมอสูรแห่งความตาย</div>
@@ -157,13 +160,34 @@
   <button class="start-btn" id="coopBack" style="margin-top:20px;padding:10px 26px;font-size:14px;background:rgba(255,255,255,.08);box-shadow:none;">ย้อนกลับ</button>
 </div>
 
+<div id="lobby" class="screen" style="display:none;">
+  <h1 style="font-size:clamp(24px,5.5vw,40px);">ห้องรอ<span class="sub">LOBBY</span></h1>
+  <div id="lobbyCodeWrap" style="font-size:15px;color:#cfd6cf;margin-bottom:6px;">รหัสห้อง: <b id="lobbyCode" style="color:var(--toxic);letter-spacing:3px;">—</b></div>
+  <div id="lobbyList" style="min-width:250px;max-width:92%;margin:6px 0 10px;"></div>
+  <div id="lobbyRules" style="max-width:370px;font-size:12.5px;line-height:1.7;color:#c8d2c8;text-align:left;background:rgba(0,0,0,.32);border:1px solid rgba(125,255,77,.18);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+    <b style="color:var(--toxic);">กติกา</b><br>
+    • ฆ่าซอมบี้ให้ครบโควต้า → <b>บอส</b>โผล่<br>
+    • ฆ่าบอส → <b>ทางออก (พลุเขียว)</b> เปิด<br>
+    • ทุกคนเข้าวงเขียวพร้อมกัน → นับถอยหลังหนีไปด่านถัดไป (รวม 20 ด่าน)<br>
+    • เก็บ <b>เหรียญ 🪙</b> จากซอมบี้ → ใช้ <b>ซื้อ/อัปเกรด</b> อาวุธ-เลือด ที่ร้านค้าตอนเปลี่ยนด่าน<br>
+    • เพื่อนล้ม → เข้าไปใกล้แล้วกด <b>ดึงเพื่อน</b> ช่วย<br>
+    • เก็บ <b>กล่อง ⚡</b> = พลังพิเศษชั่วคราว (ยิงไม่จำกัด/ยิงรัว/ดาเมจ×2)
+  </div>
+  <button class="start-btn" id="readyBtn" style="display:none;background:linear-gradient(180deg,#2f6b34,#163d1c);">พร้อม ✓</button>
+  <button class="start-btn" id="startMatchBtn" style="display:none;">เริ่มเกม ▶</button>
+  <div id="lobbyStatus" style="margin-top:10px;font-size:13px;color:#9fb6a0;min-height:18px;"></div>
+  <button class="start-btn" id="lobbyBack" style="margin-top:14px;padding:9px 22px;font-size:13px;background:rgba(255,255,255,.08);box-shadow:none;">ออกจากห้อง</button>
+</div>
+
 <div id="shop" class="screen" style="display:none;justify-content:flex-start;padding-top:40px;">
   <h1 id="shopTitle" style="font-size:clamp(22px,5vw,38px);margin-bottom:4px;">ร้านค้า &amp; อัปเกรด</h1>
   <div id="shopCur" style="font-size:15px;margin-bottom:8px;"></div>
   <div id="shopBody" style="max-width:780px;width:100%;max-height:60vh;overflow-y:auto;text-align:left;pointer-events:auto;"></div>
   <button class="start-btn" id="shopClose" style="margin-top:14px;">กลับเข้าเกม</button>
-  <button class="start-btn" id="shopNext" style="margin-top:14px;display:none;background:linear-gradient(135deg,#2fae66,#1c8048);">เข้าด่านต่อไป ▶</button>
-  <div id="shopWait" style="display:none;margin-top:12px;color:#8fe;font-size:14px;">รอหัวห้องกดเริ่มด่านต่อไป…</div>
+  <div id="shopReady" style="display:none;max-width:420px;width:100%;text-align:left;margin-top:6px;"></div>
+  <button class="start-btn" id="shopReadyBtn" style="margin-top:12px;display:none;background:linear-gradient(180deg,#2f6b34,#163d1c);">พร้อมเข้าด่านต่อไป ✓</button>
+  <button class="start-btn" id="shopNext" style="margin-top:12px;display:none;background:linear-gradient(135deg,#2fae66,#1c8048);">เข้าด่านต่อไป ▶</button>
+  <div id="shopWait" style="display:none;margin-top:10px;color:#8fe;font-size:13px;">รอหัวห้องกดเริ่มด่านต่อไป…</div>
 </div>
 
 <div id="over" class="screen" style="display:none;">
@@ -418,9 +442,9 @@ function buildExit(){
   g.position.copy(exitPos); worldRoot.add(g); exitGroup=g;
 }
 function setExitColor(open){ if(!exitGroup)return; const fl=exitGroup.getObjectByName('flare'),li=exitGroup.getObjectByName('lite'),bm=exitGroup.getObjectByName('beam'),rg=exitGroup.getObjectByName('ring');
-  if(open){ if(fl)fl.material.color.setHex(0x7dff4d); if(li){li.color.setHex(0x7dff4d);li.intensity=3.5;} if(bm)bm.material.opacity=0.12; if(rg)rg.material.color.setHex(0x7dff4d); }
+  if(open){ if(fl)fl.material.color.setHex(0x7dff4d); if(li){li.color.setHex(0x7dff4d);li.intensity=4.6;} if(bm)bm.material.opacity=0.24; if(rg)rg.material.color.setHex(0x7dff4d); }
   else { if(fl)fl.material.color.setHex(0x661111); if(li){li.color.setHex(0xff3322);li.intensity=1.2;} if(bm)bm.material.opacity=0; if(rg)rg.material.color.setHex(0xaa3322); } }
-function openExit(){ if(exitOpen)return; exitOpen=true; setExitColor(true); showMsg('ทางออกเปิดแล้ว! รีบไปจุดอพยพ — ระวังบอส!',4200); }
+function openExit(){ if(exitOpen)return; exitOpen=true; setExitColor(true); showMsg('🚪 ทางออกเปิดแล้ว! รีบไปที่พลุสีเขียว — ระวังบอส!',4200); }
 function makeBoss(big){ const g=new THREE.Group(); const SCL=big?4.3:3.1;
   const skin=new THREE.MeshStandardMaterial({color:0x3a1414,roughness:0.85,metalness:0,emissive:0x250505,emissiveIntensity:0.5});
   const cloth=new THREE.MeshStandardMaterial({color:0x120909,roughness:1});
@@ -495,7 +519,7 @@ const WEAPONS=[
  {id:'sniper',name:'สไนเปอร์',dmg:155,rate:1.05,mag:5,reserve:32,reload:2.5,pellets:1,auto:false,recoil:0.08,headMul:3.2,unlock:3200,cost:340,owned:false},
  {id:'lmg',name:'ปืนกลหนัก LMG',dmg:27,rate:0.075,mag:80,reserve:240,reload:3.2,pellets:1,auto:true,recoil:0.03,unlock:6500,cost:500,owned:false}
 ];
-const up={dmg:0,mag:0,reload:0,hp:0,speed:0};
+const up={dmg:0,mag:0,reload:0,hp:0,speed:0,armor:0,crit:0}; let pendingPower=false;
 let coins=0,points=0,lifePts=0,curW=WEAPONS[0],firePrev=false,shopMode='play';
 let exitOpen=false, boss=null, deathMode=false, lightAcc=4, lockMsgT=0; const EXIT_KILLS=25;
 let stage=1, stageKills=0, bossActive=false, baseSeed=12345, campaignDone=false; const STAGES=20;
@@ -508,13 +532,13 @@ const weatherT={fog:new THREE.Color(0x141d18),density:0.03,amb:0.4,hemi:0.6};
 const ZNAMES=['walker','runner','brute','spitter'];
 const coinPickups=[];
 const weapon={mag:12,magSize:12,reserve:96,fireRate:0.22,lastShot:0,reloading:false,reloadTime:1.3,damage:26,pellets:1,spread:0,auto:false,recoilK:0.02,headMul:2.3};
-function upMul(){ return {dmg:1+up.dmg*0.18,mag:up.mag*5,reload:1-up.reload*0.12,hp:100+up.hp*25,speed:1+up.speed*0.08}; }
+function upMul(){ return {dmg:1+up.dmg*0.18,mag:up.mag*5,reload:1-up.reload*0.12,hp:100+up.hp*25,speed:1+up.speed*0.08,armor:Math.min(0.6,up.armor*0.07),crit:Math.min(0.5,up.crit*0.05)}; }
 function equipWeapon(w){ curW=w; const m=upMul();
   weapon.damage=w.dmg*m.dmg; weapon.fireRate=w.rate; weapon.magSize=w.mag+m.mag; weapon.mag=weapon.magSize;
   weapon.reserve=w.reserve; weapon.reloadTime=w.reload*m.reload; weapon.reloading=false;
   weapon.pellets=w.pellets||1; weapon.spread=w.spread||0; weapon.auto=!!w.auto; weapon.recoilK=w.recoil; weapon.headMul=w.headMul||2.3;
   const wn=el('wname'); if(wn) wn.textContent=w.name; updateAmmo(); }
-function applyUpgrades(){ const m=upMul(); player.maxHP=m.hp; player.speed=6.6*m.speed; player.runSpeed=11*m.speed; if(curW) equipWeapon(curW); }
+function applyUpgrades(){ const m=upMul(); player.maxHP=m.hp; player.speed=6.6*m.speed; player.runSpeed=11*m.speed; player.armor=m.armor; player.crit=m.crit; if(curW) equipWeapon(curW); }
 function updateEcon(){ const c=el('coinEl'),p=el('ptsEl'); if(c)c.textContent=coins; if(p)p.textContent=points; }
 function dropCoins(pos,n){ n=Math.min(n||1,6); for(let i=0;i<n;i++){
   const m=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.22,0.05,12),new THREE.MeshStandardMaterial({color:0xffcf3a,metalness:0.7,roughness:0.3,emissive:0x6b5200,emissiveIntensity:0.6}));
@@ -533,7 +557,7 @@ const PEERCFG={config:{iceServers:[
 ]}};
 const net={on:false,isHost:false,peer:null,myId:0,seed:0,connected:false,_won:false,
   lastSend:0,zsnapAcc:0,lastRecv:0,warned:false,nextPid:1,
-  conns:[], players:{} };
+  conns:[], players:{}, lobby:{}, myReady:false, interReady:{}, myInterReady:false };
 function setCoopStatus(t){ const e=el('coopStatus'); if(e) e.textContent=t; }
 function broadcast(o,exceptPid){ const s=JSON.stringify(o); for(const c of net.conns){ if(exceptPid!==undefined&&c.pid===exceptPid)continue; if(c.open){ try{c.conn.send(s);}catch(e){} } } }
 function netSend(o){ broadcast(o); }
@@ -594,7 +618,13 @@ function broadcastStat(){ if(net.on&&net.isHost) netSend({t:'stat',kills:kills,s
 function bmsg(text,ms){ showMsg(text,ms||2500); if(net.on&&net.isHost) netSend({t:'msg',m:text,ms:ms||2500}); }
 function onData(raw){ net.lastRecv=performance.now(); let d; try{ d=JSON.parse(raw); }catch(e){ return; }
   switch(d.t){
-    case 'hello': net.myId=d.id; net.seed=d.seed; net.connected=true; beginPlay(d.seed,false); broadcastName(); break;
+    case 'hello': net.myId=d.id; net.seed=d.seed; net.connected=true; if(net._joinTO){clearTimeout(net._joinTO);net._joinTO=null;} showLobby(false); netSend({t:'jname',name:myName}); break;
+    case 'jname': if(net.isHost){ if(!net.lobby[d.id])net.lobby[d.id]={name:'ผู้เล่น',ready:false}; net.lobby[d.id].name=(d.name||'ผู้เล่น'); hostBroadcastRoster(); } break;
+    case 'ready': if(net.isHost){ if(net.lobby[d.id]){ net.lobby[d.id].ready=!!d.ready; hostBroadcastRoster(); } } break;
+    case 'roster': if(!net.isHost){ renderLobby(d.list); } break;
+    case 'interready': if(net.isHost){ net.interReady[d.id]=!!d.ready; hostInterRoster(); } break;
+    case 'interroster': if(!net.isHost){ renderInterReady(d.list); } break;
+    case 'start': if(!net.isHost){ net.seed=d.seed; beginPlay(net.seed,false); } break;
     case 'p': { const r=getPlayer(d.id); r.present=true; r.tpos.set(d.x,d.y,d.z); r.yaw=d.yaw; r.hp=d.hp; r.down=!!d.down;
       if(net.isHost){ broadcast({t:'p',id:d.id,x:d.x,y:d.y,z:d.z,yaw:d.yaw,hp:d.hp,down:d.down}, d.id); checkAllDown(); } } break;
     case 'z': if(!net.isHost){ applyZombieSnapshot(d.s); const bw=el('bossWrap');
@@ -602,13 +632,14 @@ function onData(raw){ net.lastRecv=performance.now(); let d; try{ d=JSON.parse(r
     case 'exit': if(!exitOpen){ openExit(); summonDeath(); } break;
     case 'hit': if(net.isHost){ const z=zombies.find(zz=>zz.userData.id===d.id); if(z&&!z.userData.dead){ z.userData.hp-=d.dmg; if(z.userData.hp<=0) killZombie(z); } } break;
     case 'dmg': if(!net.isHost) hurtPlayer(d.amount,{x:d.fx,z:d.fz}); break;
-    case 'stat': if(!net.isHost){ kills=d.kills; stage=d.stage; stageKills=d.stageKills; wave=stage; bossActive=!!d.boss; exitOpen=!!d.exit; killsEl.textContent=kills; updateStageHUD(); } break;
+    case 'stat': if(!net.isHost){ const wasOpen=exitOpen; kills=d.kills; stage=d.stage; stageKills=d.stageKills; wave=stage; bossActive=!!d.boss; exitOpen=!!d.exit; killsEl.textContent=kills; updateStageHUD(); if(exitOpen&&!wasOpen){ setExitColor(true); showMsg('🚪 ทางออกเปิดแล้ว! รีบไปที่พลุสีเขียว',3500); } } break;
     case 'msg': showMsg(d.m,d.ms||2500); break;
-    case 'load': if(!net.isHost){ net.seed=d.seed; loadStage(d.stage); } break;
+    case 'load': if(!net.isHost){ net.seed=d.seed; loadStage(d.stage); if(d.ex!==undefined){ exitPos.set(d.ex,terrainH(d.ex,d.ez),d.ez); if(exitGroup) exitGroup.position.copy(exitPos); } } break;
     case 'reachexit': if(net.isHost) reachExit(); break;
     case 'heal': player.hp=player.maxHP; healthFill.style.width='100%'; showMsg('ทีมได้รับหม้อ HP! เลือดเต็ม',2200); break;
     case 'revive': if(net.isHost){ const tg=d.target; if(tg===0){ if(player.down) selfGetUp(); } else { const r=net.players[tg]; if(r){ r.down=false; sendTo(tg,{t:'getup'}); } } } break;
     case 'getup': if(player.down) selfGetUp(); break;
+    case 'downed': { showMsg('💀 '+(d.name||'เพื่อน')+' ล้มแล้ว! รีบไปช่วยด่วน!',3400); if(net.isHost) broadcast({t:'downed',id:d.id,name:d.name}, d.id); } break;
     case 'exittimer': if(!net.isHost){ exitTimer=d.v; exitInZone=d.i; exitTotal=d.n; } break;
     case 'name': { if(d.id===net.myId) break; const r=getPlayer(d.id); r.name=d.name; if(r.label) drawLabel(r.label,d.name,'#bfffe0'); if(net.isHost) broadcast({t:'name',id:d.id,name:d.name}, d.id); } break;
     case 'shoot': { const a=new THREE.Vector3(d.x,d.y,d.z); const b=a.clone().add(new THREE.Vector3(d.dx,d.dy,d.dz).multiplyScalar(60)); spawnTracer(a,b); const fl=new THREE.Mesh(new THREE.SphereGeometry(0.2,8,6),new THREE.MeshBasicMaterial({color:0xffd27a,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false,fog:false})); fl.position.copy(a); scene.add(fl); tracers.push({mesh:fl,life:0.05}); if(net.isHost) broadcast({t:'shoot',id:d.id,x:d.x,y:d.y,z:d.z,dx:d.dx,dy:d.dy,dz:d.dz}, d.id); } break;
@@ -621,31 +652,47 @@ function onData(raw){ net.lastRecv=performance.now(); let d; try{ d=JSON.parse(r
 }
 function setupConn(conn,pid){ const entry={conn:conn,pid:pid,open:false}; net.conns.push(entry);
   const onOpen=()=>{ entry.open=true; net.connected=true; net.lastRecv=performance.now();
-    if(net.isHost){ sendTo(pid,{t:'hello',id:pid,seed:net.seed}); getPlayer(pid); sendTo(pid,{t:'name',id:0,name:myName}); for(const _id in net.players){ const rr=net.players[_id]; if(rr.name) sendTo(pid,{t:'name',id:+_id,name:rr.name}); } setCoopStatus('ผู้เล่นเข้าร่วมแล้ว ('+(net.conns.length+1)+'/4)'); if(state!=='play') beginPlay(net.seed,true); }
-    else setCoopStatus('เชื่อมต่อแล้ว! กำลังเริ่ม…'); };
+    if(net._joinTO){ clearTimeout(net._joinTO); net._joinTO=null; }
+    if(net.isHost){ sendTo(pid,{t:'hello',id:pid,seed:net.seed}); net.lobby[pid]={name:'ผู้เล่น',ready:false}; setCoopStatus('ผู้เล่นเข้าร่วม ('+(net.conns.length+1)+'/4)'); if(state==='lobby') hostBroadcastRoster(); }
+    else setCoopStatus('เชื่อมต่อแล้ว! กำลังเข้าห้องรอ…'); };
   if(conn.open) onOpen(); else conn.on('open',onOpen);
   conn.on('data',onData);
   conn.on('close',()=>{ entry.open=false; const i=net.conns.indexOf(entry); if(i>=0)net.conns.splice(i,1);
     const r=net.players[pid]; if(r){ r.present=false; if(r.avatar)r.avatar.visible=false; }
-    if(state==='play') showMsg('ผู้เล่นหลุดการเชื่อมต่อ',2500); });
+    if(net.isHost){ delete net.lobby[pid]; if(state==='lobby') hostBroadcastRoster(); }
+    if(state==='play') showMsg('ผู้เล่นหลุดการเชื่อมต่อ',2500);
+    if(!net.isHost && state==='lobby'){ setCoopStatus('หลุดจากห้อง'); showMsg('หลุดการเชื่อมต่อกับโฮสต์',2600); } });
   conn.on('error',()=>{});
 }
-function hostGame(){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด PeerJS ไม่ได้ — เปิดไฟล์ในเบราว์เซอร์ + ต่อเน็ต'); return; }
-  net.on=true; net.isHost=true; net.myId=0; net.seed=(RNG()*1e9)|0; net.nextPid=1; net.conns=[]; net.players={};
-  const code='ZF'+Math.floor(1000+Math.random()*9000); setCoopStatus('กำลังสร้างห้อง…');
-  if(net.peer){try{net.peer.destroy();}catch(e){}}
-  net.peer=new Peer(code,PEERCFG);
-  net.peer.on('open',id=>{ el('roomCode').textContent=id; setCoopStatus('บอกรหัสให้เพื่อน (สูงสุด 4 คน) แล้วรอเข้าร่วม…'); });
+function escapeHtml(t){ return String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function hostList(){ return Object.keys(net.lobby).map(id=>({id:+id,name:net.lobby[id].name,ready:net.lobby[id].ready})).sort((a,b)=>a.id-b.id); }
+function renderLobby(list){ const box=el('lobbyList'); if(!box||!list)return;
+  box.innerHTML=list.map(p=>{ const me=(p.id===net.myId); const role=p.id===0?' (โฮสต์)':''; const badge=p.id===0?'<span style="color:#7dff4d;">● โฮสต์</span>':(p.ready?'<span style="color:#7dff4d;">✓ พร้อม</span>':'<span style="color:#ffcf66;">… รอ</span>');
+    return '<div style="display:flex;justify-content:space-between;gap:18px;padding:8px 13px;margin:5px 0;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-size:14px;"><span>'+(me?'▶ ':'')+escapeHtml(p.name||'ผู้เล่น')+role+'</span>'+badge+'</div>'; }).join('');
+  if(net.isHost){ const guests=list.filter(p=>p.id!==0); const allR=guests.length>0&&guests.every(p=>p.ready); const b=el('startMatchBtn'); if(b){ b.disabled=!allR; b.style.opacity=allR?'1':'0.5'; }
+    el('lobbyStatus').textContent=guests.length===0?'รอเพื่อนเข้าห้อง… (แชร์รหัสห้อง)':(allR?'ทุกคนพร้อมแล้ว! กด “เริ่มเกม”':'รอเพื่อนกดพร้อม ('+guests.filter(p=>p.ready).length+'/'+guests.length+')'); }
+  else { el('lobbyStatus').textContent=list.length+'/4 คนในห้อง · กด “พร้อม” เมื่อพร้อมเล่น'; } }
+function hostBroadcastRoster(){ const list=hostList(); broadcast({t:'roster',list:list}); renderLobby(list); }
+function showLobby(isHost){ state='lobby'; startScreen.style.display='none'; coopScreen.style.display='none'; overScreen.style.display='none'; winScreen.style.display='none'; el('lobby').style.display='flex';
+  el('startMatchBtn').style.display=isHost?'inline-block':'none'; el('readyBtn').style.display=isHost?'none':'inline-block'; el('lobbyCodeWrap').style.display=isHost?'block':'none';
+  if(isHost){ el('lobbyCode').textContent=el('roomCode').textContent; renderLobby(hostList()); } else { el('readyBtn').textContent='พร้อม ✓'; net.myReady=false; } }
+function bindHostPeer(){
+  net.peer.on('open',id=>{ el('roomCode').textContent=id; net.lobby={0:{name:myName,ready:true}}; setCoopStatus('บอกรหัสให้เพื่อน (สูงสุด 4 คน)…'); showLobby(true); });
   net.peer.on('connection',conn=>{ if(net.conns.length>=3){ try{conn.close();}catch(e){} return; } const pid=net.nextPid++; setCoopStatus('ผู้เล่นกำลังเข้าร่วม…'); setupConn(conn,pid); });
-  net.peer.on('error',e=>{ setCoopStatus('ผิดพลาด: '+((e&&e.type)||'')+' (ลองเปิดในเบราว์เซอร์ + มีเน็ต)'); });
+  net.peer.on('error',e=>{ const t=(e&&e.type)||''; if(t==='unavailable-id'&&net._hostTries<5){ net._hostTries++; try{net.peer.destroy();}catch(x){} net.peer=new Peer('ZF'+Math.floor(1000+Math.random()*9000),PEERCFG); bindHostPeer(); } else if(t==='network'||t==='disconnected'||t==='server-error'){ setCoopStatus('เน็ตมีปัญหา ('+t+') — ลองใหม่อีกครั้ง'); } else { setCoopStatus('สร้างห้องไม่ได้: '+t); } });
+}
+function hostGame(){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด PeerJS ไม่ได้ — เปิดไฟล์ในเบราว์เซอร์ + ต่อเน็ต'); return; }
+  net.on=true; net.isHost=true; net.myId=0; net.seed=(RNG()*1e9)|0; net.nextPid=1; net.conns=[]; net.players={}; net.lobby={0:{name:myName,ready:true}}; net._hostTries=0;
+  setCoopStatus('กำลังสร้างห้อง…'); if(net.peer){try{net.peer.destroy();}catch(e){}}
+  net.peer=new Peer('ZF'+Math.floor(1000+Math.random()*9000),PEERCFG); bindHostPeer();
 }
 function joinGame(code){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด PeerJS ไม่ได้ — เปิดไฟล์ในเบราว์เซอร์ + ต่อเน็ต'); return; }
   if(!code){ setCoopStatus('ใส่รหัสห้องก่อน'); return; }
-  net.on=true; net.isHost=false; net.conns=[]; net.players={}; setCoopStatus('กำลังเชื่อมต่อ '+code+' …');
+  net.on=true; net.isHost=false; net.conns=[]; net.players={}; net.connected=false; setCoopStatus('กำลังเชื่อมต่อ '+code+' …');
   if(net.peer){try{net.peer.destroy();}catch(e){}}
   net.peer=new Peer(PEERCFG);
-  net.peer.on('open',()=>{ const conn=net.peer.connect(code,{reliable:true}); setupConn(conn,0); });
-  net.peer.on('error',e=>{ setCoopStatus('เชื่อมต่อไม่ได้: '+((e&&e.type)||'')+' (เช็ครหัส/เน็ต)'); });
+  net.peer.on('open',()=>{ const conn=net.peer.connect(code,{reliable:true}); setupConn(conn,0); if(net._joinTO)clearTimeout(net._joinTO); net._joinTO=setTimeout(()=>{ if(!net.connected) setCoopStatus('เชื่อมต่อไม่สำเร็จ — เช็ครหัส/เน็ต แล้วกด “เข้าร่วม” อีกครั้ง'); },12000); });
+  net.peer.on('error',e=>{ const t=(e&&e.type)||''; setCoopStatus('เชื่อมต่อไม่ได้: '+t+' (เช็ครหัส/เน็ต แล้วลองใหม่)'); });
 }
 
 const raycaster=new THREE.Raycaster();
@@ -865,14 +912,27 @@ function updateProjectiles(dt){
     if(hit||p.life<=0||p.m.position.y<gy-0.2){ scene.remove(p.m); p.m.material.dispose&&p.m.material.dispose(); projectiles.splice(i,1); }
   }
 }
-const ammoPickups=[];
+const ammoPickups=[]; const powerPickups=[]; let powerType=null, powerUntil=0; const POWER_MS=14000;
 function makeAmmoBox(){ const g=new THREE.Group();
   const b=new THREE.Mesh(new THREE.BoxGeometry(0.52,0.32,0.36),new THREE.MeshStandardMaterial({color:0x46532a,roughness:1})); g.add(b);
   const lid=new THREE.Mesh(new THREE.BoxGeometry(0.56,0.1,0.4),new THREE.MeshStandardMaterial({color:0x2c3618,roughness:1})); lid.position.y=0.2; g.add(lid);
   const mk=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.16,0.02),new THREE.MeshBasicMaterial({color:0xffcf66})); mk.position.set(0,0,0.19); g.add(mk);
   return g; }
 function dropAmmo(x,z,amt){ const g=makeAmmoBox(); const gy=terrainH(x,z); g.position.set(x,gy+0.22,z); scene.add(g); ammoPickups.push({mesh:g,baseY:gy+0.26,amt:amt||30,ph:RNG()*6.28,life:75}); }
-function scatterAmmo(n){ for(let i=0;i<n;i++){ let x,z,t=0; do{ const a=RNG()*6.28,dd=rand(10,R-10); x=Math.cos(a)*dd; z=Math.sin(a)*dd; t++; }while(blocked(x,z)&&t<10); dropAmmo(x,z,12+((RNG()*16)|0)); } }
+function scatterAmmo(n){ for(let i=0;i<n;i++){ let x,z,t=0; do{ const a=RNG()*6.28,dd=rand(10,R-10); x=Math.cos(a)*dd; z=Math.sin(a)*dd; t++; }while(blocked(x,z)&&t<10); dropAmmo(x,z,14+((RNG()*18)|0)); } }
+function makePowerBox(){ const g=new THREE.Group();
+  const core=new THREE.Mesh(new THREE.IcosahedronGeometry(0.26,0),new THREE.MeshBasicMaterial({color:0xffe24d})); g.add(core);
+  const aura=new THREE.Mesh(new THREE.SphereGeometry(0.44,12,10),new THREE.MeshBasicMaterial({color:0xffd24d,transparent:true,opacity:0.3,blending:THREE.AdditiveBlending,depthWrite:false,fog:false})); g.add(aura);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(0.5,0.05,6,18),new THREE.MeshBasicMaterial({color:0xfff1a0,transparent:true,opacity:0.85})); ring.rotation.x=Math.PI/2; g.add(ring);
+  g.add(new THREE.PointLight(0xffe24d,1.3,9,2)); g.userData={ring}; return g; }
+function dropPower(x,z){ const g=makePowerBox(); const gy=terrainH(x,z); g.position.set(x,gy+0.75,z); scene.add(g); powerPickups.push({mesh:g,baseY:gy+0.75,ph:RNG()*6.28,life:95}); }
+function scatterPower(n){ for(let i=0;i<n;i++){ let x,z,t=0; do{ const a=RNG()*6.28,dd=rand(12,R-12); x=Math.cos(a)*dd; z=Math.sin(a)*dd; t++; }while(blocked(x,z)&&t<10); dropPower(x,z); } }
+const POWER_INFO={infinite:{n:'⚡ กระสุนไม่จำกัด',c:'#ffe24d'},rapid:{n:'⚡ ยิงรัว',c:'#7dff4d'},double:{n:'⚡ ดาเมจ ×2',c:'#ff7a4d'}};
+function activatePower(type){ powerType=type; powerUntil=performance.now()+POWER_MS; sndPickup(); showMsg(POWER_INFO[type].n+'! (14 วิ)',2600); }
+function updatePowerPickups(dt){ for(let i=powerPickups.length-1;i>=0;i--){ const c=powerPickups[i]; c.mesh.rotation.y+=dt*1.8; if(c.mesh.userData.ring)c.mesh.userData.ring.rotation.z+=dt*2.4; c.mesh.position.y=c.baseY+Math.sin(performance.now()/300+c.ph)*0.16;
+  if(state==='play'&&!player.down){ const dx=player.pos.x-c.mesh.position.x,dz=player.pos.z-c.mesh.position.z; if(dx*dx+dz*dz<2.9*2.9){ const ty=['infinite','rapid','double']; activatePower(ty[(RNG()*3)|0]); scene.remove(c.mesh); powerPickups.splice(i,1); continue; } }
+  c.life-=dt; if(c.life<=0){ scene.remove(c.mesh); powerPickups.splice(i,1); } } }
+function updatePowerHUD(){ const pe=el('powerup'); if(!pe)return; const now=performance.now(); if(powerType&&now<powerUntil){ const left=Math.ceil((powerUntil-now)/1000); pe.style.display='block'; pe.style.color=POWER_INFO[powerType].c; pe.textContent=POWER_INFO[powerType].n+' '+left+'วิ'; } else { if(powerType){ powerType=null; showMsg('พลังพิเศษหมดเวลา',1400); } pe.style.display='none'; } }
 function updateAmmoPickups(dt){ for(let i=ammoPickups.length-1;i>=0;i--){ const c=ammoPickups[i]; c.mesh.rotation.y+=dt*1.4; c.mesh.position.y=c.baseY+Math.sin(performance.now()/300+c.ph)*0.1;
   if(state==='play'&&!player.down){ const dx=player.pos.x-c.mesh.position.x,dz=player.pos.z-c.mesh.position.z; if(dx*dx+dz*dz<2.6*2.6){ weapon.reserve+=c.amt; updateAmmo(); sndPickup(); reloadHint.textContent='+'+c.amt+' กระสุน'; setTimeout(()=>{if(reloadHint.textContent.indexOf('กระสุน')>=0)reloadHint.textContent='';},900); scene.remove(c.mesh); ammoPickups.splice(i,1); continue; } }
   c.life-=dt; if(c.life<=0){ scene.remove(c.mesh); ammoPickups.splice(i,1); } } }
@@ -1016,9 +1076,10 @@ const _f=new THREE.Vector3(),_r=new THREE.Vector3(),_u=new THREE.Vector3(),_mz=n
 function tryFire(now){
   if(player.down||state!=='play')return;
   if(weapon.reloading)return;
-  if(now-weapon.lastShot<weapon.fireRate)return;
-  if(weapon.mag<=0){ sndDry(); weapon.lastShot=now; return; }
-  weapon.lastShot=now; weapon.mag--; updateAmmo(); sndShotFor(curW);
+  const _pn=performance.now(); const _rap=(powerType==='rapid'&&_pn<powerUntil); const _inf=(powerType==='infinite'&&_pn<powerUntil); const _dbl=(powerType==='double'&&_pn<powerUntil);
+  if(now-weapon.lastShot<weapon.fireRate*(_rap?0.45:1))return;
+  if(weapon.mag<=0 && !_inf){ sndDry(); weapon.lastShot=now; return; }
+  weapon.lastShot=now; if(!_inf) weapon.mag--; updateAmmo(); sndShotFor(curW);
   muzzleFlash.material.opacity=1; muzzleFlash.rotation.z=rand(0,6.28); muzzleFlash.scale.setScalar(rand(0.8,1.4));
   muzzleLight.intensity=4; gunKick=0.13; player.shake=Math.max(player.shake,weapon.recoilK*2.6);
   const rc=player.aiming?0.55:1; player.recoilP+=weapon.recoilK*rc; player.recoilY+=rand(-weapon.recoilK*0.5,weapon.recoilK*0.5)*rc;
@@ -1035,7 +1096,7 @@ function tryFire(now){
     for(const z of list){ if(z.userData.dead)continue; const h=raycaster.intersectObjects(z.userData.hitMeshes,false);
       if(h.length&&h[0].distance<bd){bd=h[0].distance;best={z,p:h[0].point};} }
     let endPt;
-    if(best){ const head=best.p.y > best.z.position.y + 1.5*best.z.userData.scl; const dmg=weapon.damage*(head?weapon.headMul:1);
+    if(best){ const head=best.p.y > best.z.position.y + 1.5*best.z.userData.scl; let dmg=weapon.damage*(_dbl?2:1)*(head?weapon.headMul:1); if((player.crit||0)>0 && RNG()<player.crit){ dmg*=2.5; }
       spawnBlood(best.p,head); showHit(head); hitAny=true; endPt=best.p.clone();
       if(net.on&&!net.isHost){ netSend({t:'hit',id:best.z.userData.id,dmg:dmg,head:head?1:0}); }
       else { best.z.userData.hp-=dmg; if(best.z.userData.hp<=0) killZombie(best.z); }
@@ -1055,10 +1116,22 @@ function reachExit(){ if(!exitOpen) return;
   if(net.on && !net.isHost){ netSend({t:'reachexit'}); exitOpen=false; return; }
   if(stage>=STAGES){ campaignWin(); return; }
   exitOpen=false; if(net.on&&net.isHost) netSend({t:'inter',stage:stage}); enterIntermission(false); }
+function presentGuestIds(){ const out=[]; for(const id in net.players){ if(+id!==0 && net.players[id].present) out.push(+id); } return out; }
+function hostInterRoster(){ const gids=presentGuestIds(); const list=[{id:0,name:myName,ready:true}]; gids.forEach(id=>list.push({id:id,name:(net.players[id].name||'ผู้เล่น'),ready:!!net.interReady[id]})); broadcast({t:'interroster',list:list}); renderInterReady(list); }
+function renderInterReady(list){ const box=el('shopReady'); if(!box||!list)return;
+  box.innerHTML='<div class="shophead">👥 สมาชิกในทีม</div>'+list.map(p=>{ const me=(p.id===net.myId); const role=p.id===0?' (โฮสต์)':''; const badge=p.id===0?'<span style="color:#7dff4d">● โฮสต์</span>':(p.ready?'<span style="color:#7dff4d">✓ พร้อม</span>':'<span style="color:#ffcf66">… กำลังเลือกซื้อ</span>'); return '<div style="display:flex;justify-content:space-between;gap:16px;padding:7px 13px;margin:4px 0;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-size:13px;"><span>'+(me?'▶ ':'')+escapeHtml(p.name||'ผู้เล่น')+role+'</span>'+badge+'</div>'; }).join('');
+  if(net.isHost){ const guests=list.filter(p=>p.id!==0); const allR=guests.length===0||guests.every(p=>p.ready); const b=el('shopNext'); if(b){ b.disabled=!allR; b.style.opacity=allR?'1':'0.5'; b.textContent=allR?'เข้าด่านต่อไป ▶':('รอเพื่อนพร้อม ('+guests.filter(p=>p.ready).length+'/'+guests.length+')'); } } }
 function enterIntermission(isGuest){ shopMode='inter'; state='shop'; if(document.pointerLockElement)document.exitPointerLock(); touchUI.style.display='none';
   const tt=el('shopTitle'); if(tt) tt.textContent='เคลียร์ด่าน '+stage+'/'+STAGES+' สำเร็จ!';
-  renderShop(); el('shopClose').style.display='none'; el('shopNext').style.display=isGuest?'none':'inline-block'; el('shopWait').style.display=isGuest?'block':'none'; el('shop').style.display='flex'; }
-function proceedNextStage(){ if(shopMode!=='inter')return; if(net.on&&!net.isHost)return; shopMode='play'; el('shop').style.display='none'; loadStage(stage+1); }
+  renderShop(); el('shopClose').style.display='none';
+  if(net.on){
+    if(isGuest){ net.myInterReady=false; el('shopNext').style.display='none'; el('shopReadyBtn').style.display='inline-block'; el('shopReadyBtn').textContent='พร้อมเข้าด่านต่อไป ✓'; el('shopReadyBtn').style.background='linear-gradient(180deg,#2f6b34,#163d1c)'; el('shopWait').style.display='block'; el('shopWait').textContent='ซื้อ/อัปเกรดให้เสร็จ แล้วกด “พร้อม”'; el('shopReady').style.display='block'; }
+    else { net.interReady={}; el('shopReadyBtn').style.display='none'; el('shopNext').style.display='inline-block'; el('shopWait').style.display='none'; el('shopReady').style.display='block'; hostInterRoster(); }
+  } else { el('shopReadyBtn').style.display='none'; el('shopNext').style.display='inline-block'; el('shopWait').style.display='none'; el('shopReady').style.display='none'; }
+  el('shop').style.display='flex'; }
+function proceedNextStage(){ if(shopMode!=='inter')return; if(net.on&&!net.isHost)return;
+  if(net.on&&net.isHost){ const g=presentGuestIds(); if(g.length>0 && !g.every(id=>net.interReady[id])){ showMsg('รอเพื่อนกดพร้อมก่อน',1800); return; } }
+  net.interReady={}; shopMode='play'; el('shop').style.display='none'; el('shopReady').style.display='none'; loadStage(stage+1); }
 function nearDownedTeammate(){ if(!net.on)return false; for(const id in net.players){ const r=net.players[id]; if(r.present&&r.down&&Math.hypot(r.pos.x-player.pos.x,r.pos.z-player.pos.z)<2.8) return true; } return false; }
 function tryRevive(){ if(!net.on||player.down)return; let tid=-1,bd=2.8;
   for(const id in net.players){ const r=net.players[id]; if(r.present&&r.down){ const dd=Math.hypot(r.pos.x-player.pos.x,r.pos.z-player.pos.z); if(dd<bd){bd=dd;tid=+id;} } }
@@ -1098,7 +1171,7 @@ function loadStage(st){
   if(hemiLight){ hemiLight.intensity=curBiome.hemi; hemiLight.color.setHex(curBiome.hemiSky); hemiLight.groundColor.setHex(curBiome.hemiGround); }
   zombies.forEach(z=>scene.remove(z)); zombies.length=0; guestZ.forEach(o=>scene.remove(o.grp)); guestZ.clear();
   clearArr(bloodBursts); clearArr(smokePuffs); clearArr(tracers); clearArr(shells); clearArr(coinPickups);
-  for(const p of projectiles){ scene.remove(p.m); } projectiles.length=0; for(const a of ammoPickups){ scene.remove(a.mesh); } ammoPickups.length=0;
+  for(const p of projectiles){ scene.remove(p.m); } projectiles.length=0; for(const a of ammoPickups){ scene.remove(a.mesh); } ammoPickups.length=0; for(const a of powerPickups){ scene.remove(a.mesh); } powerPickups.length=0;
   boss=null; const bw=el('bossWrap'); if(bw)bw.style.display='none';
   player.pos.set(0,terrainH(0,0),0); player.vx=0; player.vz=0; player.down=false; gun.visible=true;
   if(player.hp<player.maxHP*0.5) player.hp=player.maxHP*0.5; healthFill.style.width=(player.hp/player.maxHP*100)+'%';
@@ -1108,12 +1181,13 @@ function loadStage(st){
   prestart=(net.on && st===1);
   if(!prestart && (!net.on || net.isHost)){ for(let i=0;i<6;i++) spawnZombie(); }
   if(prestart){ buildSafeRing(); bmsg('เขตปลอดภัย — เดินออกจากวงสีฟ้าเพื่อเริ่มภารกิจ!',4200); }
-  scatterAmmo(IS_TOUCH?3:4);
+  if(pendingPower && !prestart){ pendingPower=false; const _ty=['infinite','rapid','double']; setTimeout(()=>activatePower(_ty[(RNG()*3)|0]),700); }
+  scatterAmmo(IS_TOUCH?5:6); scatterPower(1);
   bmsg('ด่าน '+st+'/'+STAGES+' — '+curBiome.name+(prestart?'':(' · ฆ่าซอมบี้ '+stageQuota()+' ตัวเรียกบอส')),3600);
-  if(net.on&&net.isHost){ netSend({t:'load',seed:net.seed,stage:st}); broadcastStat(); }
+  if(net.on&&net.isHost){ netSend({t:'load',seed:net.seed,stage:st,ex:+exitPos.x.toFixed(2),ez:+exitPos.z.toFixed(2)}); broadcastStat(); }
 }
 function killZombie(z){ z.userData.dead=true; z.userData.deathT=0; kills++; killsEl.textContent=kills;
-  const u=z.userData; points+=(u.pts||10); lifePts+=(u.pts||10); dropCoins(z.position,u.coin||1); if(RNG()<0.06) dropAmmo(z.position.x,z.position.z,10+((RNG()*14)|0)); updateEcon();
+  const u=z.userData; points+=(u.pts||10); lifePts+=(u.pts||10); dropCoins(z.position,u.coin||1); if(RNG()<0.12) dropAmmo(z.position.x,z.position.z,12+((RNG()*16)|0)); if(RNG()<0.035) dropPower(z.position.x,z.position.z); updateEcon();
   if(u.medic){ medicAlive=false; medicCd=rand(16,24); player.hp=player.maxHP; healthFill.style.width='100%'; showMsg('แย่งหม้อ HP สำเร็จ! เลือดเต็ม',2400); if(net.on&&net.isHost){ netSend({t:'heal'}); broadcastStat(); } return; }
   if(u.boss){ boss=null; bossActive=false; const bw=el('bossWrap'); if(bw)bw.style.display='none';
     enraged=true; enrageMul=1.6; targetZombies=Math.min(IS_TOUCH?22:34, targetZombies+10);
@@ -1265,6 +1339,7 @@ function updateZombies(dt){
 /* ===== damage / objective ===== */
 function hurtPlayer(amount,fromPos){
   if(state!=='play'||player.down)return;
+  amount=amount*(1-(player.armor||0));
   player.hp=Math.max(0,player.hp-amount); player.lastDmg=performance.now()/1000; healthFill.style.width=(player.hp/player.maxHP*100)+'%';
   dmgflash.style.boxShadow='inset 0 0 150px 50px rgba(170,0,0,'+Math.min(0.6,amount/16)+')';
   setTimeout(()=>dmgflash.style.boxShadow='inset 0 0 150px 40px rgba(170,0,0,0)',200);
@@ -1272,7 +1347,7 @@ function hurtPlayer(amount,fromPos){
   if(fromPos){ const dx=fromPos.x-player.pos.x,dz=fromPos.z-player.pos.z; const bExit=Math.atan2(dx,dz),bFace=Math.atan2(-Math.sin(player.yaw),-Math.cos(player.yaw));
     dmgDir.style.transform='translate(-50%,-50%) rotate('+((bExit-bFace)*180/Math.PI)+'deg)'; dmgDir.style.opacity=1; setTimeout(()=>dmgDir.style.opacity=0,700); }
   if(player.hp<=0){
-    if(net.on){ if(!player.down){ player.down=true; gun.visible=false; sendPlayerState(true); showMsg('คุณล้มแล้ว — รอเพื่อนช่วย!',2500); } checkAllDown(); }
+    if(net.on){ if(!player.down){ player.down=true; gun.visible=false; sendPlayerState(true); netSend({t:'downed',id:net.myId,name:myName}); showMsg('คุณล้มแล้ว — รอเพื่อนมาช่วย!',2500); } checkAllDown(); }
     else gameOver();
   }
 }
@@ -1337,7 +1412,7 @@ function startWeatherBed(id){ if(!actx)return; stopWeatherBed();
   if(drone){ drone.connect(dg); dg.connect(master); drone.start(); weatherNodes.push(drone,dg); }
 }
 function updateEffects(dt){
-  updateProjectiles(dt); updateAmmoPickups(dt); updateWeather(dt);
+  updateProjectiles(dt); updateAmmoPickups(dt); updatePowerPickups(dt); updatePowerHUD(); updateWeather(dt);
   if(curBiome&&(curBiome.id==='grave'||curBiome.id==='hell')&&state==='play'){ lightAcc2-=dt; if(lightAcc2<=0){ lightAcc2=rand(6,13); flashLightning(); } }
   if(deathMode || weather.density>0.0301){
     weather.fog.lerp(weatherT.fog,Math.min(1,dt*0.7)); if(scene.fog)scene.fog.color.copy(weather.fog); if(scene.background)scene.background.copy(weather.fog);
@@ -1389,9 +1464,9 @@ function resetState(){
 function beginPlay(seed,doSpawn){
   baseSeed = net.on ? (net.seed>>>0) : ((seed>>>0)||((RNG()*1e9)|0));
   resetState();
-  startScreen.style.display='none';overScreen.style.display='none';winScreen.style.display='none';coopScreen.style.display='none';
+  startScreen.style.display='none';overScreen.style.display='none';winScreen.style.display='none';coopScreen.style.display='none';{const lb=el('lobby');if(lb)lb.style.display='none';}
   hud.style.display='block'; if(IS_TOUCH) touchUI.style.display='block';
-  campaignDone=false; loadStage(1); checkOrientation();
+  campaignDone=false; loadStage(1); checkOrientation(); if(net.on) broadcastName();
 }
 function fsActive(){ return document.fullscreenElement||document.webkitFullscreenElement; }
 function goFullscreen(){ const e=document.documentElement; const r=e.requestFullscreen||e.webkitRequestFullscreen; if(r){ try{ const p=r.call(e); if(p&&p.catch)p.catch(()=>{}); }catch(x){} } }
@@ -1421,29 +1496,36 @@ function statusHTML(){ const dps=Math.round(weapon.damage*(weapon.pellets||1)/Ma
   s+=row('เวลารีโหลด',weapon.reloadTime.toFixed(2)+' วิ');
   s+=row('HP สูงสุด',Math.round(player.maxHP));
   s+=row('ความเร็ววิ่ง',(player.runSpeed||11).toFixed(1));
+  s+=row('เกราะกันดาเมจ',Math.round((player.armor||0)*100)+'%');
+  s+=row('คริติคอล',Math.round((player.crit||0)*100)+'% (×2.5)');
   s+='</div><div class="shophead">เลเวลอัปเกรด (อัปแล้วเก่งด้านไหน)</div><div style="font-size:13px;background:rgba(255,255,255,.04);border-radius:8px;padding:6px 2px;">';
   s+=row('ดาเมจอาวุธ','Lv '+up.dmg+'  ·  +'+(up.dmg*18)+'%');
   s+=row('ความจุแม็ก','Lv '+up.mag+'  ·  +'+(up.mag*5)+' นัด');
   s+=row('รีโหลดเร็ว','Lv '+up.reload+'  ·  -'+(up.reload*12)+'%');
   s+=row('HP สูงสุด','Lv '+up.hp+'  ·  +'+(up.hp*25));
   s+=row('ความเร็ววิ่ง','Lv '+up.speed+'  ·  +'+(up.speed*8)+'%');
+  s+=row('เกราะ','Lv '+up.armor+'  ·  '+(up.armor*7)+'%');
+  s+=row('คริติคอล','Lv '+up.crit+'  ·  '+(up.crit*5)+'%');
   s+='</div>'; return s; }
 function renderShop(){
-  el('shopCur').innerHTML='คอยน์: <b style="color:#ffcf66">'+coins+'</b> &nbsp;·&nbsp; พอยต์: <b style="color:#7ddfff">'+points+'</b> &nbsp;·&nbsp; สะสม '+lifePts;
-  let h=statusHTML()+'<div class="shophead">อาวุธ (ปลดล็อกด้วยพอยต์สะสม · ซื้อด้วยคอยน์)</div>';
+  el('shopCur').innerHTML='🪙 คอยน์ <b style="color:#ffcf66">'+coins+'</b> &nbsp;·&nbsp; ⭐ พอยต์ <b style="color:#7ddfff">'+points+'</b> &nbsp;·&nbsp; สะสม '+lifePts;
+  const WICON=['🔫','💨','🪖','💥','🎯','🔥'];
+  let h=statusHTML()+'<div class="shophead">🔫 อาวุธ (ปลดล็อกด้วยพอยต์สะสม)</div>';
   WEAPONS.forEach((w,i)=>{ const stat='ดาเมจ '+w.dmg+' · '+(w.auto?'อัตโนมัติ':'ทีละนัด')+(w.pellets>1?(' · '+w.pellets+' ลูก/นัด'):'')+' · แม็ก '+w.mag;
     let btn;
     if(w.owned){ btn=(curW.id===w.id)?'<button class="shopbuy use" disabled>ใช้อยู่</button>':'<button class="shopbuy equip" data-eq="'+i+'">เลือกใช้</button>'; }
-    else if(lifePts<w.unlock){ btn='<button class="shopbuy lock" disabled>ล็อก · ต้องมี '+w.unlock+' พอยต์สะสม</button>'; }
-    else { const can=coins>=w.cost; btn='<button class="shopbuy buy" data-buy="'+i+'"'+(can?'':' disabled')+'>ซื้อ '+w.cost+' คอยน์</button>'; }
-    h+='<div class="shoprow"><div class="info">'+w.name+'<small>'+stat+'</small></div>'+btn+'</div>'; });
-  h+='<div class="shophead">อัปเกรด (ใช้พอยต์)</div>';
-  const UP=[['dmg','ดาเมจอาวุธ +18%',90],['mag','ความจุแม็ก +5',80],['reload','รีโหลดเร็วขึ้น',80],['hp','พลังชีวิตสูงสุด +25',110],['speed','ความเร็ววิ่ง +8%',90]];
-  UP.forEach(function(r){ const k=r[0],label=r[1],base=r[2],lvl=up[k],cost=base*(lvl+1),can=points>=cost;
-    h+='<div class="shoprow"><div class="info">'+label+'<small>เลเวล '+lvl+'</small></div><button class="shopbuy up" data-up="'+k+'" data-cost="'+cost+'"'+(can?'':' disabled')+'>อัปเกรด '+cost+' พอยต์</button></div>'; });
-  h+='<div class="shophead">เสบียง</div>';
-  h+='<div class="shoprow"><div class="info">เติมกระสุนสำรอง +60<small>ใช้คอยน์</small></div><button class="shopbuy buy" data-ammo="60" data-cost="6"'+(coins>=6?'':' disabled')+'>ซื้อ 6 คอยน์</button></div>';
-  h+='<div class="shoprow"><div class="info">ฟื้นพลังชีวิตเต็ม<small>ใช้คอยน์</small></div><button class="shopbuy buy" data-heal="1" data-cost="8"'+(coins>=8?'':' disabled')+'>ซื้อ 8 คอยน์</button></div>';
+    else if(lifePts<w.unlock){ btn='<button class="shopbuy lock" disabled>🔒 สะสม '+w.unlock+'</button>'; }
+    else { const can=coins>=w.cost; btn='<button class="shopbuy buy" data-buy="'+i+'"'+(can?'':' disabled')+'>🪙 '+w.cost+'</button>'; }
+    h+='<div class="shoprow"><div class="info">'+(WICON[i]||'🔫')+' '+w.name+'<small>'+stat+'</small></div>'+btn+'</div>'; });
+  h+='<div class="shophead">⬆️ อัปเกรด (ใช้พอยต์)</div>';
+  const UP=[['dmg','💥 ดาเมจอาวุธ','+18%/เลเวล',90],['mag','🧮 ความจุแม็ก','+5 นัด',80],['reload','⏱️ รีโหลดเร็ว','-12%',80],['hp','❤️ พลังชีวิตสูงสุด','+25',110],['speed','👟 ความเร็ววิ่ง','+8%',90],['armor','🛡️ เกราะกันดาเมจ','+7% (สูงสุด60%)',100],['crit','🎯 คริติคอล','+5% โอกาส ×2.5',100]];
+  UP.forEach(function(r){ const k=r[0],label=r[1],desc=r[2],base=r[3],lvl=up[k],cost=base*(lvl+1),can=points>=cost;
+    h+='<div class="shoprow"><div class="info">'+label+'<small>'+desc+' · เลเวล '+lvl+'</small></div><button class="shopbuy up" data-up="'+k+'" data-cost="'+cost+'"'+(can?'':' disabled')+'>⭐ '+cost+'</button></div>'; });
+  h+='<div class="shophead">🎒 เสบียง & ไอเทม (ใช้คอยน์)</div>';
+  h+='<div class="shoprow"><div class="info">📦 เติมกระสุน +60<small>เพิ่มกระสุนสำรอง</small></div><button class="shopbuy buy" data-ammo="60" data-cost="6"'+(coins>=6?'':' disabled')+'>🪙 6</button></div>';
+  h+='<div class="shoprow"><div class="info">📦 เติมกระสุน +150<small>ชุดใหญ่ คุ้มกว่า</small></div><button class="shopbuy buy" data-ammo="150" data-cost="12"'+(coins>=12?'':' disabled')+'>🪙 12</button></div>';
+  h+='<div class="shoprow"><div class="info">🩹 ฟื้นพลังชีวิตเต็ม<small>HP กลับมา 100%</small></div><button class="shopbuy buy" data-heal="1" data-cost="8"'+(coins>=8?'':' disabled')+'>🪙 8</button></div>';
+  h+='<div class="shoprow"><div class="info">⚡ กล่องพลังพิเศษ<small>สุ่มพลังตอนเริ่มด่านหน้า (ยิงไม่จำกัด/รัว/×2)</small></div><button class="shopbuy buy" data-power="1" data-cost="14"'+(coins>=14&&!pendingPower?'':' disabled')+'>'+(pendingPower?'✓ ซื้อแล้ว':'🪙 14')+'</button></div>';
   el('shopBody').innerHTML=h;
 }
 function openShop(){ if(net.on){ showMsg('โหมด Co-op: ร้านค้าจะเปิดอัตโนมัติตอนผ่านด่าน',2200); return; } if(state!=='play')return; shopMode='play'; state='shop'; if(document.pointerLockElement)document.exitPointerLock(); touchUI.style.display='none'; const tt=el('shopTitle'); if(tt) tt.textContent='ร้านค้า & อัปเกรด'; el('shopClose').style.display='inline-block'; el('shopNext').style.display='none'; el('shopWait').style.display='none'; renderShop(); el('shop').style.display='flex'; }
@@ -1458,16 +1540,21 @@ el('startBtn').addEventListener('click',()=>{ audioStart(); goFullscreen(); star
 el('fsBtn').addEventListener('click',toggleFS); el('fsBtn').addEventListener('touchstart',e=>{e.preventDefault();toggleFS();},{passive:false}); if(_isStandalone()){ const _f=el('fsBtn'); if(_f)_f.style.display='none'; }
 el('coopBtn').addEventListener('click',()=>{ startScreen.style.display='none'; coopScreen.style.display='flex'; });
 el('coopBack').addEventListener('click',()=>{ coopScreen.style.display='none'; startScreen.style.display='flex'; });
+el('readyBtn').addEventListener('click',()=>{ net.myReady=!net.myReady; el('readyBtn').textContent=net.myReady?'ยกเลิกพร้อม':'พร้อม ✓'; el('readyBtn').style.background=net.myReady?'linear-gradient(180deg,#1c8048,#0c4a28)':'linear-gradient(180deg,#2f6b34,#163d1c)'; netSend({t:'ready',id:net.myId,ready:net.myReady}); });
+el('startMatchBtn').addEventListener('click',()=>{ if(!net.isHost)return; const guests=hostList().filter(p=>p.id!==0); if(guests.length>0&&guests.every(p=>p.ready)){ netSend({t:'start',seed:net.seed}); beginPlay(net.seed,true); } else { showMsg('รอเพื่อนกดพร้อมก่อน',1800); } });
+el('lobbyBack').addEventListener('click',()=>{ try{if(net.peer)net.peer.destroy();}catch(e){} net.on=false; net.isHost=false; net.conns=[]; net.lobby={}; el('lobby').style.display='none'; startScreen.style.display='flex'; state='menu'; });
 el('hostBtn').addEventListener('click',()=>{ myName=(el('coopName').value.trim()||'ผู้เล่น').slice(0,12); audioStart(); goFullscreen(); hostGame(); });
 el('joinBtn').addEventListener('click',()=>{ myName=(el('coopName').value.trim()||'ผู้เล่น').slice(0,12); audioStart(); goFullscreen(); joinGame(el('joinCode').value.trim().toUpperCase()); });
 el('shopClose').addEventListener('click',closeShop);
 el('shopNext').addEventListener('click',proceedNextStage);
+el('shopReadyBtn').addEventListener('click',()=>{ net.myInterReady=!net.myInterReady; el('shopReadyBtn').textContent=net.myInterReady?'ยกเลิกพร้อม':'พร้อมเข้าด่านต่อไป ✓'; el('shopReadyBtn').style.background=net.myInterReady?'linear-gradient(180deg,#1c8048,#0c4a28)':'linear-gradient(180deg,#2f6b34,#163d1c)'; el('shopWait').textContent=net.myInterReady?'พร้อมแล้ว! รอโฮสต์เริ่มด่าน':'ซื้อ/อัปเกรดให้เสร็จ แล้วกด “พร้อม”'; netSend({t:'interready',id:net.myId,ready:net.myInterReady}); });
 el('shopBody').addEventListener('click',e=>{ const t=e.target; if(!t.dataset)return;
   if(t.dataset.eq!==undefined){ equipWeapon(WEAPONS[+t.dataset.eq]); renderShop(); }
   else if(t.dataset.buy!==undefined){ const w=WEAPONS[+t.dataset.buy]; if(coins>=w.cost){ coins-=w.cost; w.owned=true; equipWeapon(w); updateEcon(); renderShop(); } }
   else if(t.dataset.up!==undefined){ const k=t.dataset.up,cost=+t.dataset.cost; if(points>=cost){ points-=cost; up[k]++; applyUpgrades(); updateEcon(); renderShop(); } }
   else if(t.dataset.ammo!==undefined){ const c=+t.dataset.cost; if(coins>=c){ coins-=c; weapon.reserve+=+t.dataset.ammo; updateAmmo(); updateEcon(); renderShop(); } }
   else if(t.dataset.heal!==undefined){ const c=+t.dataset.cost; if(coins>=c){ coins-=c; player.hp=player.maxHP; healthFill.style.width='100%'; updateEcon(); renderShop(); } }
+  else if(t.dataset.power!==undefined){ const c=+t.dataset.cost; if(coins>=c&&!pendingPower){ coins-=c; pendingPower=true; updateEcon(); renderShop(); showMsg('⚡ จะได้พลังพิเศษตอนเริ่มด่านหน้า!',2200); } }
 });
 el('retryBtn').addEventListener('click',()=>{ if(net.on) location.reload(); else startGame(); });
 el('winBtn').addEventListener('click',()=>{ if(net.on) location.reload(); else startGame(); });
