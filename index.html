@@ -60,9 +60,9 @@
   #jumpBtn{right:138px;bottom:120px;width:74px;height:74px;background:rgba(90,150,255,.22);font-size:13px;}
   #jumpBtn:active{background:rgba(90,150,255,.5);}
   #reloadBtn{right:138px;bottom:40px;width:62px;height:62px;background:rgba(255,207,102,.18);font-size:12px;}
+  #reviveBtn{left:50%;transform:translateX(-50%);bottom:210px;width:128px;height:56px;background:rgba(77,255,176,.34);border-color:#4dffb0;color:#dfffe8;font-size:15px;}
+  #reviveBtn:active{background:rgba(77,255,176,.6);}
   #reloadBtn:active{background:rgba(255,207,102,.42);}
-  #runBtn{left:16px;top:30%;bottom:auto;width:62px;height:62px;background:rgba(255,255,255,.1);font-size:12px;}
-  #runBtn.on{background:rgba(125,255,77,.3);border-color:var(--toxic);}
 
   .screen{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;
           background:radial-gradient(ellipse at 50% 40%,#0c1410 0%,#070a08 60%,#000 100%);}
@@ -125,7 +125,7 @@
   <div id="fireBtn" class="btn">ยิง</div>
   <div id="jumpBtn" class="btn">กระโดด</div>
   <div id="reloadBtn" class="btn">รีโหลด</div>
-  <div id="runBtn" class="btn">วิ่ง</div>
+  <div id="reviveBtn" class="btn" style="display:none;">ดึงเพื่อน</div>
 </div>
 
 <div id="start" class="screen">
@@ -142,6 +142,7 @@
 <div id="coop" class="screen" style="display:none;">
   <h1 style="font-size:clamp(26px,6vw,46px);">CO-OP<span class="sub">เล่นกับเพื่อนใน Wi‑Fi เดียวกัน</span></h1>
   <p class="story" style="font-size:13px;">เปิดไฟล์นี้บนสองเครื่อง · เครื่องหนึ่งกด "สร้างห้อง" แล้วบอกรหัสให้อีกเครื่อง "เข้าร่วม"<br><b style="color:#ffcf66;">แนะนำเปิดในเบราว์เซอร์จริง และต่อเน็ตตอนจับคู่</b></p>
+  <input id="coopName" maxlength="12" placeholder="ใส่ชื่อของคุณ" style="pointer-events:auto;text-align:center;font-size:16px;padding:10px;width:210px;margin-bottom:14px;border-radius:4px;border:1px solid rgba(125,255,77,.4);background:#0c1410;color:#eafff0;" />
   <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:flex-start;">
     <button class="start-btn" id="hostBtn" style="background:linear-gradient(180deg,#2f6b34,#163d1c);">สร้างห้อง</button>
     <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
@@ -498,6 +499,7 @@ let exitOpen=false, boss=null, deathMode=false, lightAcc=4, lockMsgT=0; const EX
 let stage=1, stageKills=0, bossActive=false, baseSeed=12345, campaignDone=false; const STAGES=20;
 let enraged=false, enrageMul=1, medicAlive=false, medicCd=5;
 let reviveProg=0, reviveTarget=-1, lastRevive=0, exitTimer=10, exitInZone=0, exitTotal=0; const EXITZONE=6;
+let prestart=false, safeRing=null; const SAFE_R=11;
 let weatherSys=null, weatherMode='leaf', weatherNodes=[], lightAcc2=6;
 const weather={fog:new THREE.Color(0x141d18),density:0.03,amb:0.4,hemi:0.6};
 const weatherT={fog:new THREE.Color(0x141d18),density:0.03,amb:0.4,hemi:0.6};
@@ -535,6 +537,9 @@ function broadcast(o,exceptPid){ const s=JSON.stringify(o); for(const c of net.c
 function netSend(o){ broadcast(o); }
 function sendTo(pid,o){ const c=net.conns.find(x=>x.pid===pid); if(c&&c.open){ try{c.conn.send(JSON.stringify(o));}catch(e){} } }
 const PCOLORS={0:0x35502f,1:0x2f4f6b,2:0x6b4f2f,3:0x5a2f6b};
+function makeLabelSprite(){ const c=document.createElement('canvas'); c.width=256;c.height=64; const tex=new THREE.CanvasTexture(c); const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false,depthWrite:false,fog:false})); sp.scale.set(2.4,0.6,1); sp.userData={c,tex}; sp.visible=false; sp.renderOrder=999; scene.add(sp); return sp; }
+function drawLabel(sp,txt,color){ const c=sp.userData.c,x=c.getContext('2d'); x.clearRect(0,0,256,64); x.font='bold 34px sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.lineWidth=7; x.strokeStyle='rgba(0,0,0,0.92)'; x.strokeText(txt,128,34); x.fillStyle=color||'#eafff0'; x.fillText(txt,128,34); sp.userData.tex.needsUpdate=true; sp.userData.txt=txt; }
+function broadcastName(){ if(net.on) netSend({t:'name',id:net.myId,name:myName}); }
 function makeAvatar(col){ const jc=(col===undefined)?0x35502f:col;
   const jacket=new THREE.MeshStandardMaterial({color:jc,roughness:1}), skin=new THREE.MeshStandardMaterial({color:0xb08054,roughness:1}), dark=new THREE.MeshStandardMaterial({color:0x1e2420,roughness:1});
   const g=new THREE.Group();
@@ -548,9 +553,9 @@ function makeAvatar(col){ const jc=(col===undefined)?0x35502f:col;
   const gunm=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.1,0.5),dark); gunm.position.set(0.34,1.3,-0.25); g.add(gunm);
   g.userData={lL,lR,aL,aR}; g.visible=false; scene.add(g); return g;
 }
-function getPlayer(id){ let p=net.players[id]; if(!p){ p={present:false,pos:new THREE.Vector3(),tpos:new THREE.Vector3(),yaw:0,hp:100,down:false,avatar:makeAvatar(PCOLORS[id]!==undefined?PCOLORS[id]:0x556655),lastPos:new THREE.Vector3(),phase:0}; net.players[id]=p; } return p; }
+function getPlayer(id){ let p=net.players[id]; if(!p){ p={present:false,pos:new THREE.Vector3(),tpos:new THREE.Vector3(),yaw:0,hp:100,down:false,avatar:makeAvatar(PCOLORS[id]!==undefined?PCOLORS[id]:0x556655),lastPos:new THREE.Vector3(),phase:0,name:'',label:makeLabelSprite(),downMark:makeLabelSprite()}; drawLabel(p.label,'ผู้เล่น','#bfffe0'); drawLabel(p.downMark,'⬇ ช่วยด้วย!','#ff6a5a'); net.players[id]=p; } return p; }
 function updateRemoteAvatars(dt){ for(const id in net.players){ if(+id===net.myId) continue; const r=net.players[id]; if(!r.avatar) continue;
-    if(!r.present){ r.avatar.visible=false; continue; } r.avatar.visible=true;
+    if(!r.present){ r.avatar.visible=false; if(r.label)r.label.visible=false; if(r.downMark)r.downMark.visible=false; continue; } r.avatar.visible=true;
     r.pos.lerp(r.tpos,Math.min(1,dt*10)); const gy=terrainH(r.pos.x,r.pos.z);
     r.avatar.position.set(r.pos.x,gy,r.pos.z); r.avatar.rotation.y=r.yaw;
     const moved=r.pos.distanceTo(r.lastPos); r.lastPos.copy(r.pos);
@@ -558,6 +563,8 @@ function updateRemoteAvatars(dt){ for(const id in net.players){ if(+id===net.myI
       r.avatar.userData.lL.rotation.x=sw*0.5; r.avatar.userData.lR.rotation.x=-sw*0.5;
       r.avatar.userData.aL.rotation.x=-sw*0.4; r.avatar.userData.aR.rotation.x=sw*0.4; }
     r.avatar.rotation.z=r.down?1.4:0;
+    if(r.label){ r.label.visible=true; r.label.position.set(r.pos.x,gy+2.3,r.pos.z); }
+    if(r.downMark){ if(r.down){ r.downMark.visible=true; const pl=1+Math.sin(performance.now()/220)*0.14; r.downMark.position.set(r.pos.x,gy+2.95,r.pos.z); r.downMark.scale.set(3.0*pl,0.75*pl,1); } else r.downMark.visible=false; }
   } }
 function sendPlayerState(down){ netSend({t:'p',id:net.myId,x:+player.pos.x.toFixed(2),y:+player.pos.y.toFixed(2),z:+player.pos.z.toFixed(2),yaw:+player.yaw.toFixed(2),hp:Math.round(player.hp),down:down?1:0}); }
 function sndZType(u){ return u.boss?255:typeCode(u.type); }
@@ -585,7 +592,7 @@ function broadcastStat(){ if(net.on&&net.isHost) netSend({t:'stat',kills:kills,s
 function bmsg(text,ms){ showMsg(text,ms||2500); if(net.on&&net.isHost) netSend({t:'msg',m:text,ms:ms||2500}); }
 function onData(raw){ net.lastRecv=performance.now(); let d; try{ d=JSON.parse(raw); }catch(e){ return; }
   switch(d.t){
-    case 'hello': net.myId=d.id; net.seed=d.seed; net.connected=true; beginPlay(d.seed,false); break;
+    case 'hello': net.myId=d.id; net.seed=d.seed; net.connected=true; beginPlay(d.seed,false); broadcastName(); break;
     case 'p': { const r=getPlayer(d.id); r.present=true; r.tpos.set(d.x,d.y,d.z); r.yaw=d.yaw; r.hp=d.hp; r.down=!!d.down;
       if(net.isHost){ broadcast({t:'p',id:d.id,x:d.x,y:d.y,z:d.z,yaw:d.yaw,hp:d.hp,down:d.down}, d.id); checkAllDown(); } } break;
     case 'z': if(!net.isHost){ applyZombieSnapshot(d.s); const bw=el('bossWrap');
@@ -601,6 +608,9 @@ function onData(raw){ net.lastRecv=performance.now(); let d; try{ d=JSON.parse(r
     case 'revive': if(net.isHost){ const tg=d.target; if(tg===0){ if(player.down) selfGetUp(); } else { const r=net.players[tg]; if(r){ r.down=false; sendTo(tg,{t:'getup'}); } } } break;
     case 'getup': if(player.down) selfGetUp(); break;
     case 'exittimer': if(!net.isHost){ exitTimer=d.v; exitInZone=d.i; exitTotal=d.n; } break;
+    case 'name': { if(d.id===net.myId) break; const r=getPlayer(d.id); r.name=d.name; if(r.label) drawLabel(r.label,d.name,'#bfffe0'); if(net.isHost) broadcast({t:'name',id:d.id,name:d.name}, d.id); } break;
+    case 'shoot': { const a=new THREE.Vector3(d.x,d.y,d.z); const b=a.clone().add(new THREE.Vector3(d.dx,d.dy,d.dz).multiplyScalar(60)); spawnTracer(a,b); const fl=new THREE.Mesh(new THREE.SphereGeometry(0.2,8,6),new THREE.MeshBasicMaterial({color:0xffd27a,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false,fog:false})); fl.position.copy(a); scene.add(fl); tracers.push({mesh:fl,life:0.05}); if(net.isHost) broadcast({t:'shoot',id:d.id,x:d.x,y:d.y,z:d.z,dx:d.dx,dy:d.dy,dz:d.dz}, d.id); } break;
+    case 'begin': if(!net.isHost){ prestart=false; if(safeRing)safeRing.visible=false; } break;
     case 'inter': if(!net.isHost) enterIntermission(true); break;
     case 'proj': if(!net.isHost) spawnProjectileVisual(d); break;
     case 'win': if(!net._won){ net._won=true; if(net.isHost) broadcast({t:'win'}); win(); } break;
@@ -609,7 +619,7 @@ function onData(raw){ net.lastRecv=performance.now(); let d; try{ d=JSON.parse(r
 }
 function setupConn(conn,pid){ const entry={conn:conn,pid:pid,open:false}; net.conns.push(entry);
   const onOpen=()=>{ entry.open=true; net.connected=true; net.lastRecv=performance.now();
-    if(net.isHost){ sendTo(pid,{t:'hello',id:pid,seed:net.seed}); getPlayer(pid); setCoopStatus('ผู้เล่นเข้าร่วมแล้ว ('+(net.conns.length+1)+'/4)'); if(state!=='play') beginPlay(net.seed,true); }
+    if(net.isHost){ sendTo(pid,{t:'hello',id:pid,seed:net.seed}); getPlayer(pid); sendTo(pid,{t:'name',id:0,name:myName}); for(const _id in net.players){ const rr=net.players[_id]; if(rr.name) sendTo(pid,{t:'name',id:+_id,name:rr.name}); } setCoopStatus('ผู้เล่นเข้าร่วมแล้ว ('+(net.conns.length+1)+'/4)'); if(state!=='play') beginPlay(net.seed,true); }
     else setCoopStatus('เชื่อมต่อแล้ว! กำลังเริ่ม…'); };
   if(conn.open) onOpen(); else conn.on('open',onOpen);
   conn.on('data',onData);
@@ -665,7 +675,7 @@ const ZT={
   lion:{hp:185,spd:[3.2,4.2],dmg:[17,25],pts:42,coin:3,sc:[1.1,1.3]},
   spider:{hp:65,spd:[3.6,4.8],dmg:[9,14],pts:22,coin:2,sc:[0.9,1.15]},
   scorpion:{hp:130,spd:[2.0,2.8],dmg:[12,18],pts:30,coin:2,sc:[1.0,1.2],rng:true,proj:'sting'},
-  medic:{skin:[0x6fd3c0,0x5fc0b0],cloth:[0x244840,0x1c3a34],hp:170,spd:[2.3,2.9],dmg:[0,0],pts:80,coin:8,sc:[1.18,1.32],eye:0x4dffb0}
+  medic:{skin:[0x6fd3c0,0x5fc0b0],cloth:[0x244840,0x1c3a34],hp:85,spd:[2.3,2.9],dmg:[0,0],pts:80,coin:8,sc:[1.18,1.32],eye:0x4dffb0}
 };
 const HUMANT=['walker','runner','brute','spitter','crawler','thrower'];
 const QUADT=['dog','cat','bear','monkey','tiger','lion'];
@@ -961,7 +971,7 @@ function startAmbient(){ if(!actx)return;
 }
 
 /* ===== input ===== */
-const keys={}; let firing=false; const moveVec={x:0,y:0}; let jumpReq=false, joyRun=false, runLock=false;
+const keys={}; let firing=false; const moveVec={x:0,y:0}; let jumpReq=false, joyRun=false, runLock=false; let myName='ผู้เล่น';
 function setupDesktop(){
   addEventListener('keydown',e=>{keys[e.code]=true; if(e.code==='Space'){jumpReq=true; e.preventDefault();} if(e.code==='KeyR')doReload(); if(e.code==='KeyF')tryRevive(); if(e.code==='KeyB')toggleShop(); if(e.code==='Escape'&&state==='shop')closeShop();});
   addEventListener('keyup',e=>{keys[e.code]=false;});
@@ -981,8 +991,8 @@ function setupTouch(){
   joyZone.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===joyId){
     let dx=t.clientX-jc.x,dy=t.clientY-jc.y;const mx=58,len=Math.hypot(dx,dy);if(len>mx){dx=dx/len*mx;dy=dy/len*mx;}
     joyStick.style.left=(65+dx)+'px';joyStick.style.top=(65+dy)+'px';moveVec.x=dx/mx;moveVec.y=dy/mx;
-    joyRun=Math.hypot(moveVec.x,moveVec.y)>0.82; const rb2=el('runBtn'); if(rb2) rb2.classList.toggle('on',joyRun||runLock);}},{passive:false});
-  const je=e=>{for(const t of e.changedTouches)if(t.identifier===joyId){joyId=null;joyBase.style.display='none';moveVec.x=0;moveVec.y=0;joyRun=false;const rb2=el('runBtn'); if(rb2) rb2.classList.toggle('on',runLock);}};
+    }},{passive:false});
+  const je=e=>{for(const t of e.changedTouches)if(t.identifier===joyId){joyId=null;joyBase.style.display='none';moveVec.x=0;moveVec.y=0;}};
   joyZone.addEventListener('touchend',je);joyZone.addEventListener('touchcancel',je);
   lookZone.addEventListener('touchstart',e=>{e.preventDefault();const t=e.changedTouches[0];lookId=t.identifier;ll={x:t.clientX,y:t.clientY};},{passive:false});
   lookZone.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===lookId){ const sx=player.aiming?0.0028:0.0045;
@@ -994,9 +1004,9 @@ function setupTouch(){
   fb.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===fireId){ const sx=0.0042; player.yaw-=(t.clientX-fl.x)*sx; player.pitch-=(t.clientY-fl.y)*sx; player.pitch=Math.max(-1.3,Math.min(1.3,player.pitch)); fl={x:t.clientX,y:t.clientY}; }},{passive:false});
   const fe=e=>{for(const t of e.changedTouches)if(t.identifier===fireId){firing=false;fireId=null;}};
   fb.addEventListener('touchend',fe,{passive:false}); fb.addEventListener('touchcancel',fe,{passive:false});
-  const jb=el('jumpBtn'); jb.addEventListener('touchstart',e=>{e.preventDefault(); if(net.on && !player.down && nearDownedTeammate()){ tryRevive(); } else { jumpReq=true; } },{passive:false});
+  const jb=el('jumpBtn'); jb.addEventListener('touchstart',e=>{e.preventDefault(); jumpReq=true; },{passive:false});
+  const rv=el('reviveBtn'); rv.addEventListener('touchstart',e=>{e.preventDefault(); tryRevive(); },{passive:false});
   el('reloadBtn').addEventListener('touchstart',e=>{e.preventDefault();doReload();},{passive:false});
-  const rb=el('runBtn'); rb.addEventListener('touchstart',e=>{e.preventDefault();runLock=!runLock;rb.classList.toggle('on',runLock||joyRun);},{passive:false});
 }
 
 /* ===== shooting ===== */
@@ -1031,6 +1041,7 @@ function tryFire(now){
     if(pi<5) spawnTracer(_mz.clone(),endPt);
   }
   if(hitAny) sndFlesh();
+  if(net.on){ const tnow=performance.now(); if(tnow-(net._lastShoot||0)>70){ net._lastShoot=tnow; netSend({t:'shoot',id:net.myId,x:+_mz.x.toFixed(2),y:+_mz.y.toFixed(2),z:+_mz.z.toFixed(2),dx:+_f.x.toFixed(2),dy:+_f.y.toFixed(2),dz:+_f.z.toFixed(2)}); } }
 }
 function showHit(head){ hitmark.style.opacity=1; hitmark.querySelectorAll('span').forEach(s=>s.style.background=head?'#ffd23b':'#ff5252'); setTimeout(()=>hitmark.style.opacity=0,80); }
 function stageQuota(){ return 6+stage*2; }
@@ -1054,6 +1065,12 @@ function tryRevive(){ if(!net.on||player.down)return; let tid=-1,bd=2.8;
   if(reviveProg>=3){ reviveProg=0; doRevive(tid); } }
 function doRevive(tid){ if(net.isHost){ const r=net.players[tid]; if(r){ r.down=false; sendTo(tid,{t:'getup'}); } } else { netSend({t:'revive',target:tid}); } }
 function selfGetUp(){ player.down=false; player.hp=Math.round(player.maxHP*0.5); healthFill.style.width=(player.hp/player.maxHP*100)+'%'; gun.visible=true; sendPlayerState(false); showMsg('เพื่อนช่วยคุณลุกขึ้นมาแล้ว! (HP ครึ่งเดียว)',2600); }
+function buildSafeRing(){ safeRing=new THREE.Mesh(new THREE.RingGeometry(SAFE_R-0.4,SAFE_R,52),new THREE.MeshBasicMaterial({color:0x4da6ff,transparent:true,opacity:0.28,side:THREE.DoubleSide,depthWrite:false})); safeRing.rotation.x=-Math.PI/2; safeRing.position.set(0,terrainH(0,0)+0.12,0); worldRoot.add(safeRing); }
+function updateSafeZone(dt){ if(!net.on||!net.isHost||!prestart)return;
+  let out=Math.hypot(player.pos.x,player.pos.z)>SAFE_R;
+  if(!out){ for(const id in net.players){ const r=net.players[id]; if(r.present && Math.hypot(r.pos.x,r.pos.z)>SAFE_R){ out=true; break; } } }
+  if(out){ prestart=false; if(safeRing)safeRing.visible=false; for(let i=0;i<6;i++) spawnZombie(); netSend({t:'begin'}); bmsg('ภารกิจเริ่ม! ระวังฝูงซอมบี้',2800); }
+}
 function updateExitZone(dt){ if(!net.on||!net.isHost||!exitOpen)return;
   let aliveTotal = player.down?0:1; let aliveIn = (!player.down && Math.hypot(player.pos.x-exitPos.x,player.pos.z-exitPos.z)<EXITZONE)?1:0;
   for(const id in net.players){ const r=net.players[id]; if(r.present&&!r.down){ aliveTotal++; if(Math.hypot(r.pos.x-exitPos.x,r.pos.z-exitPos.z)<EXITZONE) aliveIn++; } }
@@ -1064,7 +1081,7 @@ function updateExitZone(dt){ if(!net.on||!net.isHost||!exitOpen)return;
 function campaignWin(){ if(net.on && !net._won){ net._won=true; netSend({t:'win'}); } campaignDone=true; win(); }
 function loadStage(st){
   state='play'; stage=st; wave=st; stageKills=0; bossActive=false; exitOpen=false; net._won=false; lockMsgT=0;
-  enraged=false; enrageMul=1; medicAlive=false; medicCd=rand(4,7); exitTimer=10; exitInZone=0; exitTotal=0; reviveProg=0;
+  enraged=false; enrageMul=1; medicAlive=false; medicCd=rand(4,7); exitTimer=10; exitInZone=0; exitTotal=0; reviveProg=0; prestart=false; safeRing=null;
   shopMode='play'; { const sh=el('shop'); if(sh) sh.style.display='none'; } if(IS_TOUCH) touchUI.style.display='block';
   curBiome=biomeForStage(st);
   terrAmp=curBiome.terrAmp||1; terrJag=curBiome.terrJag||0;
@@ -1086,7 +1103,9 @@ function loadStage(st){
   weapon.mag=weapon.magSize; weapon.reloading=false; reloadHint.textContent=''; updateAmmo();
   targetZombies=Math.min(IS_TOUCH?16:24, 6+st);
   setExitColor(false); updateStageHUD();
-  if(!net.on || net.isHost){ for(let i=0;i<6;i++) spawnZombie(); }
+  prestart=(net.on && st===1);
+  if(!prestart && (!net.on || net.isHost)){ for(let i=0;i<6;i++) spawnZombie(); }
+  if(prestart){ buildSafeRing(); bmsg('เขตปลอดภัย — เดินออกจากวงสีฟ้าเพื่อเริ่มภารกิจ!',4200); }
   scatterAmmo(IS_TOUCH?3:4);
   bmsg('ด่าน '+st+'/'+STAGES+' — '+curBiome.name,3400);
   if(net.on&&net.isHost){ netSend({t:'load',seed:net.seed,stage:st}); broadcastStat(); }
@@ -1129,8 +1148,8 @@ function resolveCollision(x,z){
 }
 function updatePlayer(dt){
   let ix=0,iz=0;
-  if(IS_TOUCH){ ix=moveVec.x; iz=moveVec.y; player.running=(runLock||joyRun); }
-  else{ if(keys['KeyW'])iz-=1; if(keys['KeyS'])iz+=1; if(keys['KeyA'])ix-=1; if(keys['KeyD'])ix+=1; player.running=!!keys['ShiftLeft']||!!keys['ShiftRight']; }
+  if(IS_TOUCH){ ix=moveVec.x; iz=moveVec.y; player.running=true; }
+  else{ if(keys['KeyW'])iz-=1; if(keys['KeyS'])iz+=1; if(keys['KeyA'])ix-=1; if(keys['KeyD'])ix+=1; player.running=true; }
   const len=Math.hypot(ix,iz); if(len>1){ix/=len;iz/=len;}
   const s=Math.sin(player.yaw),c=Math.cos(player.yaw), fwd=-iz, strafe=ix;
   const dirX=(-s)*fwd+(c)*strafe, dirZ=(-c)*fwd+(-s)*strafe;
@@ -1186,13 +1205,15 @@ function updatePlayer(dt){
       net.warned=true; showMsg('ต่อติดแต่ไม่มีข้อมูล — ให้ทั้งคู่เปิดผ่านลิงก์ GitHub Pages ในเบราว์เซอร์จริง (ไม่ใช่ในแอป)',5500); } }
   if(!player.down && state==='play'){ const now=performance.now()/1000; if(firing){ if(weapon.auto) tryFire(now); else if(!firePrev) tryFire(now); } }
   if(net.on && reviveProg>0 && performance.now()-lastRevive>800){ reviveProg=Math.max(0,reviveProg-dt*1.0); }
-  if(net.on && !player.down){ const near=nearDownedTeammate(); if(near && !player._revHint){ player._revHint=true; showMsg(IS_TOUCH?'กดปุ่ม "กระโดด" ย้ำๆ เพื่อดึงเพื่อนขึ้น':'กด F ย้ำๆ เพื่อดึงเพื่อนขึ้น',1800); } else if(!near){ player._revHint=false; } }
+  { const near = net.on && !player.down && nearDownedTeammate(); const rvb=el('reviveBtn'); if(rvb) rvb.style.display=(near&&IS_TOUCH)?'flex':'none';
+    if(near && !player._revHint){ player._revHint=true; if(!IS_TOUCH) showMsg('กด F ย้ำๆ เพื่อช่วยเพื่อนลุกขึ้น',1700); } else if(!near){ player._revHint=false; } }
   firePrev=firing;
 }
 
 /* ===== zombie AI ===== */
 function updateZombies(dt){
   if(net.on && !net.isHost) return;
+  if(prestart) return;
   if(zombies.filter(z=>!z.userData.dead).length<targetZombies && RNG()<(enraged?0.13:0.045)) spawnZombie();
   medicCd-=dt; if(!medicAlive && !bossActive && state==='play' && medicCd<=0){ spawnMedic(); medicCd=rand(16,24); }
   const px=player.pos.x,pz=player.pos.z;
@@ -1338,11 +1359,11 @@ function resetState(){
   guestZ.forEach(o=>scene.remove(o.grp)); guestZ.clear();
   clearArr(bloodBursts); clearArr(smokePuffs); clearArr(tracers); clearArr(shells);
   kills=0;wave=1;targetZombies=8;zidCounter=1;net._won=false;stage=1;stageKills=0;bossActive=false;campaignDone=false;
-  for(const _id in net.players){ const r=net.players[_id]; if(r&&r.avatar) scene.remove(r.avatar); } net.players={};
+  for(const _id in net.players){ const r=net.players[_id]; if(r){ if(r.avatar)scene.remove(r.avatar); if(r.label)scene.remove(r.label); if(r.downMark)scene.remove(r.downMark); } } net.players={};
   player.hp=100;player.down=false;player.pos.set(0,terrainH(0,0),0);player.yaw=0;player.pitch=0;player.running=false;player.aiming=false;player.adsT=0;player.vx=0;player.vz=0;player.recoilP=0;player.recoilY=0;player.shake=0;player.lastDmg=-99;
   weapon.mag=30;weapon.reserve=120;weapon.reloading=false;
   killsEl.textContent='0';waveEl.textContent='1';healthFill.style.width='100%';reloadHint.textContent='';updateAmmo();
-  el('runBtn').classList.remove('on'); runLock=false; joyRun=false; reddot.style.opacity=0; hurtEl.style.opacity=0; gun.visible=true;
+  runLock=false; joyRun=false; reddot.style.opacity=0; hurtEl.style.opacity=0; gun.visible=true;
   coins=0; points=0; lifePts=0; firePrev=false; up.dmg=up.mag=up.reload=up.hp=up.speed=0;
   WEAPONS.forEach(w=>w.owned=(w.cost===0)); curW=WEAPONS[0]; player.maxHP=100; applyUpgrades();
   clearArr(coinPickups); updateEcon();
@@ -1373,7 +1394,7 @@ function win(){ state='win'; sndWin(); try{ el('win').querySelector('h1').textCo
 function checkOrientation(){ if(!IS_TOUCH){rotateScreen.style.display='none';return;} rotateScreen.style.display=(innerHeight>innerWidth&&state==='play')?'flex':'none'; }
 
 function loop(){ requestAnimationFrame(loop); const dt=Math.min(0.05,clock.getDelta());
-  if(state==='play'){ updatePlayer(dt); updateZombies(dt); updateObjective(); updateExitZone(dt); } updateEffects(dt); renderer.render(scene,camera); }
+  if(state==='play'){ updatePlayer(dt); updateZombies(dt); updateObjective(); updateExitZone(dt); updateSafeZone(dt); } updateEffects(dt); renderer.render(scene,camera); }
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); checkOrientation(); });
 addEventListener('orientationchange',()=>setTimeout(checkOrientation,200));
 
@@ -1425,8 +1446,8 @@ el('startBtn').addEventListener('click',()=>{ audioStart(); goFullscreen(); star
 el('fsBtn').addEventListener('click',toggleFS); el('fsBtn').addEventListener('touchstart',e=>{e.preventDefault();toggleFS();},{passive:false}); if(_isStandalone()){ const _f=el('fsBtn'); if(_f)_f.style.display='none'; }
 el('coopBtn').addEventListener('click',()=>{ startScreen.style.display='none'; coopScreen.style.display='flex'; });
 el('coopBack').addEventListener('click',()=>{ coopScreen.style.display='none'; startScreen.style.display='flex'; });
-el('hostBtn').addEventListener('click',()=>{ audioStart(); goFullscreen(); hostGame(); });
-el('joinBtn').addEventListener('click',()=>{ audioStart(); goFullscreen(); joinGame(el('joinCode').value.trim().toUpperCase()); });
+el('hostBtn').addEventListener('click',()=>{ myName=(el('coopName').value.trim()||'ผู้เล่น').slice(0,12); audioStart(); goFullscreen(); hostGame(); });
+el('joinBtn').addEventListener('click',()=>{ myName=(el('coopName').value.trim()||'ผู้เล่น').slice(0,12); audioStart(); goFullscreen(); joinGame(el('joinCode').value.trim().toUpperCase()); });
 el('shopClose').addEventListener('click',closeShop);
 el('shopNext').addEventListener('click',proceedNextStage);
 el('shopBody').addEventListener('click',e=>{ const t=e.target; if(!t.dataset)return;
