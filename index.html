@@ -17,6 +17,7 @@
   canvas{display:block;}
 
   #hud{position:fixed;inset:0;pointer-events:none;z-index:20;display:none;}
+  #objective{position:absolute;top:40px;left:50%;transform:translateX(-50%);max-width:88%;text-align:center;font-size:14px;font-weight:bold;letter-spacing:.3px;color:#eafff0;background:rgba(0,0,0,.45);padding:6px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.14);text-shadow:0 0 6px #000;white-space:nowrap;}
   #crosshair{position:absolute;top:50%;left:50%;width:22px;height:22px;transform:translate(-50%,-50%);opacity:.85;transition:width .05s,height .05s,opacity .1s;}
   #crosshair span{position:absolute;background:rgba(255,255,255,.85);box-shadow:0 0 3px rgba(0,0,0,.9);}
   #crosshair .v{left:50%;width:2px;height:30%;transform:translateX(-50%);}
@@ -105,6 +106,7 @@
   <div id="dmgDir"><div class="ind"></div></div>
   <div id="msg"></div>
   <div id="netstat" style="display:none;position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:1px;text-shadow:0 0 6px #000;color:#7dff4d;">● กำลังเชื่อมต่อ…</div>
+  <div id="objective"></div>
   <div id="fsBtn" style="position:absolute;top:12px;right:14px;pointer-events:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;">⛶</div>
   <div id="bossWrap" style="display:none;position:absolute;top:54px;left:50%;transform:translateX(-50%);width:62%;max-width:520px;text-align:center;">
     <div style="font-size:13px;letter-spacing:3px;color:#ff5a4a;text-shadow:0 0 8px #000;margin-bottom:4px;">จอมอสูรแห่งความตาย</div>
@@ -1047,8 +1049,8 @@ function showHit(head){ hitmark.style.opacity=1; hitmark.querySelectorAll('span'
 function stageQuota(){ return 6+stage*2; }
 function isBossStage(){ return true; }
 function updateStageHUD(){ if(waveEl) waveEl.textContent=stage+'/'+STAGES; }
-function clearStage(){ if(exitOpen) return; openExit(); bmsg('เคลียร์ด่าน '+stage+' แล้ว! วิ่งไปที่ประตูเรืองแสง',3200); }
-function spawnStageBoss(){ if(bossActive) return; bossActive=true; const finalB=(stage>=STAGES); spawnBoss(finalB); if(finalB){ summonDeath(); } bmsg(finalB?'บอสใหญ่ปรากฏ! กำจัดมันให้ได้!':'บอสประจำด่านปรากฏตัว!',3200); if(net.on&&net.isHost) broadcastStat(); }
+function clearStage(){ if(exitOpen) return; openExit(); bmsg(net.on?('✅ ทางออกเปิด! พาทีมไปรวมในวงสีเขียวที่ทางออก'):('✅ ทางออกเปิด! วิ่งเข้าประตูเรืองแสงเพื่อไปด่านต่อไป'),3800); }
+function spawnStageBoss(){ if(bossActive) return; bossActive=true; const finalB=(stage>=STAGES); spawnBoss(finalB); if(finalB){ summonDeath(); } bmsg(finalB?'💀 บอสใหญ่โผล่! รีบฆ่ามัน (หรือวิ่งหนีไปทางออก)!':'💀 บอสโผล่แล้ว! รีบฆ่าบอสเพื่อเปิดทางออก!',3600); if(net.on&&net.isHost) broadcastStat(); }
 function reachExit(){ if(!exitOpen) return;
   if(net.on && !net.isHost){ netSend({t:'reachexit'}); exitOpen=false; return; }
   if(stage>=STAGES){ campaignWin(); return; }
@@ -1069,7 +1071,7 @@ function buildSafeRing(){ safeRing=new THREE.Mesh(new THREE.RingGeometry(SAFE_R-
 function updateSafeZone(dt){ if(!net.on||!net.isHost||!prestart)return;
   let out=Math.hypot(player.pos.x,player.pos.z)>SAFE_R;
   if(!out){ for(const id in net.players){ const r=net.players[id]; if(r.present && Math.hypot(r.pos.x,r.pos.z)>SAFE_R){ out=true; break; } } }
-  if(out){ prestart=false; if(safeRing)safeRing.visible=false; for(let i=0;i<6;i++) spawnZombie(); netSend({t:'begin'}); bmsg('ภารกิจเริ่ม! ระวังฝูงซอมบี้',2800); }
+  if(out){ prestart=false; if(safeRing)safeRing.visible=false; for(let i=0;i<6;i++) spawnZombie(); netSend({t:'begin'}); bmsg('🎯 ภารกิจเริ่ม! ฆ่าซอมบี้ให้ครบ '+stageQuota()+' ตัว เพื่อเรียกบอส',3600); }
 }
 function updateExitZone(dt){ if(!net.on||!net.isHost||!exitOpen)return;
   let aliveTotal = player.down?0:1; let aliveIn = (!player.down && Math.hypot(player.pos.x-exitPos.x,player.pos.z-exitPos.z)<EXITZONE)?1:0;
@@ -1107,7 +1109,7 @@ function loadStage(st){
   if(!prestart && (!net.on || net.isHost)){ for(let i=0;i<6;i++) spawnZombie(); }
   if(prestart){ buildSafeRing(); bmsg('เขตปลอดภัย — เดินออกจากวงสีฟ้าเพื่อเริ่มภารกิจ!',4200); }
   scatterAmmo(IS_TOUCH?3:4);
-  bmsg('ด่าน '+st+'/'+STAGES+' — '+curBiome.name,3400);
+  bmsg('ด่าน '+st+'/'+STAGES+' — '+curBiome.name+(prestart?'':(' · ฆ่าซอมบี้ '+stageQuota()+' ตัวเรียกบอส')),3600);
   if(net.on&&net.isHost){ netSend({t:'load',seed:net.seed,stage:st}); broadcastStat(); }
 }
 function killZombie(z){ z.userData.dead=true; z.userData.deathT=0; kills++; killsEl.textContent=kills;
@@ -1274,13 +1276,23 @@ function hurtPlayer(amount,fromPos){
     else gameOver();
   }
 }
+function objectiveText(){
+  if(prestart) return '🔵 เดินออกจากวงสีฟ้า เพื่อเริ่มภารกิจ';
+  if(exitOpen){
+    if(net.on){ if(exitTotal>0 && exitInZone>=exitTotal) return '🏃 ทุกคนพร้อม! หนีใน '+Math.ceil(exitTimer)+' วิ'; return '🚪 ทางออกเปิด! รอทีมเข้าวง '+exitInZone+'/'+exitTotal+' คน'; }
+    return '🚪 ทางออกเปิด! วิ่งเข้าประตู ไปด่านต่อไป';
+  }
+  if(bossActive) return '💀 ฆ่าบอสให้ได้ เพื่อเปิดทางออก!';
+  return '🎯 ฆ่าซอมบี้ '+stageKills+' / '+stageQuota()+' เพื่อเรียกบอส';
+}
 function updateObjective(){
+  { const ob=el('objective'); if(ob) ob.textContent = (state==='play')?objectiveText():''; }
   if(!exitGroup) return;
   const dx=exitPos.x-player.pos.x,dz=exitPos.z-player.pos.z,dist=Math.hypot(dx,dz);
   const bExit=Math.atan2(dx,dz),bFace=Math.atan2(-Math.sin(player.yaw),-Math.cos(player.yaw));
   arrowEl.style.transform='rotate('+((bExit-bFace)*180/Math.PI)+'deg)';
   if(exitOpen){ arrowEl.style.opacity='1'; arrowEl.style.color='#7dff4d'; distEl.style.color='#7dff4d';
-    if(net.on){ el('distUnit').textContent=''; if(exitTotal>0 && exitInZone>=exitTotal){ distEl.textContent='ออกใน '+Math.ceil(exitTimer)+'s'; } else { distEl.textContent='เข้าวง '+exitInZone+'/'+exitTotal; } }
+    if(net.on){ el('distUnit').textContent=''; if(exitTotal>0 && exitInZone>=exitTotal){ distEl.textContent='ออกใน '+Math.ceil(exitTimer)+'s'; } else { distEl.textContent='เข้าวง '+exitInZone+'/'+exitTotal; } const selfIn=dist<EXITZONE; if(selfIn&&!player._inZone){ player._inZone=true; if(!(exitTotal>0&&exitInZone>=exitTotal)) showMsg('อยู่ในวงทางออกแล้ว · รอเพื่อนเข้าครบเพื่อเริ่มนับถอยหลังหนี',2400); } else if(!selfIn) player._inZone=false; }
     else { el('distUnit').textContent=' ม.'; distEl.textContent=String(Math.round(dist)).padStart(3,'0'); if(dist<5) reachExit(); }
   } else { arrowEl.style.opacity='0.3';
     if(bossActive){ distEl.style.color='#ff5a4a'; distEl.textContent='สู้บอส'; el('distUnit').textContent=''; }
