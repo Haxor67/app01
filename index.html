@@ -66,8 +66,10 @@
   #reviveBtn:active{background:rgba(77,255,176,.6);}
   #reloadBtn:active{background:rgba(255,207,102,.42);}
 
-  .screen{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;
+  .screen{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;
           background:radial-gradient(ellipse at 50% 40%,#0c1410 0%,#070a08 60%,#000 100%);}
+  .screen::before{content:'';margin-top:auto;} .screen::after{content:'';margin-bottom:auto;}
+  @media (max-height:520px){ .screen{padding:12px;} .screen h1{font-size:24px!important;margin-bottom:2px;} .screen .story{margin:8px 0 12px;font-size:12px;} #lobbyRules{font-size:11px!important;line-height:1.45!important;padding:8px 10px!important;margin-bottom:10px!important;} #shopBody{max-height:40vh!important;} #lobbyList{margin:4px 0 6px!important;} }
   .screen h1{font-size:clamp(30px,7.5vw,62px);letter-spacing:3px;line-height:1.05;color:#fff;text-shadow:0 0 18px rgba(125,255,77,.4),0 0 4px #000;margin-bottom:6px;}
   .screen h1 .sub{color:var(--toxic);display:block;font-size:.42em;letter-spacing:7px;opacity:.9;}
   .screen .story{max-width:560px;font-size:15px;line-height:1.85;color:#b4bdb4;margin:18px 0 26px;}
@@ -551,6 +553,9 @@ let kills=0,wave=1,targetZombies=8;
 let zidCounter=1; const guestZ=new Map();
 const PEERCFG={config:{iceServers:[
   {urls:'stun:stun.l.google.com:19302'},
+  {urls:'stun:stun1.l.google.com:19302'},
+  {urls:'stun:stun2.l.google.com:19302'},
+  {urls:'stun:stun3.l.google.com:19302'},
   {urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},
   {urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'},
   {urls:'turn:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'}
@@ -679,6 +684,7 @@ function showLobby(isHost){ state='lobby'; startScreen.style.display='none'; coo
 function bindHostPeer(){
   net.peer.on('open',id=>{ el('roomCode').textContent=id; net.lobby={0:{name:myName,ready:true}}; setCoopStatus('บอกรหัสให้เพื่อน (สูงสุด 4 คน)…'); showLobby(true); });
   net.peer.on('connection',conn=>{ if(net.conns.length>=3){ try{conn.close();}catch(e){} return; } const pid=net.nextPid++; setCoopStatus('ผู้เล่นกำลังเข้าร่วม…'); setupConn(conn,pid); });
+  net.peer.on('disconnected',()=>{ setCoopStatus('สัญญาณหลุดชั่วคราว — กำลังต่อใหม่…'); try{net.peer.reconnect();}catch(e){} });
   net.peer.on('error',e=>{ const t=(e&&e.type)||''; if(t==='unavailable-id'&&net._hostTries<5){ net._hostTries++; try{net.peer.destroy();}catch(x){} net.peer=new Peer('ZF'+Math.floor(1000+Math.random()*9000),PEERCFG); bindHostPeer(); } else if(t==='network'||t==='disconnected'||t==='server-error'){ setCoopStatus('เน็ตมีปัญหา ('+t+') — ลองใหม่อีกครั้ง'); } else { setCoopStatus('สร้างห้องไม่ได้: '+t); } });
 }
 function hostGame(){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด PeerJS ไม่ได้ — เปิดไฟล์ในเบราว์เซอร์ + ต่อเน็ต'); return; }
@@ -688,11 +694,15 @@ function hostGame(){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด 
 }
 function joinGame(code){ if(typeof Peer==='undefined'){ setCoopStatus('โหลด PeerJS ไม่ได้ — เปิดไฟล์ในเบราว์เซอร์ + ต่อเน็ต'); return; }
   if(!code){ setCoopStatus('ใส่รหัสห้องก่อน'); return; }
-  net.on=true; net.isHost=false; net.conns=[]; net.players={}; net.connected=false; setCoopStatus('กำลังเชื่อมต่อ '+code+' …');
+  net.on=true; net.isHost=false; net.conns=[]; net.players={}; net.connected=false; net._joinTries=0; setCoopStatus('กำลังเชื่อมต่อ '+code+' …');
   if(net.peer){try{net.peer.destroy();}catch(e){}}
   net.peer=new Peer(PEERCFG);
-  net.peer.on('open',()=>{ const conn=net.peer.connect(code,{reliable:true}); setupConn(conn,0); if(net._joinTO)clearTimeout(net._joinTO); net._joinTO=setTimeout(()=>{ if(!net.connected) setCoopStatus('เชื่อมต่อไม่สำเร็จ — เช็ครหัส/เน็ต แล้วกด “เข้าร่วม” อีกครั้ง'); },12000); });
-  net.peer.on('error',e=>{ const t=(e&&e.type)||''; setCoopStatus('เชื่อมต่อไม่ได้: '+t+' (เช็ครหัส/เน็ต แล้วลองใหม่)'); });
+  const attempt=()=>{ if(net.connected)return; let conn; try{ conn=net.peer.connect(code,{reliable:true}); }catch(e){ return; } setupConn(conn,0);
+    if(net._joinTO)clearTimeout(net._joinTO);
+    net._joinTO=setTimeout(()=>{ if(net.connected)return; net._joinTries++; if(net._joinTries<5){ setCoopStatus('ยังไม่ติด… กำลังลองใหม่ ('+net._joinTries+'/4)'); try{conn.close();}catch(e){} attempt(); } else { setCoopStatus('เชื่อมต่อไม่สำเร็จ — ต้องอยู่ Wi‑Fi/ฮอตสปอตเดียวกันกับโฮสต์ แล้วกด “เข้าร่วม” ใหม่'); } },6000); };
+  net.peer.on('open',()=>{ attempt(); });
+  net.peer.on('disconnected',()=>{ try{net.peer.reconnect();}catch(e){} });
+  net.peer.on('error',e=>{ const t=(e&&e.type)||''; if(t==='peer-unavailable'&&net._joinTries<5){ net._joinTries++; setCoopStatus('หาห้องไม่เจอ… ลองใหม่ ('+net._joinTries+'/4)'); setTimeout(()=>{ if(!net.connected) attempt(); },1500); } else { setCoopStatus('เชื่อมต่อไม่ได้: '+t+' (เช็ครหัสให้ตรง + อยู่เน็ตเดียวกัน)'); } });
 }
 
 const raycaster=new THREE.Raycaster();
