@@ -5037,6 +5037,7 @@ function makeArac(type){
     body,legs,bodyBaseY:0.5,mats:[sh,eyeMat],hitMeshes:[abd,ceph],rng:!!T.rng,proj:T.proj,rangeCd:rand(1,2),
     gait:(u)=>{ for(let li=0;li<u.legs.length;li++){ u.legs[li].rotation.x=Math.sin(u.phase*3+li*0.8)*0.3; } u.body.position.y=u.bodyBaseY+Math.abs(Math.sin(u.phase*3))*0.04; },
     atk:(u,a)=>{ u.body.position.y=u.bodyBaseY+Math.sin(a)*0.07; } };
+  if(GLTF_READY && MODELS.spider && type==='spider'){ applyGltfSpider(g); }
   addShadow(g,0.8);
   return g;
 }
@@ -5096,32 +5097,32 @@ function spawnGore(p,big){ const n=big?30:16;
   const pr=big?1.4:0.62; const pool=new THREE.Mesh(new THREE.CircleGeometry(pr,18),new THREE.MeshBasicMaterial({color:0x4a0608,transparent:true,opacity:0.82,depthWrite:false}));
   pool.rotation.x=-Math.PI/2; pool.position.set(p.x,terrainH(p.x,p.z)+0.03,p.z); pool.scale.setScalar(0.15); scene.add(pool); goreDecals.push({mesh:pool,life:6,t:0}); }
 let MODELS={}, GLTF_READY=false;
-function loadGltfModels(){ try{ if(!THREE.GLTFLoader){ return; } const L=new THREE.GLTFLoader();
-  L.load('./assets/ZombieMan.glb', function(g){ MODELS.zombie=g; GLTF_READY=true; }, undefined, function(e){ console.warn('zombie glb load fail',e); }); }catch(e){ console.warn(e); } }
-function applyGltf(g,type,boss){ const src=MODELS.zombie; if(!src||!THREE.SkeletonUtils)return;
-  let model; try{ model=THREE.SkeletonUtils.clone(src.scene); }catch(e){ return; }
-  const tint = boss?0x9a5a38 : [0x6f8f4a,0x7a9a55,0x5f8040,0x84935a][(RNG()*4)|0];
-  model.traverse(function(o){ if(o.isMesh){ o.castShadow=true; o.frustumCulled=false; if(o.material){ o.material=o.material.clone(); o.material.color=new THREE.Color(tint); o.material.emissive=new THREE.Color(boss?0x240a04:0x132005); o.material.emissiveIntensity=0.42; if('roughness'in o.material)o.material.roughness=1; if('metalness'in o.material)o.material.metalness=0; } } });
-  const bb=new THREE.Box3().setFromObject(model); const hh=(bb.max.y-bb.min.y)||1; const targetH=boss?1.95:1.82; const s=targetH/hh; model.scale.setScalar(s); model.position.y=-bb.min.y*s;
-  // hide procedural visuals (hitMeshes still raycast even if invisible)
-  g.traverse(function(o){ if(o.isMesh) o.visible=false; });
-  g.add(model);
-  // fresh invisible hitboxes matching the model
-  const hbBody=new THREE.Mesh(new THREE.CylinderGeometry(0.42,0.46,1.55,6),new THREE.MeshBasicMaterial({visible:false})); hbBody.position.y=0.85; g.add(hbBody);
-  const hbHead=new THREE.Mesh(new THREE.SphereGeometry(0.3,8,6),new THREE.MeshBasicMaterial({visible:false})); hbHead.position.y=1.62; g.add(hbHead);
-  g.userData.hitMeshes=[hbHead,hbBody];
-  const mixer=new THREE.AnimationMixer(model); const cl=src.animations; const find=function(n){return THREE.AnimationClip.findByName(cl,n);};
-  const A={}; ['Walk','Run','Punch','Death','Idle'].forEach(function(n){ const c=find(n); if(c)A[n]=mixer.clipAction(c); });
-  if(A.Death){ A.Death.loop=THREE.LoopOnce; A.Death.clampWhenFinished=true; }
-  let cur=null;
-  function play(n,fd){ let a=A[n]; if(!a)a=A.Walk||A.Idle; if(!a||cur===a)return; if(cur)cur.fadeOut(fd||0.2); a.reset().fadeIn(fd||0.2).play(); cur=a; }
-  const moveClip=(type==='runner'||type==='brute'||boss)?(A.Run?'Run':'Walk'):'Walk';
-  play(moveClip,0);
+function loadGltfModels(){ try{ if(!THREE.GLTFLoader)return; const L=new THREE.GLTFLoader();
+  L.load('./assets/ZombieMan.glb',function(gl){ MODELS.zombie=gl; GLTF_READY=true; },undefined,function(e){console.warn('zombie glb load fail',e);});
+  L.load('./assets/Spider.glb',function(gl){ MODELS.spider=gl; },undefined,function(e){console.warn('spider glb load fail',e);}); }catch(e){console.warn(e);} }
+function gltfOverlay(g,key,opt){ const src=MODELS[key]; if(!src||!THREE.SkeletonUtils)return false;
+  let model; try{ model=THREE.SkeletonUtils.clone(src.scene); }catch(e){ return false; }
+  let meshN=0; model.traverse(function(o){ if(o.isMesh)meshN++; }); if(!meshN)return false;
+  model.traverse(function(o){ o.visible=true; if(o.isMesh){ o.castShadow=true; o.frustumCulled=false; if(o.material){ o.material=o.material.clone(); if(opt.tint&&o.material.color)o.material.color.set(opt.tint); if(opt.emissive){o.material.emissive=new THREE.Color(opt.emissive);o.material.emissiveIntensity=opt.emi||0.4;} o.material.transparent=false; o.material.opacity=1; o.material.depthWrite=true; if('roughness'in o.material)o.material.roughness=1; if('metalness'in o.material)o.material.metalness=0; o.material.needsUpdate=true; } } });
+  const s=opt.scale/opt.native; model.scale.setScalar(s); model.position.set(0,opt.yoff||0,0);
+  const toHide=[]; g.traverse(function(o){ if(o.isMesh)toHide.push(o); }); g.add(model); for(let q=0;q<toHide.length;q++)toHide[q].visible=false;
+  const hr=opt.hitR||0.42, hh=opt.hitH||1.55, hy=opt.hitY||0.85;
+  const hbB=new THREE.Mesh(new THREE.CylinderGeometry(hr,hr*1.1,hh,6),new THREE.MeshBasicMaterial({visible:false})); hbB.position.y=hy; g.add(hbB);
+  const hbH=new THREE.Mesh(new THREE.SphereGeometry(hr*0.72,8,6),new THREE.MeshBasicMaterial({visible:false})); hbH.position.y=hy+hh*0.5; g.add(hbH);
+  g.userData.hitMeshes=[hbH,hbB];
+  const mixer=new THREE.AnimationMixer(model); const cl=src.animations; const find=function(n){return n?THREE.AnimationClip.findByName(cl,n):null;};
+  const A={}; for(const kk in opt.clips){ const c=find(opt.clips[kk]); if(c)A[kk]=mixer.clipAction(c); }
+  if(A.death){ A.death.loop=THREE.LoopOnce; A.death.clampWhenFinished=true; }
+  let cur=null; function play(n,fd){ let a=A[n]; if(!a)a=A.walk||A.idle; if(!a||cur===a)return; if(cur)cur.fadeOut(fd||0.2); a.reset().fadeIn(fd||0.2).play(); cur=a; }
+  const runC=opt.run&&!!A.run; play(runC?'run':'walk',0);
   const u=g.userData; u.mxr=mixer; u._gltf=model;
-  u.gait=function(){ play(moveClip,0.25); };
-  u.atk=function(){ play('Punch',0.12); };
-  u.gltfDeath=function(){ play('Death',0.12); };
+  u.gait=function(){ play(runC?'run':'walk',0.25); };
+  u.atk=function(){ if(A.attack)play('attack',0.12); };
+  u.gltfDeath=function(){ if(A.death)play('death',0.12); };
+  return true;
 }
+function applyGltf(g,type,boss){ return gltfOverlay(g,'zombie',{ native:5.335, scale:boss?1.95:1.6, tint:boss?0x9a5a38:[0x6f8f4a,0x7a9a55,0x5f8040,0x84935a][(RNG()*4)|0], emissive:boss?0x240a04:0x132005, emi:0.42, run:(type==='runner'||type==='brute'||boss), clips:{walk:'Walk',run:'Run',attack:'Punch',death:'Death',idle:'Idle'}, hitR:0.42, hitH:1.55, hitY:0.85 }); }
+function applyGltfSpider(g){ return gltfOverlay(g,'spider',{ native:5.3, scale:1.05, tint:0x2e231c, emissive:0x140a06, emi:0.3, run:false, yoff:0.45, clips:{walk:'SpiderArmature|Spider_Walk',attack:'SpiderArmature|Spider_Attack',death:'SpiderArmature|Spider_Death',idle:'SpiderArmature|Spider_Idle'}, hitR:0.6, hitH:0.5, hitY:0.35 }); }
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
 function gaitWalk(u){ const sw=Math.sin(u.phase), c=Math.cos(u.phase);
   u.legL.root.rotation.x=sw*0.7+0.05; u.legR.root.rotation.x=-sw*0.7+0.05;
