@@ -173,9 +173,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v2.2 16/06 06:47</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v2.3 16/06 07:04</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;letter-spacing:.5px;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v2.2 16/06 06:47</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;letter-spacing:.5px;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v2.3 16/06 07:04</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจ (คนเดียว)</button>
@@ -5105,13 +5105,14 @@ function loadGltfModels(){ try{ if(!THREE.GLTFLoader)return; const L=new THREE.G
 function gltfOverlay(g,key,opt){ const src=MODELS[key]; if(!src||!THREE.SkeletonUtils){window.__ovlfail='nosrc';return false;}
   let model; try{ model=THREE.SkeletonUtils.clone(src.scene); }catch(e){ window.__ovlfail='clone'; return false; }
   let meshN=0; model.traverse(function(o){ if(o.isMesh)meshN++; }); if(!meshN){window.__ovlfail='nomesh';return false;}
-  model.traverse(function(o){ o.visible=true; if(o.isMesh){ o.castShadow=true; o.frustumCulled=false; if(o.material){ o.material=o.material.clone(); if(opt.tint&&o.material.color)o.material.color.set(opt.tint); if(opt.emissive){o.material.emissive=new THREE.Color(opt.emissive);o.material.emissiveIntensity=opt.emi||0.4;} o.material.transparent=false; o.material.opacity=1; o.material.depthWrite=true; if('roughness'in o.material)o.material.roughness=1; if('metalness'in o.material)o.material.metalness=0; o.material.needsUpdate=true; } } });
+  model.traverse(function(o){ o.visible=true; if(o.isMesh){ o.castShadow=true; o.frustumCulled=false; var mp=(o.material&&o.material.map)?o.material.map:null; o.material=new THREE.MeshBasicMaterial({color:new THREE.Color(opt.tint||0x8fdf6f),map:mp,skinning:true}); o.material.needsUpdate=true; } });
   const s=opt.scale/opt.native; model.scale.setScalar(s); model.position.set(0,opt.yoff||0,0);
   const toHide=[]; g.traverse(function(o){ if(o.isMesh)toHide.push(o); }); g.add(model); for(let q=0;q<toHide.length;q++)toHide[q].visible=false;
   const hr=opt.hitR||0.42, hh=opt.hitH||1.55, hy=opt.hitY||0.85;
   const hbB=new THREE.Mesh(new THREE.CylinderGeometry(hr,hr*1.1,hh,6),new THREE.MeshBasicMaterial({visible:false})); hbB.position.y=hy; g.add(hbB);
   const hbH=new THREE.Mesh(new THREE.SphereGeometry(hr*0.72,8,6),new THREE.MeshBasicMaterial({visible:false})); hbH.position.y=hy+hh*0.5; g.add(hbH);
   g.userData.hitMeshes=[hbH,hbB];
+  var mk=new THREE.Mesh(new THREE.SphereGeometry(hr*0.55,8,6),new THREE.MeshBasicMaterial({color:0xff2bd0})); mk.position.y=hy+hh*0.5; g.add(mk); g.userData._mk=mk;
   const mixer=new THREE.AnimationMixer(model); const cl=src.animations; const find=function(n){return n?THREE.AnimationClip.findByName(cl,n):null;};
   const A={}; for(const kk in opt.clips){ const c=find(opt.clips[kk]); if(c)A[kk]=mixer.clipAction(c); }
   if(A.death){ A.death.loop=THREE.LoopOnce; A.death.clampWhenFinished=true; }
@@ -5127,7 +5128,7 @@ function gltfOverlay(g,key,opt){ const src=MODELS[key]; if(!src||!THREE.Skeleton
 function applyGltf(g,type,boss){ return gltfOverlay(g,'zombie',{ native:5.335, scale:boss?1.95:1.6, tint:boss?0x9a5a38:[0x6f8f4a,0x7a9a55,0x5f8040,0x84935a][(RNG()*4)|0], emissive:boss?0x240a04:0x132005, emi:0.42, run:(type==='runner'||type==='brute'||boss), clips:{walk:'Walk',run:'Run',attack:'Punch',death:'Death',idle:'Idle'}, hitR:0.42, hitH:1.55, hitY:0.85 }); }
 function applyGltfSpider(g){ return gltfOverlay(g,'spider',{ native:5.3, scale:1.05, tint:0x2e231c, emissive:0x140a06, emi:0.3, run:false, yoff:0.45, clips:{walk:'SpiderArmature|Spider_Walk',attack:'SpiderArmature|Spider_Attack',death:'SpiderArmature|Spider_Death',idle:'SpiderArmature|Spider_Idle'}, hitR:0.6, hitH:0.5, hitY:0.35 }); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(!e)return; var zc='?'; try{ zc=zombies.length; }catch(_){} e.textContent='v2.2 16/06 06:47 | GL:'+(GLTF_READY?'OK':'load..')+' ov:'+(window.__ovl||0)+(window.__ovlfail?(' ERR:'+window.__ovlfail):'')+' z:'+zc; },600);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(!e)return; var zc='?'; try{ zc=zombies.length; }catch(_){} var pp=''; try{ for(var qi=0;qi<zombies.length;qi++){ if(zombies[qi].userData&&zombies[qi].userData._gltf){ var wp=new THREE.Vector3(); zombies[qi].userData._gltf.getWorldPosition(wp); var sc=new THREE.Vector3(); zombies[qi].userData._gltf.getWorldScale(sc); pp=' p'+wp.x.toFixed(0)+','+wp.y.toFixed(0)+','+wp.z.toFixed(0)+' s'+sc.x.toFixed(2); break; } } }catch(_e){} e.textContent='v2.3 16/06 07:04 | GL:'+(GLTF_READY?'OK':'load..')+' ov:'+(window.__ovl||0)+(window.__ovlfail?(' ERR:'+window.__ovlfail):'')+' z:'+zc+pp; },600);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
 function gaitWalk(u){ const sw=Math.sin(u.phase), c=Math.cos(u.phase);
   u.legL.root.rotation.x=sw*0.7+0.05; u.legR.root.rotation.x=-sw*0.7+0.05;
