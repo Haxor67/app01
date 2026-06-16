@@ -121,6 +121,7 @@
   #lightning{position:fixed;inset:0;z-index:23;pointer-events:none;opacity:0;background:#dfe8ff;transition:opacity .08s;}
 </style>
 <style>
+#shopHeader::before{content:"F4F1  หมุนจอแนวนอนเพื่อมุมมองซื้อ/อัปเกรดที่ดีกว่า";display:block;background:rgba(125,255,77,.12);border:1px solid rgba(125,255,77,.35);border-radius:8px;padding:5px 10px;margin:0 0 7px;font-size:12px;color:#bfffa0;text-align:center;}
 #shop{flex-direction:column!important;height:100dvh!important;}
 #shopBody{max-height:none!important;flex:1 1 auto!important;padding-bottom:20px!important;}
 .shopgrid{grid-template-columns:repeat(auto-fill,minmax(168px,1fr))!important;gap:12px!important;}
@@ -181,9 +182,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v4.1 16/06 16:16</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v4.2 16/06 18:41</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v4.1 16/06 16:16</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v4.2 16/06 18:41</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจ (คนเดียว)</button>
@@ -5117,13 +5118,14 @@ function stageElement(){ var s=1; try{s=stage;}catch(e){} return ELEMENTS[Math.m
 var LD={sk:0,nat:0,le:''};
 function _lderr(e){ try{ LD.le = e&&e.message?String(e.message).slice(0,14):(e&&e.type?e.type:'err'); }catch(_){ LD.le='err'; } }
 function loadGltfModels(){ try{ if(!THREE.GLTFLoader){ LD.le='noLoader'; initWeather(); return; } var L=new THREE.GLTFLoader();
-  L.load('./assets/Skel_Minion.glb',function(g){MODELS.minion=g;GLTF_READY=true;LD.sk++;},undefined,_lderr);
-  L.load('./assets/Skel_Warrior.glb',function(g){MODELS.warrior=g;GLTF_READY=true;LD.sk++;},undefined,_lderr);
-  L.load('./assets/Skel_Rogue.glb',function(g){MODELS.rogue=g;GLTF_READY=true;LD.sk++;},undefined,_lderr);
-  L.load('./assets/Skel_Mage.glb',function(g){MODELS.mage=g;GLTF_READY=true;LD.sk++;},undefined,_lderr);
-  L.load('./assets/Spider.glb',function(g){MODELS.spider=g;},undefined,function(){});
+  function _try(base,onok){ L.load('./assets/'+base+'.glb',onok,undefined,function(){ L.load(encodeURI('./assets/'+base.replace(/_/g,' ')+'.glb'),onok,undefined,_lderr); }); }
+  _try('Skel_Minion',function(g){MODELS.minion=g;GLTF_READY=true;LD.sk++;});
+  _try('Skel_Warrior',function(g){MODELS.warrior=g;GLTF_READY=true;LD.sk++;});
+  _try('Skel_Rogue',function(g){MODELS.rogue=g;GLTF_READY=true;LD.sk++;});
+  _try('Skel_Mage',function(g){MODELS.mage=g;GLTF_READY=true;LD.sk++;});
+  _try('Spider',function(g){MODELS.spider=g;});
   var NF={tree_g1:'nat_tree_g1',tree_g2:'nat_tree_g2',tree_g3:'nat_tree_g3',tree_sn1:'nat_tree_sn1',tree_sn2:'nat_tree_sn2',tree_dd:'nat_tree_dd',tree_vd1:'nat_tree_vd1',tree_vd2:'nat_tree_vd2',bush:'nat_bush',rock1:'nat_rock1',rock2:'nat_rock2'};
-  for(var k in NF){ (function(key,fn){ L.load('./assets/'+fn+'.glb',function(g){ NATURE[key]=g.scene; LD.nat++; },undefined,_lderr); })(k,NF[k]); }
+  for(var k in NF){ (function(key,fn){ _try(fn,function(g){ NATURE[key]=g.scene; LD.nat++; }); })(k,NF[k]); }
   }catch(e){_lderr(e);} initWeather(); }
 function gltfOverlay(g,key,opt){ var src=MODELS[key]||MODELS.minion; if(!src||!THREE.SkeletonUtils){window.__ovlfail='nosrc';return false;}
   var model; try{ model=THREE.SkeletonUtils.clone(src.scene); }catch(e){ window.__ovlfail='clone'; return false; }
@@ -5155,7 +5157,7 @@ function gltfOverlay(g,key,opt){ var src=MODELS[key]||MODELS.minion; if(!src||!T
 function applyGltf(g,type,boss){
   var pick=boss?'warrior':(type==='runner'?'rogue':(type==='brute'?'warrior':((type==='spitter'||type==='medic')?'mage':'minion')));
   var nat={minion:2.17,warrior:2.17,rogue:2.42,mage:2.5}[pick]||2.2;
-  return gltfOverlay(g,pick,{ boss:!!boss, native:nat, scale:boss?3.2:(pick==='warrior'?2.0:1.74), faceFlip:Math.PI, run:(type==='runner'||type==='brute'||boss), clips:{walk:'Walking_A',run:'Running_A',attack:'1H_Melee_Attack_Chop',death:'Death_A',idle:'Idle'}, hitR:boss?0.66:0.42, hitH:boss?2.0:1.55, hitY:boss?1.05:0.85 });
+  return gltfOverlay(g,pick,{ boss:!!boss, native:nat, scale:boss?3.2:(pick==='warrior'?2.0:1.74), faceFlip:0, run:(type==='runner'||type==='brute'||boss), clips:{walk:'Walking_A',run:'Running_A',attack:'1H_Melee_Attack_Chop',death:'Death_A',idle:'Idle'}, hitR:boss?0.66:0.42, hitH:boss?2.0:1.55, hitY:boss?1.05:0.85 });
 }
 function applyGltfSpider(g){ return gltfOverlay(g,'spider',{ native:5.3, scale:1.05, bone:0x3a2e26, faceFlip:0, run:false, yoff:0.45, clips:{walk:'SpiderArmature|Spider_Walk',attack:'SpiderArmature|Spider_Attack',death:'SpiderArmature|Spider_Death',idle:'SpiderArmature|Spider_Idle'}, hitR:0.6,hitH:0.5,hitY:0.35 }); }
 /* ===== nature decor per element ===== */
@@ -5201,7 +5203,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v4.1 16/06 16:16 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11'+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v4.2 16/06 18:41 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11'+(LD.le?(' '+LD.le):''); },800);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
 function gaitWalk(u){ const sw=Math.sin(u.phase), c=Math.cos(u.phase);
   u.legL.root.rotation.x=sw*0.7+0.05; u.legR.root.rotation.x=-sw*0.7+0.05;
