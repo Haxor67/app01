@@ -186,9 +186,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v4.6 17/06 22:03</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v4.7 17/06 22:35</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v4.6 17/06 22:03</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v4.7 17/06 22:35</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจ (คนเดียว)</button>
@@ -4645,9 +4645,9 @@ function buildExit(){
   g.position.copy(exitPos); worldRoot.add(g); exitGroup=g;
 }
 function setExitColor(open){ if(!exitGroup)return; const fl=exitGroup.getObjectByName('flare'),li=exitGroup.getObjectByName('lite'),bm=exitGroup.getObjectByName('beam'),rg=exitGroup.getObjectByName('ring');
-  if(open){ if(fl)fl.material.color.setHex(0x7dff4d); if(li){li.color.setHex(0x7dff4d);li.intensity=4.6;} if(bm)bm.material.opacity=0.24; if(rg)rg.material.color.setHex(0x7dff4d); }
+  if(open){ if(fl){fl.material.color.setHex(0x7dff4d); fl.scale.setScalar(2.4);} if(li){li.color.setHex(0x7dff4d); li.intensity=9; li.distance=120;} if(bm){bm.material.opacity=0.6; if(bm.material.color)bm.material.color.setHex(0x9bff66); bm.scale.set(2.2,1,2.2);} if(rg){rg.material.color.setHex(0x7dff4d); rg.material.opacity=0.95; rg.scale.setScalar(1.4);} }
   else { if(fl)fl.material.color.setHex(0x661111); if(li){li.color.setHex(0xff3322);li.intensity=1.2;} if(bm)bm.material.opacity=0; if(rg)rg.material.color.setHex(0xaa3322); } }
-function openExit(){ if(exitOpen)return; exitOpen=true; setExitColor(true); showMsg('🚪 ทางออกเปิดแล้ว! รีบไปที่พลุสีเขียว — ระวังบอส!',4200); }
+function openExit(){ if(exitOpen)return; if(!exitGroup){ try{buildExit();}catch(_e){} } exitOpen=true; setExitColor(true); showMsg('🚪 ทางออกเปิดแล้ว! รีบไปที่พลุสีเขียว — ระวังบอส!',4200); }
 function poseTank(u){ const sw=Math.sin(u.phase);
   u.legL.root.rotation.x=sw*0.45+0.1; u.legR.root.rotation.x=-sw*0.45+0.1;
   u.legL.low.rotation.x=Math.max(0,-Math.cos(u.phase))*0.6+0.2; u.legR.low.rotation.x=Math.max(0,Math.cos(u.phase))*0.6+0.2;
@@ -5244,7 +5244,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v4.6 17/06 22:03 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10'+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v4.7 17/06 22:35 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10'+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var pr=document.getElementById('pauseResume'),ph=document.getElementById('pauseHome'); if(pr)pr.addEventListener('click',function(){var pb=document.getElementById('pauseBtn'); if(pb&&pb.style.display!=='none')pb.click(); else {var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none';}}); if(ph)ph.addEventListener('click',function(){ if(confirm('\u0E01\u0E25\u0E31\u0E1A\u0E2B\u0E19\u0E49\u0E32\u0E41\u0E23\u0E01? \u0E40\u0E01\u0E21\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19\u0E08\u0E30\u0E08\u0E1A\u0E25\u0E07'))location.reload(); }); var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
 function gaitWalk(u){ const sw=Math.sin(u.phase), c=Math.cos(u.phase);
@@ -5675,7 +5675,7 @@ function updateExitZone(dt){ if(!net.on||!net.isHost||!exitOpen)return;
   if(exitTimer<=0){ exitTimer=10; reachExit(); } }
 function campaignWin(){ if(net.on && !net._won){ net._won=true; netSend({t:'win'}); } campaignDone=true; win(); }
 function loadStage(st){
-  state='play'; stage=st; wave=st; stageKills=0; bossActive=false; exitOpen=false; net._won=false; lockMsgT=0;
+  state='play'; stage=st; wave=st; stageKills=0; bossActive=false; exitOpen=false; net._won=false; lockMsgT=0; window._bossKilledFlag=false;
   enraged=false; enrageMul=1; medicAlive=false; medicCd=rand(4,7); exitTimer=10; exitInZone=0; exitTotal=0; reviveProg=0; prestart=false; safeRing=null;
   shopMode='play'; { const sh=el('shop'); if(sh) sh.style.display='none'; } if(IS_TOUCH) touchUI.style.display='block';
   curBiome=biomeForStage(st);
@@ -5712,7 +5712,7 @@ function killZombie(z){ z.userData.dead=true; z.userData.deathT=0; kills++; kill
   if(!z.userData.medic) spawnGore(new THREE.Vector3(z.position.x,z.position.y+0.9*(z.userData.scl||1),z.position.z), !!z.userData.boss);
   const u=z.userData; points+=(u.pts||10); lifePts+=(u.pts||10); dropCoins(z.position,u.coin||1); if(RNG()<0.24) dropAmmo(z.position.x,z.position.z,30+((RNG()*30)|0)); if(RNG()<0.05) dropPower(z.position.x,z.position.z); if(RNG()<0.06) dropPotion(z.position.x,z.position.z); updateEcon();
   if(u.medic){ medicAlive=false; medicCd=rand(16,24); player.hp=player.maxHP; healthFill.style.width='100%'; showMsg('แย่งหม้อ HP สำเร็จ! เลือดเต็ม',2400); if(net.on&&net.isHost){ netSend({t:'heal'}); broadcastStat(); } return; }
-  if(u.boss){ boss=null; bossActive=false; const bw=el('bossWrap'); if(bw)bw.style.display='none';
+  if(u.boss){ boss=null; bossActive=false; window._bossKilledFlag=true; const bw=el('bossWrap'); if(bw)bw.style.display='none';
     sndBossDeath(); { const _bp=new THREE.Vector3(z.position.x,z.position.y+1.3*(u.scl||1),z.position.z); for(let _k=0;_k<4;_k++){ setTimeout(()=>spawnGore(_bp,true),_k*200); } } dropPotion(z.position.x+1.6,z.position.z); dropPotion(z.position.x-1.6,z.position.z);
     enraged=true; enrageMul=1.6; targetZombies=Math.min(IS_TOUCH?15:22, targetZombies+6);
     for(const zz of zombies){ if(!zz.userData.dead&&!zz.userData.boss&&!zz.userData.medic) zz.userData.speed*=1.5; }
@@ -5894,6 +5894,7 @@ function objectiveText(){
   return '🎯 ฆ่าซอมบี้ '+stageKills+' / '+stageQuota()+' เพื่อเรียกบอส';
 }
 function updateObjective(){
+  if(window._bossKilledFlag && !exitOpen && state==='play' && (!net.on||net.isHost)){ openExit(); }
   { const ob=el('objective'); if(ob) ob.textContent = (state==='play')?objectiveText():''; }
   if(!exitGroup) return;
   const dx=exitPos.x-player.pos.x,dz=exitPos.z-player.pos.z,dist=Math.hypot(dx,dz);
