@@ -150,6 +150,10 @@
   <div id="pauseOverlay" style="position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;flex-direction:column;color:#eafff0;">
     <div style="font-size:30px;font-weight:bold;letter-spacing:2px;">⏸ หยุดชั่วคราว</div>
     <div id="pauseSub" style="margin-top:8px;color:#9fb6a0;font-size:14px;">โฮสต์หยุดเกมไว้…</div>
+    <div style="margin-top:24px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">
+      <button id="pauseResume" style="padding:13px 22px;border-radius:10px;border:none;font-size:16px;font-weight:bold;pointer-events:auto;cursor:pointer;background:linear-gradient(180deg,#2f9b4e,#13662f);color:#eafff0;">▶ เล่นต่อ</button>
+      <button id="pauseHome" style="padding:13px 22px;border-radius:10px;border:none;font-size:16px;font-weight:bold;pointer-events:auto;cursor:pointer;background:linear-gradient(180deg,#7a3030,#451818);color:#ffe0e0;">🏠 กลับหน้าแรก</button>
+    </div>
   </div>
   <div id="chatLog" style="position:absolute;left:10px;top:120px;max-width:62%;pointer-events:none;font-size:13px;line-height:1.5;text-shadow:0 0 5px #000;"></div>
   <div id="chatBox" style="position:fixed;left:0;right:0;bottom:0;z-index:240;display:none;padding:10px;background:rgba(0,0,0,.9);">
@@ -182,9 +186,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v4.2 16/06 18:41</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v4.4 17/06 21:16</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v4.2 16/06 18:41</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v4.4 17/06 21:16</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจ (คนเดียว)</button>
@@ -4804,7 +4808,7 @@ const PCOLORS={0:0x35502f,1:0x2f4f6b,2:0x6b4f2f,3:0x5a2f6b,4:0x2f6b5a,5:0x7a5a22
 function makeLabelSprite(){ const c=document.createElement('canvas'); c.width=256;c.height=64; const tex=new THREE.CanvasTexture(c); const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false,depthWrite:false,fog:false})); sp.scale.set(2.4,0.6,1); sp.userData={c,tex}; sp.visible=false; sp.renderOrder=999; scene.add(sp); return sp; }
 function drawLabel(sp,txt,color){ const c=sp.userData.c,x=c.getContext('2d'); x.clearRect(0,0,256,64); x.font='bold 34px sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.lineWidth=7; x.strokeStyle='rgba(0,0,0,0.92)'; x.strokeText(txt,128,34); x.fillStyle=color||'#eafff0'; x.fillText(txt,128,34); sp.userData.tex.needsUpdate=true; sp.userData.txt=txt; }
 function broadcastName(){ if(net.on) netSend({t:'name',id:net.myId,name:myName}); }
-function makeAvatar(col){ const jc=(col===undefined)?0x35502f:col;
+function makeAvatar(col){ if(typeof makeAnimalAvatar==="function"){ var _aa=makeAnimalAvatar(); if(_aa)return _aa; } const jc=(col===undefined)?0x35502f:col;
   const jacket=new THREE.MeshStandardMaterial({color:jc,roughness:1}), skin=new THREE.MeshStandardMaterial({color:0xb08054,roughness:1}), dark=new THREE.MeshStandardMaterial({color:0x1e2420,roughness:1});
   const g=new THREE.Group();
   const torso=cyl(0.26,0.22,0.82,jacket,8); torso.position.y=1.25; g.add(torso);
@@ -4826,11 +4830,12 @@ function getPlayer(id){ let p=net.players[id]; if(!p){ p={present:false,pos:new 
 function updateRemoteAvatars(dt){ for(const id in net.players){ if(+id===net.myId) continue; const r=net.players[id]; if(!r.avatar) continue;
     if(!r.present){ r.avatar.visible=false; if(r.label)r.label.visible=false; if(r.downMark)r.downMark.visible=false; continue; } r.avatar.visible=true;
     r.pos.lerp(r.tpos,Math.min(1,dt*16)); const gy=terrainH(r.pos.x,r.pos.z);
-    r.avatar.position.set(r.pos.x,gy,r.pos.z); r.avatar.rotation.y=r.yaw;
+    r.avatar.position.set(r.pos.x,gy,r.pos.z); r.avatar.rotation.y=r.yaw+(r.avatar.userData&&r.avatar.userData.isAnimal?ANIMAL_YAW:0);
     const moved=r.pos.distanceTo(r.lastPos); r.lastPos.copy(r.pos);
-    if(moved>0.01){ r.phase+=dt*9; const sw=Math.sin(r.phase);
+    if(r.avatar.userData&&r.avatar.userData.isAnimal){ if(r.avatar.userData.mxr)r.avatar.userData.mxr.update(dt); var _mv=moved>0.012; r.avatar.userData.play(_mv?(r.avatar.userData.walk||r.avatar.userData.idle):(r.avatar.userData.idle||r.avatar.userData.walk)); }
+    else if(r.avatar.userData&&r.avatar.userData.lL){ if(moved>0.01){ r.phase+=dt*9; const sw=Math.sin(r.phase);
       r.avatar.userData.lL.rotation.x=sw*0.55; r.avatar.userData.lR.rotation.x=-sw*0.55;
-      r.avatar.userData.aL.rotation.x=-1.25+sw*0.05; r.avatar.userData.aR.rotation.x=-1.35-sw*0.05; }
+      r.avatar.userData.aL.rotation.x=-1.25+sw*0.05; r.avatar.userData.aR.rotation.x=-1.35-sw*0.05; } }
     r.avatar.rotation.z=r.down?1.4:0;
     if(r.label){ r.label.visible=true; r.label.position.set(r.pos.x,gy+2.3,r.pos.z); }
     if(r.downMark){ if(r.down){ r.downMark.visible=true; const pl=1+Math.sin(performance.now()/220)*0.14; r.downMark.position.set(r.pos.x,gy+2.95,r.pos.z); r.downMark.scale.set(3.0*pl,0.75*pl,1); } else r.downMark.visible=false; }
@@ -5115,7 +5120,7 @@ const ELEMENTS=[
  {key:'void',  col:0xb46bff,glow:0xd2a0ff,light:0x32195a,wx:'storm'}
 ];
 function stageElement(){ var s=1; try{s=stage;}catch(e){} return ELEMENTS[Math.max(0,Math.floor((s-1)/5))%4]; }
-var LD={sk:0,nat:0,le:''};
+var LD={sk:0,nat:0,an:0,le:''};
 function _lderr(e){ try{ LD.le = e&&e.message?String(e.message).slice(0,14):(e&&e.type?e.type:'err'); }catch(_){ LD.le='err'; } }
 function loadGltfModels(){ try{ if(!THREE.GLTFLoader){ LD.le='noLoader'; initWeather(); return; } var L=new THREE.GLTFLoader();
   function _try(base,onok){ L.load('./assets/'+base+'.glb',onok,undefined,function(){ L.load(encodeURI('./assets/'+base.replace(/_/g,' ')+'.glb'),onok,undefined,_lderr); }); }
@@ -5126,6 +5131,7 @@ function loadGltfModels(){ try{ if(!THREE.GLTFLoader){ LD.le='noLoader'; initWea
   _try('Spider',function(g){MODELS.spider=g;});
   var NF={tree_g1:'nat_tree_g1',tree_g2:'nat_tree_g2',tree_g3:'nat_tree_g3',tree_sn1:'nat_tree_sn1',tree_sn2:'nat_tree_sn2',tree_dd:'nat_tree_dd',tree_vd1:'nat_tree_vd1',tree_vd2:'nat_tree_vd2',bush:'nat_bush',rock1:'nat_rock1',rock2:'nat_rock2'};
   for(var k in NF){ (function(key,fn){ _try(fn,function(g){ NATURE[key]=g.scene; LD.nat++; }); })(k,NF[k]); }
+  AANIM.forEach(function(nm){ _try('anim_'+nm,function(g){ ANIMALS[nm]=g; LD.an++; }); });
   }catch(e){_lderr(e);} initWeather(); }
 function gltfOverlay(g,key,opt){ var src=MODELS[key]||MODELS.minion; if(!src||!THREE.SkeletonUtils){window.__ovlfail='nosrc';return false;}
   var model; try{ model=THREE.SkeletonUtils.clone(src.scene); }catch(e){ window.__ovlfail='clone'; return false; }
@@ -5160,6 +5166,28 @@ function applyGltf(g,type,boss){
   return gltfOverlay(g,pick,{ boss:!!boss, native:nat, scale:boss?3.2:(pick==='warrior'?2.0:1.74), faceFlip:0, run:(type==='runner'||type==='brute'||boss), clips:{walk:'Walking_A',run:'Running_A',attack:'1H_Melee_Attack_Chop',death:'Death_A',idle:'Idle'}, hitR:boss?0.66:0.42, hitH:boss?2.0:1.55, hitY:boss?1.05:0.85 });
 }
 function applyGltfSpider(g){ return gltfOverlay(g,'spider',{ native:5.3, scale:1.05, bone:0x3a2e26, faceFlip:0, run:false, yoff:0.45, clips:{walk:'SpiderArmature|Spider_Walk',attack:'SpiderArmature|Spider_Attack',death:'SpiderArmature|Spider_Death',idle:'SpiderArmature|Spider_Idle'}, hitR:0.6,hitH:0.5,hitY:0.35 }); }
+/* ===== animal player avatars ===== */
+var ANIMALS={}; var AANIM=['wolf','fox','deer','stag','bull','husky','shiba','alpaca','horse','cow']; var ANIMAL_YAW=Math.PI;
+function buildAvGun(){ var g=new THREE.Group(); var mB=new THREE.MeshStandardMaterial({color:0x23262b,roughness:0.55,metalness:0.45}); var mW=new THREE.MeshStandardMaterial({color:0x6e4a28,roughness:0.85});
+  var body=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.17,1.0),mB); g.add(body);
+  var bar=new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.045,0.95,8),mB); bar.rotation.x=Math.PI/2; bar.position.set(0,0.05,0.72); g.add(bar);
+  var stk=new THREE.Mesh(new THREE.BoxGeometry(0.11,0.2,0.42),mW); stk.position.set(0,-0.05,-0.62); g.add(stk);
+  var mag=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.27,0.14),mB); mag.position.set(0,-0.2,0.04); g.add(mag);
+  g.traverse(function(o){ if(o.isMesh)o.castShadow=true; }); return g; }
+function makeAnimalAvatar(){ var ks=Object.keys(ANIMALS); if(!ks.length||!THREE.SkeletonUtils)return null;
+  var name=ks[(Math.random()*ks.length)|0]; var src=ANIMALS[name]; var model;
+  try{ model=THREE.SkeletonUtils.clone(src.scene); }catch(e){ return null; }
+  var grp=new THREE.Group(); var SC=0.3; model.scale.setScalar(SC); model.position.y=0.78;
+  model.traverse(function(o){ if(o.isMesh){o.castShadow=true;o.frustumCulled=false;} });
+  grp.add(model);
+  var gun=buildAvGun(); gun.position.set(0.32,1.0,0.45); grp.add(gun);
+  var mx=new THREE.AnimationMixer(model); var cl=src.animations||[];
+  function A(n){ var c=THREE.AnimationClip.findByName(cl,n); return c?mx.clipAction(c):null; }
+  var walk=A('AnimalArmature|Walk'), idle=A('AnimalArmature|Idle')||A('AnimalArmature|Idle_2'), run=A('AnimalArmature|Gallop')||walk;
+  var cur=null; function play(a){ if(!a||cur===a)return; if(cur)cur.fadeOut(0.18); a.reset().fadeIn(0.18).play(); cur=a; }
+  if(idle)play(idle); else if(walk)play(walk);
+  grp.userData={isAnimal:true,mxr:mx,walk:walk,idle:idle,run:run,play:play,animal:name,gun:gun};
+  return grp; }
 /* ===== nature decor per element ===== */
 var DECOR={root:null,stage:-99};
 function elemDecor(k){ if(k==='ice')return {trees:['tree_sn1','tree_sn2','tree_g2'],rocks:['rock1','rock2'],tint:0xdfe9f2,tl:0.25};
@@ -5203,7 +5231,8 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v4.2 16/06 18:41 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11'+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v4.4 17/06 21:16 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10'+(LD.le?(' '+LD.le):''); },800);
+setTimeout(function(){ var pr=document.getElementById('pauseResume'),ph=document.getElementById('pauseHome'); if(pr)pr.addEventListener('click',function(){var pb=document.getElementById('pauseBtn'); if(pb&&pb.style.display!=='none')pb.click(); else {var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none';}}); if(ph)ph.addEventListener('click',function(){ if(confirm('\u0E01\u0E25\u0E31\u0E1A\u0E2B\u0E19\u0E49\u0E32\u0E41\u0E23\u0E01? \u0E40\u0E01\u0E21\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19\u0E08\u0E30\u0E08\u0E1A\u0E25\u0E07'))location.reload(); }); },1200);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
 function gaitWalk(u){ const sw=Math.sin(u.phase), c=Math.cos(u.phase);
   u.legL.root.rotation.x=sw*0.7+0.05; u.legR.root.rotation.x=-sw*0.7+0.05;
@@ -6017,7 +6046,7 @@ function renderShop(){
       h+='<div class="shopcard'+(cur?' cur':'')+'"><div class="ic">'+(WICON[i]||'🔫')+'</div><div class="nm">'+w.name+'</div><div class="ds">'+stat+'</div>'+btn+'</div>'; });
     h+='</div>';
   } else if(shopTab==='upgrades'){
-    h+='<div class="shopsub">⬆️ อัปเกรดถาวร — ใช้ ⭐พอยต์</div><div class="shopgrid">';
+    h+=statusHTML(); h+='<div class="shopsub">⬆️ อัปเกรดถาวร — ใช้ ⭐พอยต์</div><div class="shopgrid">';
     const UP=[['dmg','💥','ดาเมจอาวุธ','+18% ต่อเลเวล',90],['mag','🧮','ความจุแม็ก','+5 นัด',80],['reload','⏱️','รีโหลดเร็ว','-12%',80],['hp','❤️','พลังชีวิต','+25',110],['speed','👟','ความเร็ววิ่ง','+8%',90],['armor','🛡️','เกราะกันดาเมจ','+7% (สูงสุด 60%)',100],['crit','🎯','คริติคอล','+5% โอกาส ×2.5',100]];
     UP.forEach(function(r){ const k=r[0],ic=r[1],label=r[2],desc=r[3],base=r[4],lvl=up[k],cost=base*(lvl+1),can=points>=cost;
       h+='<div class="shopcard"><div class="ic">'+ic+'</div><div class="nm">'+label+' <span style="color:#7dff4d">Lv'+lvl+'</span></div><div class="ds">'+desc+'</div><button class="shopbuy up" data-up="'+k+'" data-cost="'+cost+'"'+(can?'':' disabled')+'>⭐ '+cost+'</button></div>'; });
