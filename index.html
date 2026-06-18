@@ -145,8 +145,8 @@
   <div id="objective"></div>
   <div id="powerup"></div>
   <div id="fsBtn" style="position:absolute;top:12px;right:14px;pointer-events:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;">⛶</div>
-  <div id="pauseBtn" style="position:absolute;top:12px;right:60px;pointer-events:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;width:38px;height:38px;border-radius:8px;display:none;align-items:center;justify-content:center;font-size:18px;">⏸</div>
-  <div id="chatBtn" style="position:absolute;top:12px;right:106px;pointer-events:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;width:38px;height:38px;border-radius:8px;display:none;align-items:center;justify-content:center;font-size:18px;">💬</div>
+  <div id="pauseBtn" style="position:absolute;top:118px;left:10px;pointer-events:auto;background:rgba(18,42,28,.9);border:2px solid rgba(125,255,77,.85);color:#fff;width:54px;height:54px;border-radius:14px;display:none;align-items:center;justify-content:center;font-size:25px;box-shadow:0 0 12px rgba(0,0,0,.5);">⏸</div>
+  <div id="chatBtn" style="position:absolute;top:182px;left:10px;pointer-events:auto;background:rgba(18,30,48,.9);border:2px solid rgba(120,170,255,.85);color:#fff;width:54px;height:54px;border-radius:14px;display:none;align-items:center;justify-content:center;font-size:25px;box-shadow:0 0 12px rgba(0,0,0,.5);">💬</div>
   <div id="pauseOverlay" style="position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;flex-direction:column;color:#eafff0;">
     <div style="font-size:30px;font-weight:bold;letter-spacing:2px;">⏸ หยุดชั่วคราว</div>
     <div id="pauseSub" style="margin-top:8px;color:#9fb6a0;font-size:14px;">โฮสต์หยุดเกมไว้…</div>
@@ -155,7 +155,7 @@
       <button id="pauseHome" style="padding:13px 22px;border-radius:10px;border:none;font-size:16px;font-weight:bold;pointer-events:auto;cursor:pointer;background:linear-gradient(180deg,#7a3030,#451818);color:#ffe0e0;">🏠 กลับหน้าแรก</button>
     </div>
   </div>
-  <div id="chatLog" style="position:absolute;left:10px;top:120px;max-width:62%;pointer-events:none;font-size:13px;line-height:1.5;text-shadow:0 0 5px #000;"></div>
+  <div id="chatLog" style="position:absolute;left:74px;top:120px;max-width:62%;pointer-events:none;font-size:13px;line-height:1.5;text-shadow:0 0 5px #000;"></div>
   <div id="chatBox" style="position:fixed;left:0;right:0;bottom:0;z-index:240;display:none;padding:10px;background:rgba(0,0,0,.9);">
     <div style="display:flex;gap:8px;max-width:640px;margin:0 auto;">
       <input id="chatInput" maxlength="120" placeholder="พิมพ์ข้อความ…" style="pointer-events:auto;flex:1;padding:11px;border-radius:8px;border:1px solid rgba(125,255,77,.4);background:#0c1410;color:#eafff0;font-size:15px;" />
@@ -186,9 +186,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v6.7 19/06 01:54</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v6.8 19/06 03:55</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v6.7 19/06 01:54</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v6.8 19/06 03:55</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจ (คนเดียว)</button>
@@ -4738,18 +4738,6 @@ function buildGun(){
   muzzleFlash.position.set(0,0.02,-0.92); gun.add(muzzleFlash);
   muzzleLight=new THREE.PointLight(0xffcaa0,0,9,2); muzzleLight.position.set(0,0.02,-0.92); gun.add(muzzleLight);
   gun.userData.parts={bodyMat:body,darkMat:dark,tanMat:tan,barrelMat:barrelMat,barrel:barrel,receiver:receiver,mag:mag,stock:stock};
-  (function(){ var hg=new THREE.Group(); var glove=new THREE.MeshLambertMaterial({color:0x262a24}), skin=new THREE.MeshLambertMaterial({color:0x7a5638}), cuff=new THREE.MeshLambertMaterial({color:0x14160f});
-    function limb(ax,ay,az,bx,by,bz,r,mat){ var a=new THREE.Vector3(ax,ay,az),b=new THREE.Vector3(bx,by,bz),d=b.clone().sub(a),L=d.length(); var m=new THREE.Mesh(new THREE.CylinderGeometry(r*0.82,r,L,8),mat); m.position.copy(a).add(b).multiplyScalar(0.5); m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize()); m.castShadow=false; m.frustumCulled=false; return m; }
-    function fist(x,y,z,s){ var h=new THREE.Mesh(new THREE.BoxGeometry(0.085*s,0.075*s,0.1*s),skin); h.position.set(x,y,z); h.frustumCulled=false; var th=new THREE.Mesh(new THREE.BoxGeometry(0.03*s,0.05*s,0.05*s),skin); th.position.set(x-0.04*s,y+0.03*s,z); h.add(th); return h; }
-    var HT=window.HANDS_TUNE||{rfx:0.2,rfy:-0.4,rfz:-0.34, rex:0.34,rey:-0.66,rez:0.08, lfx:0.13,lfy:-0.37,lfz:-0.64, lex:-0.05,ley:-0.66,lez:-0.26, r:0.045};
-    hg.add(limb(HT.rex,HT.rey,HT.rez, HT.rfx,HT.rfy,HT.rfz, HT.r,cuff));
-    hg.add(limb(HT.rex,HT.rey,HT.rez, HT.rex,HT.rey-0.14,HT.rez+0.05, HT.r*1.02,glove));
-    hg.add(fist(HT.rfx,HT.rfy,HT.rfz,1.0));
-    hg.add(limb(HT.lex,HT.ley,HT.lez, HT.lfx,HT.lfy,HT.lfz, HT.r,cuff));
-    hg.add(limb(HT.lex,HT.ley,HT.lez, HT.lex,HT.ley-0.14,HT.lez-0.05, HT.r*1.02,glove));
-    hg.add(fist(HT.lfx,HT.lfy,HT.lfz,0.95));
-    gun.userData.handsGroup=hg; gun.add(hg);
-  })();
   gun.position.copy(HIP); camera.add(gun); scene.add(camera);
 }
 const WEAPONS=[
@@ -5085,14 +5073,16 @@ function makeMedic(){ const g=makeZombie('medic'); const hz=new THREE.Color(0x5f
   const beam=new THREE.Mesh(new THREE.CylinderGeometry(0.17,0.17,13,10,1,true),new THREE.MeshBasicMaterial({color:0x4dffb0,transparent:true,opacity:0.36,blending:THREE.AdditiveBlending,depthWrite:false,fog:false})); beam.position.y=6.5; g.add(beam);
   g.userData.medic=true; g.userData.lite=lite; g.userData.halo=halo; return g; }
 function spawnMedic(){ const z=makeMedic(); let x,zz,t=0; do{const a=RNG()*6.28,d=rand(12,22); x=player.pos.x+Math.cos(a)*d; zz=player.pos.z+Math.sin(a)*d; t++;}while((Math.hypot(x,zz)>R-3||blocked(x,zz))&&t<20); z.userData.id=zidCounter++; z.position.set(x,terrainH(x,zz),zz); scene.add(z); zombies.push(z); medicAlive=true; bmsg('ผีหม้อ HP โผล่! (มันจะหนีเข้าฝูง) ฆ่ามันเพื่อแย่งเลือดเต็ม',2800); }
-function pickType(){ const r=RNG();
-  // biome-flavored beast pools unlock as stages rise
-  if(wave>=2){ const beasts=BEASTS[curBiome?curBiome.id:'forest']||['dog']; if(r<0.30) return beasts[(RNG()*beasts.length)|0]; }
-  if(wave>=4 && r<0.40) return 'spitter';
-  if(wave>=3 && r<0.50) return 'thrower';
-  if(wave>=3 && r<0.60) return 'brute';
-  if(wave>=2 && r<0.78) return 'runner';
-  if(r<0.86) return 'crawler';
+function pickType(){ const r=RNG(); const w=(typeof wave!=='undefined'?wave:1); const s=(typeof stage!=='undefined'?stage:1);
+  const beasts=BEASTS[curBiome?curBiome.id:'forest']||['dog'];
+  // varied mix EVERY stage so no two enemies look/move/attack the same
+  if(r<0.15) return 'thrower';                       // ranged archer (kites & shoots)
+  if(r<0.29) return beasts[(RNG()*beasts.length)|0]; // beast/spider
+  if(r<0.41) return 'runner';                        // fast flanker
+  if(r<0.51 && (w>=2||s>=2)) return 'spitter';       // ranged caster
+  if(r<0.62) return 'brute';                         // heavy charger
+  if(r<0.73) return 'crawler';                       // low scuttler
+  if(r<0.84) return beasts[(RNG()*beasts.length)|0]; // 2nd beast roll
   return 'walker'; }
 const BEASTS={ forest:['dog','monkey','spider'], swamp:['spider','scorpion','dog'], grave:['dog','spider','cat'], snow:['bear','tiger','dog'], hell:['tiger','lion','scorpion','bear'] };
 function tatters(parent,n,mat,y0,rad){ for(let i=0;i<n;i++){ const w=rand(0.04,0.1),h=rand(0.16,0.36); const st=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.015),mat); const ang=RNG()*6.28; st.position.set(Math.cos(ang)*rad,y0+rand(-0.08,0.06)-h*0.4,Math.sin(ang)*rad*0.7+0.04); st.rotation.set(rand(-0.3,0.3),ang,rand(-0.25,0.25)); parent.add(st); } }
@@ -5283,7 +5273,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v6.7 19/06 01:54 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+'/3 |wA'+(window.__wA||0)+' hs'+(window.__hsMiss||0)+' pm'+(window.__wpnMiss||0)+(window.__wErr?(' E:'+window.__wErr):'')+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v6.8 19/06 03:55 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var pr=document.getElementById('pauseResume'),ph=document.getElementById('pauseHome'); if(pr)pr.addEventListener('click',function(){var pb=document.getElementById('pauseBtn'); if(pb&&pb.style.display!=='none')pb.click(); else {var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none';}}); if(ph)ph.addEventListener('click',function(){ if(confirm('\u0E01\u0E25\u0E31\u0E1A\u0E2B\u0E19\u0E49\u0E32\u0E41\u0E23\u0E01? \u0E40\u0E01\u0E21\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19\u0E08\u0E30\u0E08\u0E1A\u0E25\u0E07'))location.reload(); }); var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -6051,7 +6041,7 @@ function beginPlay(seed,doSpawn){
   startScreen.style.display='none';overScreen.style.display='none';winScreen.style.display='none';coopScreen.style.display='none';{const lb=el('lobby');if(lb)lb.style.display='none';}
   hud.style.display='block'; if(IS_TOUCH) touchUI.style.display='block'; if(actx&&actx.state==='suspended')actx.resume(); updatePotionHUD();
   campaignDone=false; loadStage(1); checkOrientation();
-  { const cbn=el('chatBtn'), pbn=el('pauseBtn'); if(cbn)cbn.style.display=net.on?'flex':'none'; if(pbn)pbn.style.display=(!net.on||net.isHost)?'flex':'none'; paused=false; const po=el('pauseOverlay'); if(po)po.style.display='none'; }
+  { const cbn=el('chatBtn'), pbn=el('pauseBtn'); if(cbn)cbn.style.display='flex'; if(pbn)pbn.style.display='flex'; paused=false; const po=el('pauseOverlay'); if(po)po.style.display='none'; }
   if(net.on) broadcastName();
 }
 function fsActive(){ return document.fullscreenElement||document.webkitFullscreenElement; }
@@ -6201,12 +6191,35 @@ boot();
   }catch(e){ M.type=null; } }
   function reward(){ try{ if(typeof points!=='undefined')points+=240; if(typeof lifePts!=='undefined')lifePts+=240; if(typeof updateEcon==='function')updateEcon(); }catch(e){}
     try{ if(typeof showMsg==='function')showMsg('✅ ภารกิจทีมสำเร็จ! +240 คะแนน',2600); }catch(e){} }
+  // (#2) FORCED mission briefing: freeze game, show role + how-to, must tap to begin
+  var HOW={beacon:'วิธีทำ: เดินไปยืนในวงแสงสีฟ้ากลางแผนที่ ค้างไว้จนแถบเต็ม',
+    switches:'วิธีทำ: แยกย้ายไปยืนในวงแสงทั้ง 3 จุดให้ครบ',
+    nests:'วิธีทำ: เข้าใกล้รังสีม่วงทั้ง 3 จุดเพื่อทำลาย',
+    escort:'วิธีทำ: อยู่ใกล้หีบสีทอง เพื่อพามันไปจุดออก'};
+  function brief(){ try{
+    var d=document.getElementById('coopBrief');
+    if(!d){ d=document.createElement('div'); d.id='coopBrief'; d.style.cssText='position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.86);pointer-events:auto;'; try{(document.body||document.documentElement).appendChild(d);}catch(e){} }
+    var role='โหมดเดี่ยว — ลุยภารกิจให้ครบด้วยตัวเอง';
+    try{ if(typeof net!=='undefined'&&net&&net.on){ role= net.isHost ? 'บทบาท: หัวหน้าทีม (โฮสต์) — คุมจังหวะและบุกเป้าหมาย' : 'บทบาท: หน่วยสนับสนุน — คุมแนวหลังและช่วยเพื่อน'; } }catch(e){}
+    d.innerHTML='<div style="max-width:90%;text-align:center;color:#eaf2ff;background:linear-gradient(180deg,#10203a,#0a1422);padding:24px 26px;border-radius:18px;border:2px solid rgba(120,170,255,.6);box-shadow:0 0 44px rgba(60,120,255,.4);">'
+      +'<div style="font-size:13px;color:#8fb6ff;letter-spacing:2px;">ภารกิจด่าน '+stage+'</div>'
+      +'<div style="font-size:18px;font-weight:bold;margin:9px 0 11px;line-height:1.5;">'+(LABEL[M.type]||'')+'</div>'
+      +'<div style="font-size:14px;color:#bcd4ff;margin-bottom:9px;line-height:1.5;">'+(HOW[M.type]||'')+'</div>'
+      +'<div style="font-size:13px;color:#ffd27a;margin-bottom:18px;">'+role+'</div>'
+      +'<button id="coopBriefOk" style="pointer-events:auto;padding:14px 34px;border:none;border-radius:13px;background:#2f6bff;color:#fff;font-size:16px;font-weight:bold;">เข้าใจแล้ว — เริ่มเลย</button>'
+      +'</div>';
+    d.style.display='flex';
+    try{ if(typeof paused!=='undefined')paused=true; }catch(e){}
+    var ok=document.getElementById('coopBriefOk');
+    if(ok){ ok.onclick=function(){ d.style.display='none'; try{ if(typeof paused!=='undefined')paused=false; var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none'; var pb=document.getElementById('pauseBtn'); if(pb)pb.textContent='⏸'; }catch(e){} }; }
+  }catch(e){} }
   function update(){ try{
     if(ready()){
       if(state!=='play'){ if(M.banner)M.banner.style.display='none'; }
       else {
-        if(stage!==M.stage){ M.stage=stage; clearM(); M.type=TYPES[((stage-1)%TYPES.length+TYPES.length)%TYPES.length]; M.t0=performance.now(); spawn(); }
+        if(stage!==M.stage){ M.stage=stage; clearM(); M.type=TYPES[((stage-1)%TYPES.length+TYPES.length)%TYPES.length]; M.t0=performance.now(); spawn(); brief(); }
         var b=hud();
+        var _pz=false; try{_pz=(typeof paused!=='undefined'&&paused);}catch(e){}
         if(!M.type){ b.style.display='none'; }
         else {
           var pts=[]; if(player&&player.pos)pts.push(player.pos);
@@ -6214,10 +6227,10 @@ boot();
           var doneCt=0, now=performance.now();
           for(var i=0;i<M.nodes.length;i++){ var nd=M.nodes[i];
             if(nd.kind==='escort'){ var ex=exitP(); var near=false; for(var k=0;k<pts.length;k++){ if(Math.hypot(pts[k].x-nd.pos.x,pts[k].z-nd.pos.z)<5){near=true;break;} }
-              if(near&&!nd.done){ var ddx=ex.x-nd.pos.x,ddz=ex.z-nd.pos.z,dl=Math.hypot(ddx,ddz)||1; var step=Math.min(dl,0.06); nd.pos.x+=ddx/dl*step; nd.pos.z+=ddz/dl*step; var gy=0;try{gy=terrainH(nd.pos.x,nd.pos.z);}catch(e){} nd.grp.position.set(nd.pos.x,gy,nd.pos.z); if(dl<3){nd.done=true;} nd.prog=1-Math.min(1,dl/ (Math.hypot(ex.x,ex.z)||30)); }
+              if(near&&!nd.done&&!_pz){ var ddx=ex.x-nd.pos.x,ddz=ex.z-nd.pos.z,dl=Math.hypot(ddx,ddz)||1; var step=Math.min(dl,0.06); nd.pos.x+=ddx/dl*step; nd.pos.z+=ddz/dl*step; var gy=0;try{gy=terrainH(nd.pos.x,nd.pos.z);}catch(e){} nd.grp.position.set(nd.pos.x,gy,nd.pos.z); if(dl<3){nd.done=true;} nd.prog=1-Math.min(1,dl/ (Math.hypot(ex.x,ex.z)||30)); }
             } else {
               var near2=false; for(var k2=0;k2<pts.length;k2++){ if(Math.hypot(pts[k2].x-nd.pos.x,pts[k2].z-nd.pos.z)<nd.rad){near2=true;break;} }
-              if(near2&&!nd.done){ nd.prog+=0.016/(nd.kind==='beacon'?7:3.5); if(nd.prog>=1){ nd.done=true; nd.prog=1; } }
+              if(near2&&!nd.done&&!_pz){ nd.prog+=0.016/(nd.kind==='beacon'?7:3.5); if(nd.prog>=1){ nd.done=true; nd.prog=1; } }
               if(nd.done){ try{ nd.ring.material.color.setHex(0x33ff88); nd.pil.material.color.setHex(0x33ff88); nd.pil.material.emissive.setHex(0x33ff88);}catch(e){} }
               else { try{ nd.pil.material.emissiveIntensity=0.5+Math.sin(now/200)*0.3; }catch(e){} }
             }
