@@ -186,9 +186,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v6.4 18/06 16:31</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v6.5 19/06 01:28</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v6.4 18/06 16:31</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v6.5 19/06 01:28</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจ (คนเดียว)</button>
@@ -5125,7 +5125,7 @@ const ELEMENTS=[
 function stageElement(){ var s=1; try{s=stage;}catch(e){} return ELEMENTS[Math.max(0,Math.floor((s-1)/5))%4]; }
 var LD={sk:0,nat:0,an:0,dino:0,wpn:0,le:''};
 var WPN={};
-var GUN={}; var WPN_ROT={x:Math.PI,y:0,z:0}; var GUN_TUNE={ ar:{len:0.64,rx:0.13,ry:-Math.PI/2,rz:0,px:0.24,py:-0.4,pz:-0.5}, shotgun:{len:0.7,rx:0.13,ry:Math.PI/2,rz:0,px:0.24,py:-0.4,pz:-0.5}, pistol:{len:0.38,rx:0.1,ry:Math.PI/2,rz:0,px:0.2,py:-0.32,pz:-0.32} };
+var GUN={}; var WPN_ROT={x:Math.PI/2,y:0,z:0}; var GUN_TUNE={ ar:{len:0.64,rx:0.13,ry:-Math.PI/2,rz:0,px:0.24,py:-0.4,pz:-0.5}, shotgun:{len:0.7,rx:0.13,ry:Math.PI/2,rz:0,px:0.24,py:-0.4,pz:-0.5}, pistol:{len:0.38,rx:0.1,ry:Math.PI/2,rz:0,px:0.2,py:-0.32,pz:-0.32} };
 function _lderr(e){ try{ LD.le = e&&e.message?String(e.message).slice(0,14):(e&&e.type?e.type:'err'); }catch(_){ LD.le='err'; } }
 function loadGltfModels(){ try{ if(!THREE.GLTFLoader){ LD.le='noLoader'; initWeather(); return; } var L=new THREE.GLTFLoader();
   function _try(base,onok){ L.load('./assets/'+base+'.glb',onok,undefined,function(){ L.load(encodeURI('./assets/'+base.replace(/_/g,' ')+'.glb'),onok,undefined,_lderr); }); }
@@ -5141,7 +5141,7 @@ function loadGltfModels(){ try{ if(!THREE.GLTFLoader){ LD.le='noLoader'; initWea
   AANIM.forEach(function(nm){ _try('anim_'+nm,function(g){ ANIMALS[nm]=g; LD.an++; }); });
   ['trex','apato','stego','raptor','para'].forEach(function(nm){ _try('dino_'+nm,function(g){ MODELS[nm]=g; LD.dino++; }); });
   }catch(e){_lderr(e);} initWeather(); }
-function gltfOverlay(g,key,opt){ var src=MODELS[key]||MODELS.minion; if(!src||!THREE.SkeletonUtils){window.__ovlfail='nosrc';return false;}
+function gltfOverlay(g,key,opt){ var src=(opt&&opt.src)||MODELS[key]||MODELS.minion; if(!src||!THREE.SkeletonUtils){window.__ovlfail='nosrc';return false;}
   var model; try{ model=THREE.SkeletonUtils.clone(src.scene); }catch(e){ window.__ovlfail='clone'; return false; }
   var meshN=0; model.traverse(function(o){ if(o.isMesh)meshN++; }); if(!meshN){window.__ovlfail='nomesh';return false;}
   var el=opt.el||stageElement();
@@ -5172,7 +5172,7 @@ function gltfOverlay(g,key,opt){ var src=MODELS[key]||MODELS.minion; if(!src||!T
   return true;
 }
 function applyGltf(g,type,boss){
-  var pick; if(boss){ var _ek=stageElement().key; pick=(_ek==='poison')?'mage':(_ek==='ice')?'rogue':(_ek==='fire')?'warrior':'mage'; } else { pick=(type==='runner')?'rogue':(type==='brute')?'warrior':((type==='spitter'||type==='medic')?'mage':'minion'); }
+  var pick; if(boss){ var _ek=stageElement().key; pick=(_ek==='poison')?'mage':(_ek==='ice')?'rogue':(_ek==='fire')?'warrior':'mage'; } else { pick=(type==='runner')?'rogue':(type==='brute')?'warrior':((type==='spitter'||type==='medic')?'mage':(type==='thrower')?'rogue':'minion'); }
   var nat={minion:2.17,warrior:2.17,rogue:2.42,mage:2.5}[pick]||2.2;
   return gltfOverlay(g,pick,{ boss:!!boss, native:nat, scale:boss?3.8:(pick==='warrior'?2.0:1.74), weapon:({minion:'blade',warrior:'axe',rogue:'crossbow',mage:'staff'}[pick]), faceFlip:0, run:(type==='runner'||type==='brute'||boss), clips:{walk:'Walking_A',run:'Running_A',attack:'1H_Melee_Attack_Chop',death:'Death_A',idle:'Idle'}, hitR:boss?0.66:0.42, hitH:boss?2.0:1.55, hitY:boss?1.05:0.85 });
 }
@@ -5189,10 +5189,16 @@ function fillScoreboard(elid){ var e=document.getElementById(elid); if(!e)return
   if(typeof net!=='undefined'&&net.on){ var names=[(typeof myName!=='undefined'?myName:'\u0E04\u0E38\u0E13')]; for(var id in net.players){ if(+id!==net.myId&&net.players[id]&&net.players[id].present)names.push(net.players[id].name||'\u0E1C\u0E39\u0E49\u0E40\u0E25\u0E48\u0E19'); } h+='<br><span style="color:#9fb6a0;font-size:13px;">\U0001F465 \u0E17\u0E35\u0E21: '+names.map(function(n){return (typeof escapeHtml==='function')?escapeHtml(n):n;}).join(' \u00B7 ')+'</span>'; }
   h+='</div>'; e.innerHTML=h; }
 var DINONAT={trex:15.2,apato:11.7,stego:10.6,raptor:5.5,para:6.0};
-function applyDinoBoss(g){ var st=(typeof stage!=='undefined'?stage:1); var pick=(st%4===0)?'raptor':'trex'; if(!MODELS[pick])pick=MODELS.trex?'trex':(MODELS.raptor?'raptor':null);
+function applyDinoBoss(g){ var st=(typeof stage!=='undefined'?stage:1); var _bp=['trex','raptor','stego','apato','raptor','trex']; var pick=_bp[st%6]; if(!MODELS[pick])pick=MODELS.trex?'trex':(MODELS.raptor?'raptor':(MODELS.stego?'stego':null));
   if(!pick||!MODELS[pick]) return applyGltf(g,'boss',true);
-  return gltfOverlay(g,pick,{ boss:true, dino:true, keepColor:true, dark:0.6, eye:0xff1414, native:DINONAT[pick]||12, scale:(pick==='raptor')?5.0:4.6, faceFlip:0, run:true, clips:{walk:'_Walk',run:'_Run',attack:'_Attack',death:'_Death',idle:'_Idle'}, hitR:0.85, hitH:2.6, hitY:1.3 }); }
+  return gltfOverlay(g,pick,{ boss:true, dino:true, keepColor:true, dark:0.6, eye:0xff1414, native:DINONAT[pick]||12, scale:(pick==='raptor')?5.0:(pick==='stego')?4.2:(pick==='apato')?5.2:4.6, faceFlip:0, run:true, clips:{walk:'_Walk',run:'_Run',attack:'_Attack',death:'_Death',idle:'_Idle'}, hitR:0.85, hitH:2.6, hitY:1.3 }); }
 function applyBoneColossus(g){ if(!MODELS.warrior&&!MODELS.minion) return applyGltf(g,'boss',true); return gltfOverlay(g,(MODELS.warrior?'warrior':'minion'),{ boss:true, colossus:true, weapon:'axe', shield:true, native:2.17, scale:5.2, faceFlip:0, run:false, clips:{walk:'Walking_A',run:'Running_A',attack:'1H_Melee_Attack_Chop',death:'Death_A',idle:'Idle'}, hitR:0.72, hitH:2.3, hitY:1.15 }); }
+var ANIMAP={dog:'wolf',cat:'fox',monkey:'shiba',bear:'bull',tiger:'stag',lion:'horse',husky:'husky'};
+function applyAnimalEnemy(g,type){ var nm=ANIMAP[type]; if(!nm||!ANIMALS[nm]){ var ks=Object.keys(ANIMALS); if(!ks.length) return applyGltf(g,type,false); nm=ANIMALS[nm]?nm:ks[(Math.random()*ks.length)|0]; }
+  var big=(type==='bear'||type==='tiger'||type==='lion');
+  var ok=gltfOverlay(g,'__an',{ src:ANIMALS[nm], keepColor:true, dark:0.8, eye:0xff3a1a, native:1, scale:big?0.6:0.42, yoff:0, run:true, faceFlip:0,
+    clips:{walk:'AnimalArmature|Walk',run:'AnimalArmature|Gallop',attack:'AnimalArmature|Attack',death:'AnimalArmature|Death',idle:'AnimalArmature|Idle'}, hitR:big?0.6:0.42, hitH:big?1.2:0.85, hitY:big?0.6:0.42 });
+  if(!ok) return applyGltf(g,type,false); return ok; }
 function applyDinoEnemy(g,type){ var pick=(type==='brute')?'stego':'raptor'; if(!MODELS[pick]) return applyGltf(g,type,false);
   return gltfOverlay(g,pick,{ dino:true, keepColor:true, dark:0.78, eye:0xff3a1a, native:DINONAT[pick]||8, scale:(type==='brute')?3.0:2.3, faceFlip:0, run:(type==='runner'), clips:{walk:'_Walk',run:'_Run',attack:'_Attack',death:'_Death',idle:'_Idle'}, hitR:(type==='brute')?0.6:0.45, hitH:1.7, hitY:0.95 }); }
 /* ===== animal player avatars ===== */
@@ -5265,7 +5271,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v6.4 18/06 16:31 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+'/3 |wA'+(window.__wA||0)+' hs'+(window.__hsMiss||0)+' pm'+(window.__wpnMiss||0)+(window.__wErr?(' E:'+window.__wErr):'')+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v6.5 19/06 01:28 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+'/3 |wA'+(window.__wA||0)+' hs'+(window.__hsMiss||0)+' pm'+(window.__wpnMiss||0)+(window.__wErr?(' E:'+window.__wErr):'')+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var pr=document.getElementById('pauseResume'),ph=document.getElementById('pauseHome'); if(pr)pr.addEventListener('click',function(){var pb=document.getElementById('pauseBtn'); if(pb&&pb.style.display!=='none')pb.click(); else {var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none';}}); if(ph)ph.addEventListener('click',function(){ if(confirm('\u0E01\u0E25\u0E31\u0E1A\u0E2B\u0E19\u0E49\u0E32\u0E41\u0E23\u0E01? \u0E40\u0E01\u0E21\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19\u0E08\u0E30\u0E08\u0E1A\u0E25\u0E07'))location.reload(); }); var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -5381,7 +5387,7 @@ function makeZombie(type){
   addTattoos(torso,armL,armR,false);
   addOutlines(g);
   if(USE_SPRITES&&zspritesReady&&type!=='medic'){ applySprite(g,type); }
-  if(GLTF_READY && !USE_SPRITES){ if(type==='brute'||type==='runner'){ applyDinoEnemy(g,type); } else { applyGltf(g,type,false); } }
+  if(GLTF_READY && !USE_SPRITES){ if(type==='brute'||type==='runner'){ applyDinoEnemy(g,type); } else if(typeof QUADT!=='undefined'&&QUADT.indexOf(type)>=0){ applyAnimalEnemy(g,type); } else { applyGltf(g,type,false); } }
   addShadow(g,0.62);
   return g;
 }
@@ -5653,7 +5659,7 @@ function stageQuota(){ return 6+stage*2; }
 function isBossStage(){ return true; }
 function updateStageHUD(){ if(waveEl) waveEl.textContent=stage+'/'+STAGES; }
 function clearStage(){ if(exitOpen) return; openExit(); bmsg(net.on?('✅ ทางออกเปิด! พาทีมไปรวมในวงสีเขียวที่ทางออก'):('✅ ทางออกเปิด! วิ่งเข้าประตูเรืองแสงเพื่อไปด่านต่อไป'),3800); }
-function spawnStageBoss(){ if(bossActive) return; bossActive=true; try{player.shake=Math.max(player.shake||0,1.4);}catch(e){} const finalB=(stage>=STAGES); spawnBoss(finalB); if(finalB){ summonDeath(); } bmsg(finalB?'💀 บอสใหญ่โผล่! รีบฆ่ามัน (หรือวิ่งหนีไปทางออก)!':'💀 บอสโผล่แล้ว! รีบฆ่าบอสเพื่อเปิดทางออก!',3600); if(net.on&&net.isHost) broadcastStat(); }
+function spawnStageBoss(){ if(bossActive) return; bossActive=true; try{player.shake=Math.max(player.shake||0,0.35);}catch(e){} const finalB=(stage>=STAGES); spawnBoss(finalB); if(finalB){ summonDeath(); } bmsg(finalB?'💀 บอสใหญ่โผล่! รีบฆ่ามัน (หรือวิ่งหนีไปทางออก)!':'💀 บอสโผล่แล้ว! รีบฆ่าบอสเพื่อเปิดทางออก!',3600); if(net.on&&net.isHost) broadcastStat(); }
 function reachExit(){ if(!exitOpen) return;
   if(net.on && !net.isHost){ netSend({t:'reachexit'}); exitOpen=false; return; }
   if(stage>=STAGES){ campaignWin(); return; }
@@ -5734,7 +5740,7 @@ function killZombie(z){ z.userData.dead=true; z.userData.deathT=0; kills++; kill
   if(!z.userData.medic) spawnGore(new THREE.Vector3(z.position.x,z.position.y+0.9*(z.userData.scl||1),z.position.z), !!z.userData.boss);
   const u=z.userData; points+=(u.pts||10); lifePts+=(u.pts||10); dropCoins(z.position,u.coin||1); if(RNG()<0.24) dropAmmo(z.position.x,z.position.z,30+((RNG()*30)|0)); if(RNG()<0.05) dropPower(z.position.x,z.position.z); if(RNG()<0.06) dropPotion(z.position.x,z.position.z); updateEcon();
   if(u.medic){ medicAlive=false; medicCd=rand(16,24); player.hp=player.maxHP; healthFill.style.width='100%'; showMsg('แย่งหม้อ HP สำเร็จ! เลือดเต็ม',2400); if(net.on&&net.isHost){ netSend({t:'heal'}); broadcastStat(); } return; }
-  if(u.boss){ boss=null; bossActive=false; window._bossKilledFlag=true; try{player.shake=Math.max(player.shake||0,1.7);}catch(e){} const bw=el('bossWrap'); if(bw)bw.style.display='none';
+  if(u.boss){ boss=null; bossActive=false; window._bossKilledFlag=true;  const bw=el('bossWrap'); if(bw)bw.style.display='none';
     sndBossDeath(); { const _bp=new THREE.Vector3(z.position.x,z.position.y+1.3*(u.scl||1),z.position.z); for(let _k=0;_k<4;_k++){ setTimeout(()=>spawnGore(_bp,true),_k*200); } } dropPotion(z.position.x+1.6,z.position.z); dropPotion(z.position.x-1.6,z.position.z);
     enraged=true; enrageMul=1.6; targetZombies=Math.min(IS_TOUCH?15:22, targetZombies+6);
     for(const zz of zombies){ if(!zz.userData.dead&&!zz.userData.boss&&!zz.userData.medic) zz.userData.speed*=1.5; }
