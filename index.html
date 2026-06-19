@@ -156,7 +156,7 @@
     </div>
   </div>
   <div id="chatLog" style="position:fixed;left:50%;transform:translateX(-50%);bottom:154px;width:74%;max-height:148px;overflow-y:auto;pointer-events:auto;display:flex;flex-direction:column;gap:2px;z-index:140;-webkit-overflow-scrolling:touch;transition:opacity .5s;text-align:center;"></div>
-  <div id="chatBox" style="position:fixed;left:0;right:0;bottom:0;z-index:240;display:none;padding:10px;background:rgba(0,0,0,.9);">
+  <div id="chatBox" style="position:fixed;left:50%;top:13%;transform:translateX(-50%);width:min(92%,520px);z-index:320;display:none;padding:12px 12px 14px;background:rgba(6,14,10,.97);border:2px solid rgba(125,255,77,.55);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.6);">
     <div style="display:flex;gap:8px;max-width:640px;margin:0 auto;">
       <input id="chatInput" maxlength="120" placeholder="พิมพ์ข้อความ…" style="pointer-events:auto;flex:1;padding:11px;border-radius:8px;border:1px solid rgba(125,255,77,.4);background:#0c1410;color:#eafff0;font-size:15px;" />
       <button id="chatSend" style="pointer-events:auto;padding:11px 18px;border-radius:8px;border:none;background:#2f6b34;color:#eafff0;font-size:15px;">ส่ง</button>
@@ -186,9 +186,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v7.6 19/06 18:18</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v7.7 19/06 23:23</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v7.6 19/06 18:18</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v7.7 19/06 23:23</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจใหม่ (คนเดียว)</button>
@@ -5235,19 +5235,20 @@ function buildAvGun(){ var g=new THREE.Group(); var mB=new THREE.MeshStandardMat
   var stk=new THREE.Mesh(new THREE.BoxGeometry(0.11,0.2,0.42),mW); stk.position.set(0,-0.05,-0.62); g.add(stk);
   var mag=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.27,0.14),mB); mag.position.set(0,-0.2,0.04); g.add(mag);
   g.traverse(function(o){ if(o.isMesh)o.castShadow=true; }); return g; }
-function makeAnimalAvatar(){ var ks=Object.keys(ANIMALS); if(!ks.length||!THREE.SkeletonUtils)return null;
-  var name=ks[(Math.random()*ks.length)|0]; var src=ANIMALS[name]; var model;
-  try{ model=THREE.SkeletonUtils.clone(src.scene); }catch(e){ return null; }
-  var grp=new THREE.Group(); var SC=0.3; model.scale.setScalar(SC); model.position.y=0.78;
+function makeAnimalAvatar(){ if(!MODELS.zman||!THREE.SkeletonUtils)return null;
+  var src=MODELS.zman.scene||MODELS.zman; var model;
+  try{ model=THREE.SkeletonUtils.clone(src); }catch(e){ return null; }
+  var grp=new THREE.Group(); var SC=0.34; model.scale.setScalar(SC);
+  var _oy=0; try{ model.updateMatrixWorld(true); var _bb=new THREE.Box3().setFromObject(model); if(isFinite(_bb.min.y))_oy=-_bb.min.y; }catch(e){} model.position.y=_oy;
   model.traverse(function(o){ if(o.isMesh){o.castShadow=true;o.frustumCulled=false;} });
   grp.add(model);
-  var gun; if((LD.gun||0)>0&&GUN.ar){ gun=GUN.ar.clone(true); var _gb=new THREE.Box3().setFromObject(gun); var _gs=new THREE.Vector3(); _gb.getSize(_gs); var _gm=Math.max(_gs.x,_gs.y,_gs.z)||1; gun.scale.setScalar(0.72/_gm); gun.traverse(function(o){if(o.isMesh){o.castShadow=true;o.frustumCulled=false;}}); gun.rotation.y=Math.PI/2; gun.position.set(0.1,0.8,0.42); } else { gun=buildAvGun(); gun.position.set(0.16,0.86,0.5); } grp.add(gun);
-  var mx=new THREE.AnimationMixer(model); var cl=src.animations||[];
+  var gun; if((LD.gun||0)>0&&GUN.ar){ gun=GUN.ar.clone(true); var _gb=new THREE.Box3().setFromObject(gun); var _gs=new THREE.Vector3(); _gb.getSize(_gs); var _gm=Math.max(_gs.x,_gs.y,_gs.z)||1; gun.scale.setScalar(0.92/_gm); gun.traverse(function(o){if(o.isMesh){o.castShadow=true;o.frustumCulled=false;}}); gun.rotation.y=Math.PI/2; gun.position.set(0.13,1.18,0.5); } else { gun=buildAvGun(); gun.position.set(0.16,1.22,0.52); } grp.add(gun);
+  var mx=new THREE.AnimationMixer(model); var cl=MODELS.zman.animations||[];
   function A(n){ var c=THREE.AnimationClip.findByName(cl,n); return c?mx.clipAction(c):null; }
-  var walk=A('AnimalArmature|Walk'), idle=A('AnimalArmature|Idle')||A('AnimalArmature|Idle_2'), run=A('AnimalArmature|Gallop')||walk;
+  var idle=A('Idle'), walk=A('Walk_Holding')||A('Walk')||idle, run=A('Run_Holding')||A('Run')||walk;
   var cur=null; function play(a){ if(!a||cur===a)return; if(cur)cur.fadeOut(0.18); a.reset().fadeIn(0.18).play(); cur=a; }
   if(idle)play(idle); else if(walk)play(walk);
-  grp.userData={isAnimal:true,mxr:mx,walk:walk,idle:idle,run:run,play:play,animal:name,gun:gun};
+  grp.userData={isAnimal:true,isSoldier:true,mxr:mx,walk:walk,idle:idle,run:run,play:play,gun:gun};
   return grp; }
 /* ===== nature decor per element ===== */
 var DECOR={root:null,stage:-99};
@@ -5292,7 +5293,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v7.6 19/06 18:18 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v7.7 19/06 23:23 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var pr=document.getElementById('pauseResume'),ph=document.getElementById('pauseHome'); if(pr)pr.addEventListener('click',function(){var pb=document.getElementById('pauseBtn'); if(pb&&pb.style.display!=='none')pb.click(); else {var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none';}}); if(ph)ph.addEventListener('click',function(){ if(confirm('\u0E01\u0E25\u0E31\u0E1A\u0E2B\u0E19\u0E49\u0E32\u0E41\u0E23\u0E01? \u0E40\u0E01\u0E21\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19\u0E08\u0E30\u0E08\u0E1A\u0E25\u0E07'))location.reload(); }); var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -6266,14 +6267,14 @@ boot();
             if(nd.done)doneCt++;
           }
           var total=M.nodes.length;
-          b.style.display='block';
+          b.style.display=(window.__objHidden?'none':'block');
           b.innerHTML='<span style="font-size:15px;color:#ffe27a;">🎯 '+(LABEL[M.type]||'')+'</span><br><span style="color:#8fffba;font-size:14px;">คืบหน้า '+doneCt+' / '+total+(M.done?'  ✅ สำเร็จ!':'')+'</span>';
           try{ var cam=GC(); var wp=document.getElementById('coopWP'); if(!wp){ wp=document.createElement('div'); wp.id='coopWP'; wp.style.cssText='position:fixed;z-index:61;pointer-events:none;transform:translate(-50%,-50%);font-weight:bold;color:#ffe27a;text-shadow:0 0 6px #000,0 0 10px #000;font-size:17px;text-align:center;white-space:nowrap;background:rgba(8,16,30,.55);padding:3px 9px;border-radius:11px;border:1px solid rgba(255,210,120,.5);'; document.body.appendChild(wp); }
             var tgt=null,bd=1e9; for(var wi=0;wi<M.nodes.length;wi++){ var nn=M.nodes[wi]; if(nn.done)continue; var dd=Math.hypot(nn.pos.x-_P.pos.x,nn.pos.z-_P.pos.z); if(dd<bd){bd=dd;tgt=nn;} }
             if(tgt&&cam&&!M.done){ var _Pp=_P; var gy2=0;try{gy2=terrainH(tgt.pos.x,tgt.pos.z);}catch(e){} var v=new THREE.Vector3(tgt.pos.x,gy2+2.6,tgt.pos.z); v.project(cam); var W=window.innerWidth,H=window.innerHeight; var dm=Math.round(bd); var ic=(tgt.kind==='orb')?'💎':(tgt.kind==='escort'?'🚶':'▼');
               if(v.z<1){ var sx=(v.x*0.5+0.5)*W, sy=(-v.y*0.5+0.5)*H; sx=Math.max(30,Math.min(W-30,sx)); sy=Math.max(74,Math.min(H-96,sy)); wp.style.left=sx+'px'; wp.style.top=sy+'px'; wp.innerHTML=ic+'<br>'+dm+'ม.'; }
               else { wp.style.left=(W*0.5)+'px'; wp.style.top=(H-104)+'px'; wp.innerHTML='↻ หันกลับ '+dm+'ม.'; }
-              wp.style.display='block';
+              wp.style.display=(window.__objHidden?'none':'block');
             } else if(wp){ wp.style.display='none'; }
           }catch(e){}
           if(doneCt>=total&&total>0&&!M.done){ M.done=true; reward(); }
@@ -6282,6 +6283,20 @@ boot();
     }
   }catch(e){} requestAnimationFrame(update); }
   requestAnimationFrame(update);
+})();
+</script>
+<script>/* v7.7 mission banner toggle */
+(function(){ window.__objHidden=false;
+  setTimeout(function(){ try{
+    var b=document.createElement('button'); b.id='objTgl'; b.textContent='📋';
+    b.style.cssText='position:fixed;left:10px;top:150px;z-index:62;width:40px;height:40px;border-radius:11px;border:2px solid rgba(120,200,255,.7);background:rgba(8,16,30,.8);color:#cfe6ff;font-size:18px;pointer-events:auto;box-shadow:0 0 10px rgba(0,0,0,.5);';
+    b.addEventListener('click',function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} window.__objHidden=!window.__objHidden;
+      b.style.background=window.__objHidden?'rgba(40,30,12,.85)':'rgba(8,16,30,.8)';
+      b.style.borderColor=window.__objHidden?'rgba(255,210,120,.8)':'rgba(120,200,255,.7)';
+      var o=document.getElementById('coopObj'); if(o)o.style.display=window.__objHidden?'none':'block';
+      var w=document.getElementById('coopWP'); if(w&&window.__objHidden)w.style.display='none'; });
+    (document.body||document.documentElement).appendChild(b);
+  }catch(e){} },1500);
 })();
 </script>
 <script>/* v6.9 resume + chat-touch + weather storm */
