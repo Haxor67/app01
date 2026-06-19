@@ -186,9 +186,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v7.8 20/06 00:28</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v7.9 20/06 05:49</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v7.8 20/06 00:28</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v7.9 20/06 05:49</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจใหม่ (คนเดียว)</button>
@@ -5293,8 +5293,8 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v7.8 20/06 00:28 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
-setTimeout(function(){ var pr=document.getElementById('pauseResume'),ph=document.getElementById('pauseHome'); if(pr)pr.addEventListener('click',function(){var pb=document.getElementById('pauseBtn'); if(pb&&pb.style.display!=='none')pb.click(); else {var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none';}}); if(ph)ph.addEventListener('click',function(){ if(confirm('\u0E01\u0E25\u0E31\u0E1A\u0E2B\u0E19\u0E49\u0E32\u0E41\u0E23\u0E01? \u0E40\u0E01\u0E21\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19\u0E08\u0E30\u0E08\u0E1A\u0E25\u0E07'))location.reload(); }); var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v7.9 20/06 05:49 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
+setTimeout(function(){ var pr=document.getElementById('pauseResume'),ph=document.getElementById('pauseHome'); if(pr)pr.addEventListener('click',function(){var pb=document.getElementById('pauseBtn'); if(pb){pb.click();} else {var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none';}}); if(ph)ph.addEventListener('click',function(){ if(confirm('\u0E01\u0E25\u0E31\u0E1A\u0E2B\u0E19\u0E49\u0E32\u0E41\u0E23\u0E01? \u0E40\u0E01\u0E21\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19\u0E08\u0E30\u0E08\u0E1A\u0E25\u0E07'))location.reload(); }); var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
 function gaitWalk(u){ const sw=Math.sin(u.phase), c=Math.cos(u.phase);
@@ -6158,12 +6158,12 @@ function _renderChat(){ const cl=el('chatLog'); if(!cl)return; const n=_chatLine
   clearTimeout(cl._ft); cl._ft=setTimeout(function(){ if(el('chatLog'))el('chatLog').style.opacity='0.26'; },3500); }
 function addChat(name,msg){ msg=(''+msg).slice(0,120); _chatLines.push('<b style="color:#7dff4d">'+escapeHtml(name)+':</b> '+escapeHtml(msg)); if(_chatLines.length>40)_chatLines.shift(); _renderChat(); }
 function openChat(){ const cb=el('chatBox'); if(cb){ cb.style.display='block'; const ci=el('chatInput'); if(ci){ try{ci.focus({preventScroll:true});}catch(_e){try{ci.focus();}catch(_e2){}} } } }
-function sendChat(){ const ci=el('chatInput'); if(!ci)return; const m=ci.value.trim(); if(m){ addChat(myName,m); netSend({t:'chat',id:net.myId,name:myName,msg:m}); ci.value=''; } }
+function sendChat(){ const ci=el('chatInput'); if(!ci)return; const m=ci.value.trim(); if(m){ addChat(myName,m); netSend({t:'chat',id:net.myId,name:myName,msg:m}); ci.value=''; } try{ci.blur();}catch(e){} const cb=el('chatBox'); if(cb)cb.style.display='none'; }
 el('pauseBtn').addEventListener('click',()=>{ if(net.on&&!net.isHost)return; paused=!paused; el('pauseOverlay').style.display=paused?'flex':'none'; const ps=el('pauseSub'); if(ps)ps.textContent=net.on?'โฮสต์หยุดเกมไว้…':'แตะ ⏸ อีกครั้งเพื่อเล่นต่อ'; el('pauseBtn').textContent=paused?'▶':'⏸'; if(net.on)netSend({t:'pause',p:paused}); });
 el('chatBtn').addEventListener('click',openChat); el('chatBtn').addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();openChat();},{passive:false});
 el('potionBtn').addEventListener('click',usePotion); el('potionBtn').addEventListener('touchstart',function(e){e.preventDefault();usePotion();},{passive:false});
 el('chatSend').addEventListener('click',sendChat);
-el('chatClose').addEventListener('click',()=>{ const cb=el('chatBox'); if(cb)cb.style.display='none'; });
+(function(){ var x=el('chatClose'); function _close(e){ if(e){e.preventDefault();e.stopPropagation();} var ci=el('chatInput'); if(ci){try{ci.blur();}catch(_e){}} var cb=el('chatBox'); if(cb)cb.style.display='none'; } x.addEventListener('click',_close); x.addEventListener('touchend',_close,{passive:false}); })();
 el('chatInput').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); sendChat(); } if(e.key==='Escape'){ const cb=el('chatBox'); if(cb)cb.style.display='none'; } });
 el('hostBtn').addEventListener('click',()=>{ myName=(el('coopName').value.trim()||'ผู้เล่น').slice(0,12); audioStart(); goFullscreen(); hostGame(); });
 el('joinBtn').addEventListener('click',()=>{ myName=(el('coopName').value.trim()||'ผู้เล่น').slice(0,12); audioStart(); goFullscreen(); joinGame(el('joinCode').value.trim().toUpperCase()); });
@@ -6367,7 +6367,7 @@ boot();
     var bView =mk('👁','rgba(18,30,48,.92)','rgba(120,170,255,.9)');
     var bObj  =mk('📋','rgba(8,16,30,.85)','rgba(120,200,255,.7)');
     var bChat =mk('💬','rgba(18,30,48,.92)','rgba(120,170,255,.9)');
-    bPause.addEventListener('click',function(){ var p=document.getElementById('pauseBtn'); if(p)p.click(); });
+    bPause.addEventListener('click',function(){ var cb=document.getElementById('chatBox'); if(cb)cb.style.display='none'; var p=document.getElementById('pauseBtn'); if(p)p.click(); });
     bView.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; });
     var lpT=null;
     bView.addEventListener('touchstart',function(){ lpT=setTimeout(function(){ var pn=document.getElementById('pvmPanel'); if(pn)pn.style.display=(pn.style.display==='none'||!pn.style.display)?'block':'none'; },600); },{passive:true});
@@ -6383,6 +6383,40 @@ boot();
       bObj.style.background=window.__objHidden?'rgba(40,30,12,.85)':'rgba(8,16,30,.85)';
     }catch(e){} },250);
   }catch(e){} },1700);
+})();
+</script>
+
+<script>/* v7.9 FPS held-gun arms (deterministic) */
+(function(){
+  var done=false;
+  var iv=setInterval(function(){ try{
+    if(done){ clearInterval(iv); return; }
+    if(typeof THREE==='undefined') return;
+    var cam=window.gCamera||(typeof camera!=='undefined'?camera:null);
+    if(!cam) return;
+    try{ if(window.__pvm){ window.__pvm.visible=false; } }catch(e){}
+    if(cam.getObjectByName('fpsHands')) { done=true; clearInterval(iv); return; }
+    var sleeve=new THREE.MeshStandardMaterial({color:0x4d5836,roughness:0.9,metalness:0.0});
+    var glove =new THREE.MeshStandardMaterial({color:0x20242a,roughness:0.95,metalness:0.0});
+    function arm(from,to,r){ var g=new THREE.Group();
+      var dir=new THREE.Vector3().subVectors(to,from); var len=dir.length();
+      var fa=new THREE.Mesh(new THREE.CylinderGeometry(r*0.78,r,len,12), sleeve);
+      fa.position.copy(from).add(to).multiplyScalar(0.5);
+      fa.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), dir.clone().normalize());
+      g.add(fa);
+      var hand=new THREE.Mesh(new THREE.BoxGeometry(r*1.9,r*1.5,r*2.2), glove);
+      hand.position.copy(to); g.add(hand);
+      return g; }
+    var hands=new THREE.Group(); hands.name='fpsHands';
+    // right (trigger) hand reaches up-forward to grip; left (fore) hand reaches further forward
+    hands.add(arm(new THREE.Vector3(0.40,-0.78,-0.30), new THREE.Vector3(0.33,-0.34,-0.48), 0.052));
+    hands.add(arm(new THREE.Vector3(0.02,-0.80,-0.34), new THREE.Vector3(0.27,-0.34,-0.66), 0.050));
+    hands.traverse(function(o){ if(o.isMesh){ o.frustumCulled=false; o.renderOrder=2; o.castShadow=false; o.receiveShadow=false; } });
+    cam.add(hands); window.__fpsHands=hands;
+    // hide hands in third-person view
+    setInterval(function(){ try{ hands.visible=!window.tpsMode; }catch(e){} },200);
+    done=true; clearInterval(iv);
+  }catch(e){} }, 350);
 })();
 </script>
 </body>
