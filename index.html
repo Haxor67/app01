@@ -186,9 +186,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v7.0 19/06 04:53</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v7.1 19/06 12:26</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v7.0 19/06 04:53</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v7.1 19/06 12:26</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจใหม่ (คนเดียว)</button>
@@ -4740,17 +4740,18 @@ function buildGun(){
   muzzleLight=new THREE.PointLight(0xffcaa0,0,9,2); muzzleLight.position.set(0,0.02,-0.92); gun.add(muzzleLight);
   gun.userData.parts={bodyMat:body,darkMat:dark,tanMat:tan,barrelMat:barrelMat,barrel:barrel,receiver:receiver,mag:mag,stock:stock};
   (function(){ try{
-    if(!MODELS.zman||!THREE.SkeletonUtils){ return; }
+    if(!MODELS.zman||!THREE.SkeletonUtils){ window.__pvmErr='nozman'; return; }
     var src=MODELS.zman.scene||MODELS.zman; var vm=THREE.SkeletonUtils.clone(src);
-    var P=window.PVM||{ s:0.34, x:0.04, y:-1.66, z:0.10, ry:Math.PI };
-    vm.scale.setScalar(P.s); vm.position.set(P.x,P.y,P.z); vm.rotation.set(0,P.ry,0);
     vm.traverse(function(o){ if(o.isMesh){ o.frustumCulled=false; o.renderOrder=3; o.castShadow=false; o.receiveShadow=false; } });
+    var P=window.PVM; if(!P){ try{ P=JSON.parse(localStorage.getItem('zf_pvm')||'null'); }catch(e){} }
+    if(!P){ var box=new THREE.Box3().setFromObject(vm); var sz=new THREE.Vector3(); box.getSize(sz); var h=sz.y||5.3; var sc=1.6/h; P={ s:sc, x:0.0, y:-(box.max.y*sc)+0.08, z:0.0, ry:Math.PI }; }
+    vm.scale.setScalar(P.s); vm.position.set(P.x,P.y,P.z); vm.rotation.set(0,P.ry,0);
     camera.add(vm);
     var mx=new THREE.AnimationMixer(vm); var clips={}; (MODELS.zman.animations||[]).forEach(function(c){clips[c.name]=c;});
     var hc=clips['Walk_Holding']||clips['Run_Holding']||clips['Idle'];
     if(hc){ var a=mx.clipAction(hc); a.play(); a.setEffectiveTimeScale(0.3); }
-    vm.userData.vmMixer=mx; vm.userData.vmClips=clips; vm.userData.vmBaseZ=P.z; vm.userData.vmShoot=null; window.__pvm=vm;
-  }catch(_ae){ window.__pvmErr=(''+(_ae&&_ae.message||_ae)).slice(0,50); } })();
+    vm.userData.vmMixer=mx; vm.userData.vmClips=clips; window.__pvmP=P; window.__pvm=vm;
+  }catch(_ae){ window.__pvmErr=(''+(_ae&&_ae.message||_ae)).slice(0,40); } })();
   gun.position.copy(HIP); camera.add(gun); scene.add(camera);
 }
 const WEAPONS=[
@@ -5138,7 +5139,7 @@ const ELEMENTS=[
  {key:'void',  col:0xb46bff,glow:0xd2a0ff,light:0x32195a,bone:0xd8c0f0,wx:'storm'}
 ];
 function stageElement(){ var s=1; try{s=stage;}catch(e){} return ELEMENTS[Math.max(0,Math.floor((s-1)/5))%4]; }
-var LD={sk:0,nat:0,an:0,dino:0,wpn:0,le:''};
+var LD={sk:0,nat:0,an:0,dino:0,wpn:0,zm:0,le:''};
 var WPN={};
 var GUN={}; var WPN_ROT={x:Math.PI/2,y:0,z:0}; var GUN_TUNE={ ar:{len:0.64,rx:0.13,ry:-Math.PI/2,rz:0,px:0.24,py:-0.4,pz:-0.5}, shotgun:{len:0.7,rx:0.13,ry:Math.PI/2,rz:0,px:0.24,py:-0.4,pz:-0.5}, pistol:{len:0.38,rx:0.1,ry:Math.PI/2,rz:0,px:0.2,py:-0.32,pz:-0.32} };
 function _lderr(e){ try{ LD.le = e&&e.message?String(e.message).slice(0,14):(e&&e.type?e.type:'err'); }catch(_){ LD.le='err'; } }
@@ -5151,7 +5152,7 @@ function loadGltfModels(){ try{ if(!THREE.GLTFLoader){ LD.le='noLoader'; initWea
   _try('Skel_Rogue',function(g){MODELS.rogue=g;GLTF_READY=true;LD.sk++;});
   _try('Skel_Mage',function(g){MODELS.mage=g;GLTF_READY=true;LD.sk++;});
   _try('Spider',function(g){MODELS.spider=g;});
-  _try('ZombieMan',function(g){MODELS.zman=g;});
+  _try('ZombieMan',function(g){MODELS.zman=g;LD.zm=1;});
   var NF={tree_g1:'nat_tree_g1',tree_g2:'nat_tree_g2',tree_g3:'nat_tree_g3',tree_sn1:'nat_tree_sn1',tree_sn2:'nat_tree_sn2',tree_dd:'nat_tree_dd',tree_vd1:'nat_tree_vd1',tree_vd2:'nat_tree_vd2',bush:'nat_bush',rock1:'nat_rock1',rock2:'nat_rock2'};
   for(var k in NF){ (function(key,fn){ _try(fn,function(g){ NATURE[key]=g.scene; LD.nat++; }); })(k,NF[k]); }
   AANIM.forEach(function(nm){ _try('anim_'+nm,function(g){ ANIMALS[nm]=g; LD.an++; }); });
@@ -5287,7 +5288,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v7.0 19/06 04:53 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v7.1 19/06 12:26 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var pr=document.getElementById('pauseResume'),ph=document.getElementById('pauseHome'); if(pr)pr.addEventListener('click',function(){var pb=document.getElementById('pauseBtn'); if(pb&&pb.style.display!=='none')pb.click(); else {var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none';}}); if(ph)ph.addEventListener('click',function(){ if(confirm('\u0E01\u0E25\u0E31\u0E1A\u0E2B\u0E19\u0E49\u0E32\u0E41\u0E23\u0E01? \u0E40\u0E01\u0E21\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19\u0E08\u0E30\u0E08\u0E1A\u0E25\u0E07'))location.reload(); }); var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -5841,7 +5842,7 @@ function updatePlayer(dt){
   // gun: lerp hip<->ads
   gunKick=Math.max(0,gunKick-dt*0.6);
   const gx=HIP.x+(ADS.x-HIP.x)*player.adsT, gyy=HIP.y+(ADS.y-HIP.y)*player.adsT, gz=HIP.z+(ADS.z-HIP.z)*player.adsT;
-  gun.position.set(gx+bobX, gyy+bobY*0.4, gz+gunKick); try{ var _vm=window.__pvm; if(_vm){ if(_vm.userData.vmMixer)_vm.userData.vmMixer.update(dt); _vm.position.z=(_vm.userData.vmBaseZ||0)+(gunKick||0)*0.5; } }catch(_fe){}
+  gun.position.set(gx+bobX, gyy+bobY*0.4, gz+gunKick); try{ var _vm=window.__pvm; if(_vm){ if(_vm.userData.vmMixer)_vm.userData.vmMixer.update(dt); _vm.position.z=((window.__pvmP&&window.__pvmP.z)||0)+(gunKick||0)*0.5; } }catch(_fe){}
   muzzleFlash.material.opacity*=0.5; muzzleLight.intensity*=0.5;
 
   // no passive regen — heal only from HP-carrier zombie or shop
@@ -6310,6 +6311,26 @@ boot();
     if(playing&&!pz){ flT+=0.016; if(flT>nextFl){ flT=0; nextFl=(bid==='grave'||bid==='hell')?(5+Math.random()*9):(9+Math.random()*15); try{ if(typeof flashLightning==='function')flashLightning(); }catch(e){} } }
   }catch(e){} requestAnimationFrame(update); }
   requestAnimationFrame(update);
+})();
+</script>
+<script>/* v7.1 player-model live tuner */
+(function(){
+  function applyP(){ try{ var vm=window.__pvm,P=window.__pvmP; if(vm&&P){ vm.scale.setScalar(P.s); vm.position.set(P.x,P.y,P.z); vm.rotation.set(0,P.ry,0); localStorage.setItem('zf_pvm',JSON.stringify(P)); } }catch(e){} }
+  setTimeout(function(){ try{
+    var gear=document.createElement('button'); gear.id='pvmGear'; gear.textContent='🔧'; gear.style.cssText='position:fixed;top:70px;right:14px;z-index:251;width:42px;height:42px;border-radius:11px;border:2px solid rgba(255,210,120,.8);background:rgba(40,30,12,.92);color:#fff;font-size:20px;display:none;pointer-events:auto;'; (document.body||document.documentElement).appendChild(gear);
+    var panel=document.createElement('div'); panel.id='pvmPanel'; panel.style.cssText='position:fixed;top:120px;right:14px;z-index:251;background:rgba(8,16,12,.95);border:1px solid rgba(255,210,120,.5);border-radius:12px;padding:10px;display:none;pointer-events:auto;font-size:12px;color:#dfffe8;width:190px;'; (document.body||document.documentElement).appendChild(panel);
+    var rows=[['ขนาด','s',0.02],['สูง','y',0.06],['ลึก','z',0.06],['ซ้าย/ขวา','x',0.04],['หมุน','ry',0.25]];
+    var h='<div style="text-align:center;font-weight:bold;margin-bottom:6px;color:#ffd27a;">ปรับโมเดลทหาร</div>';
+    rows.forEach(function(rw){ h+='<div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0;"><span>'+rw[0]+'</span><span><button class="pvmM" data-k="'+rw[1]+'" data-d="'+(-rw[2])+'">−</button> <button class="pvmM" data-k="'+rw[1]+'" data-d="'+rw[2]+'">+</button></span></div>'; });
+    h+='<div style="display:flex;gap:6px;margin-top:8px;"><button id="pvmReset" style="flex:1;pointer-events:auto;padding:6px;border-radius:7px;border:1px solid #a55;background:#3a1c1c;color:#fdd;">รีเซ็ต</button><button id="pvmClose" style="flex:1;pointer-events:auto;padding:6px;border-radius:7px;border:1px solid #5a7;background:#1c3a28;color:#dfe;">ปิด</button></div>';
+    panel.innerHTML=h;
+    gear.onclick=function(){ panel.style.display=(panel.style.display==='none')?'block':'none'; };
+    panel.querySelectorAll('.pvmM').forEach(function(btn){ btn.style.cssText='pointer-events:auto;width:34px;height:28px;border-radius:6px;border:1px solid #5a7;background:#1c3a28;color:#dfffe8;font-size:15px;font-weight:bold;';
+      btn.onclick=function(){ try{ var P=window.__pvmP; if(!P)return; var k=btn.getAttribute('data-k'),d=parseFloat(btn.getAttribute('data-d')); P[k]=(P[k]||0)+d; if(k==='s')P.s=Math.max(0.05,P.s); applyP(); }catch(e){} }; });
+    document.getElementById('pvmReset').onclick=function(){ try{ localStorage.removeItem('zf_pvm'); }catch(e){} location.reload(); };
+    document.getElementById('pvmClose').onclick=function(){ panel.style.display='none'; };
+    setInterval(function(){ try{ var show=(typeof state!=='undefined'&&state==='play'&&window.__pvm); gear.style.display=show?'block':'none'; if(!show)panel.style.display='none'; }catch(e){} },700);
+  }catch(e){} },1600);
 })();
 </script></body>
 </html>
