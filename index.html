@@ -186,9 +186,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v7.7 19/06 23:23</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v7.8 20/06 00:28</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v7.7 19/06 23:23</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v7.8 20/06 00:28</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจใหม่ (คนเดียว)</button>
@@ -4747,7 +4747,7 @@ function buildGun(){
       var src=MODELS.zman.scene||MODELS.zman; var vm=THREE.SkeletonUtils.clone(src);
       vm.traverse(function(o){ if(o.isMesh){ o.frustumCulled=false; o.renderOrder=3; o.castShadow=false; o.receiveShadow=false; } });
       var P=window.PVM; if(!P){ try{ P=JSON.parse(localStorage.getItem('zf_pvm')||'null'); }catch(e){} }
-      if(!P){ P={ s:0.34, x:0.04, y:-1.62, z:0.12, ry:Math.PI }; }
+      if(!P){ P={ s:0.45, x:0.06, y:-1.16, z:-0.12, ry:Math.PI }; }
       vm.scale.setScalar(P.s); vm.position.set(P.x,P.y,P.z); vm.rotation.set(0,P.ry,0);
       camera.add(vm);
       var mx=new THREE.AnimationMixer(vm); var clips={}; (MODELS.zman.animations||[]).forEach(function(c){clips[c.name]=c;});
@@ -5293,7 +5293,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v7.7 19/06 23:23 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v7.8 20/06 00:28 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var pr=document.getElementById('pauseResume'),ph=document.getElementById('pauseHome'); if(pr)pr.addEventListener('click',function(){var pb=document.getElementById('pauseBtn'); if(pb&&pb.style.display!=='none')pb.click(); else {var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none';}}); if(ph)ph.addEventListener('click',function(){ if(confirm('\u0E01\u0E25\u0E31\u0E1A\u0E2B\u0E19\u0E49\u0E32\u0E41\u0E23\u0E01? \u0E40\u0E01\u0E21\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19\u0E08\u0E30\u0E08\u0E1A\u0E25\u0E07'))location.reload(); }); var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -5769,7 +5769,7 @@ function killZombie(z){ z.userData.dead=true; z.userData.deathT=0; kills++; kill
     if(!net.on||net.isHost){ for(let k=0;k<8;k++) spawnZombie(); }
     bmsg('บอสตาย! ลูกน้องคลั่ง — รีบไปทางออก!',3400); clearStage(); if(net.on&&net.isHost) broadcastStat(); return; }
   stageKills++;
-  if(!bossActive && !exitOpen && stageKills>=stageQuota()){ if(isBossStage()) spawnStageBoss(); else clearStage(); }
+  if(!bossActive && !exitOpen && stageKills>=stageQuota()){ if(window.__missionDone===false){ if(!window.__mblkT||performance.now()-window.__mblkT>4200){ window.__mblkT=performance.now(); try{bmsg('⚠️ เคลียร์ภารกิจให้เสร็จก่อน บอสถึงจะโผล่!',2600);}catch(_e){} } } else { if(isBossStage()) spawnStageBoss(); else clearStage(); } }
   updateStageHUD();
   if(net.on&&net.isHost) broadcastStat(); }
 function spawnBlood(p,big){ const n=big?12:7; for(let i=0;i<n;i++){ const msh=new THREE.Mesh(new THREE.BoxGeometry(0.07,0.07,0.07),new THREE.MeshBasicMaterial({color:0x7a0c10}));
@@ -6157,7 +6157,7 @@ function _renderChat(){ const cl=el('chatLog'); if(!cl)return; const n=_chatLine
   cl.innerHTML=h; cl.scrollTop=cl.scrollHeight; cl.style.opacity='1';
   clearTimeout(cl._ft); cl._ft=setTimeout(function(){ if(el('chatLog'))el('chatLog').style.opacity='0.26'; },3500); }
 function addChat(name,msg){ msg=(''+msg).slice(0,120); _chatLines.push('<b style="color:#7dff4d">'+escapeHtml(name)+':</b> '+escapeHtml(msg)); if(_chatLines.length>40)_chatLines.shift(); _renderChat(); }
-function openChat(){ const cb=el('chatBox'); if(cb){ cb.style.display='block'; const ci=el('chatInput'); if(ci) setTimeout(()=>ci.focus(),30); } }
+function openChat(){ const cb=el('chatBox'); if(cb){ cb.style.display='block'; const ci=el('chatInput'); if(ci){ try{ci.focus({preventScroll:true});}catch(_e){try{ci.focus();}catch(_e2){}} } } }
 function sendChat(){ const ci=el('chatInput'); if(!ci)return; const m=ci.value.trim(); if(m){ addChat(myName,m); netSend({t:'chat',id:net.myId,name:myName,msg:m}); ci.value=''; } }
 el('pauseBtn').addEventListener('click',()=>{ if(net.on&&!net.isHost)return; paused=!paused; el('pauseOverlay').style.display=paused?'flex':'none'; const ps=el('pauseSub'); if(ps)ps.textContent=net.on?'โฮสต์หยุดเกมไว้…':'แตะ ⏸ อีกครั้งเพื่อเล่นต่อ'; el('pauseBtn').textContent=paused?'▶':'⏸'; if(net.on)netSend({t:'pause',p:paused}); });
 el('chatBtn').addEventListener('click',openChat); el('chatBtn').addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();openChat();},{passive:false});
@@ -6243,10 +6243,10 @@ boot();
     var _st=GST(), _sg=GSG();
     try{ window.__mi=(!ready()?'noRdy':((_st!=='play')?('s:'+_st):(M.type||'none'))); }catch(_d){ window.__mi='derr'; }
     if(ready()){
-      if(_st!=='play'){ if(M.banner)M.banner.style.display='none'; var _w=document.getElementById('coopWP'); if(_w)_w.style.display='none'; }
+      if(_st!=='play'){ try{window.__missionDone=true;}catch(e){} if(M.banner)M.banner.style.display='none'; var _w=document.getElementById('coopWP'); if(_w)_w.style.display='none'; }
       else {
         if(_sg!==M.stage){ M.stage=_sg; clearM(); M.type=TYPES[((_sg-1)%TYPES.length+TYPES.length)%TYPES.length]; M.t0=performance.now(); spawn(); brief(); }
-        try{ window.__mi=M.type||'none'; }catch(e){}
+        try{ window.__mi=M.type||'none'; window.__missionDone=(M.type?!!M.done:true); }catch(e){}
         var b=hud();
         var _pz=false; try{_pz=(typeof paused!=='undefined'&&paused);}catch(e){}
         if(!M.type){ b.style.display='none'; }
@@ -6350,8 +6350,40 @@ boot();
     document.getElementById('pvmReset').onclick=function(){ try{ localStorage.removeItem('zf_pvm'); }catch(e){} location.reload(); };
     document.getElementById('pvmHide').onclick=function(){ try{ if(window.__pvm)window.__pvm.visible=!window.__pvm.visible; }catch(e){} };
     document.getElementById('pvmClose').onclick=function(){ panel.style.display='none'; };
-    setInterval(function(){ try{ var show=!!window.__pvm; gear.style.display=show?'block':'none'; }catch(e){} },700);
+    setInterval(function(){ try{ gear.style.display='none'; }catch(e){} },700);
   }catch(e){} },1600);
 })();
-</script></body>
+</script>
+<script>/* v7.8 clean utility toolbar */
+(function(){
+  setTimeout(function(){ try{
+    function hideOld(){ ['pauseBtn','chatBtn','tpsBtn','objTgl','pvmGear'].forEach(function(id){ var e=document.getElementById(id); if(e)e.style.display='none'; }); }
+    var bar=document.createElement('div'); bar.id='utilBar';
+    bar.style.cssText='position:fixed;left:8px;top:100px;z-index:300;display:none;flex-direction:row;gap:7px;pointer-events:none;';
+    (document.body||document.documentElement).appendChild(bar);
+    function mk(icon,bg,bd){ var b=document.createElement('button'); b.textContent=icon;
+      b.style.cssText='pointer-events:auto;width:42px;height:42px;border-radius:12px;border:2px solid '+bd+';background:'+bg+';color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 9px rgba(0,0,0,.55);-webkit-tap-highlight-color:transparent;'; bar.appendChild(b); return b; }
+    var bPause=mk('⏸','rgba(18,42,28,.92)','rgba(125,255,77,.85)');
+    var bView =mk('👁','rgba(18,30,48,.92)','rgba(120,170,255,.9)');
+    var bObj  =mk('📋','rgba(8,16,30,.85)','rgba(120,200,255,.7)');
+    var bChat =mk('💬','rgba(18,30,48,.92)','rgba(120,170,255,.9)');
+    bPause.addEventListener('click',function(){ var p=document.getElementById('pauseBtn'); if(p)p.click(); });
+    bView.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; });
+    var lpT=null;
+    bView.addEventListener('touchstart',function(){ lpT=setTimeout(function(){ var pn=document.getElementById('pvmPanel'); if(pn)pn.style.display=(pn.style.display==='none'||!pn.style.display)?'block':'none'; },600); },{passive:true});
+    bView.addEventListener('touchend',function(){ if(lpT){clearTimeout(lpT);lpT=null;} },{passive:true});
+    bObj.addEventListener('click',function(){ window.__objHidden=!window.__objHidden;
+      var o=document.getElementById('coopObj'); if(o)o.style.display=window.__objHidden?'none':'block';
+      var w=document.getElementById('coopWP'); if(w&&window.__objHidden)w.style.display='none'; });
+    bChat.addEventListener('click',function(){ try{ if(typeof window.openChat==='function'){ window.openChat(); } else { var cb=document.getElementById('chatBtn'); if(cb)cb.click(); } }catch(e){} });
+    setInterval(function(){ try{ hideOld();
+      var playing=(window.gState==='play'); bar.style.display=playing?'flex':'none';
+      bPause.textContent=(window.gPaused?'▶':'⏸');
+      bView.style.background=window.tpsMode?'rgba(125,255,77,.32)':'rgba(18,30,48,.92)';
+      bObj.style.background=window.__objHidden?'rgba(40,30,12,.85)':'rgba(8,16,30,.85)';
+    }catch(e){} },250);
+  }catch(e){} },1700);
+})();
+</script>
+</body>
 </html>
