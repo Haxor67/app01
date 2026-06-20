@@ -49,7 +49,7 @@
   #dmgflash{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 150px 40px rgba(170,0,0,0);transition:box-shadow .2s;}
   #dmgDir{position:absolute;top:50%;left:50%;width:240px;height:240px;transform:translate(-50%,-50%);opacity:0;transition:opacity .25s;}
   #dmgDir .ind{position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-bottom:30px solid rgba(220,30,30,.85);}
-  #msg{position:absolute;top:18%;left:50%;transform:translateX(-50%);font-size:20px;letter-spacing:2px;color:#fff;text-shadow:0 0 12px #000;opacity:0;transition:opacity .3s;text-align:center;}
+  #msg{position:absolute;top:56%;left:50%;transform:translateX(-50%);font-size:20px;letter-spacing:2px;color:#fff;text-shadow:0 0 12px #000;opacity:0;transition:opacity .3s;text-align:center;}
 
   #touch{position:fixed;inset:0;z-index:25;display:none;pointer-events:none;}
   #joyZone{position:absolute;left:0;bottom:0;width:52%;height:66%;pointer-events:auto;}
@@ -155,7 +155,7 @@
       <button id="pauseHome" onclick="window.__homeGame&&window.__homeGame()" ontouchend="event.preventDefault();event.stopPropagation();window.__homeGame&&window.__homeGame()" style="padding:15px 26px;border-radius:10px;border:none;font-size:17px;font-weight:bold;pointer-events:auto;cursor:pointer;touch-action:manipulation;background:linear-gradient(180deg,#7a3030,#451818);color:#ffe0e0;">🏠 กลับหน้าแรก</button>
     </div>
   </div>
-  <div id="chatLog" style="position:fixed;left:50%;transform:translateX(-50%);top:62px;width:78%;max-height:50px;overflow-y:auto;pointer-events:auto;display:flex;flex-direction:column;gap:2px;z-index:140;-webkit-overflow-scrolling:touch;transition:opacity .5s;text-align:center;"></div>
+  <div id="chatLog" style="position:fixed;left:50%;transform:translateX(-50%);top:98px;width:78%;max-height:50px;overflow-y:auto;pointer-events:auto;display:flex;flex-direction:column;gap:2px;z-index:140;-webkit-overflow-scrolling:touch;transition:opacity .5s;text-align:center;"></div>
   <div id="chatBox" style="position:fixed;left:50%;top:13%;transform:translateX(-50%);width:min(92%,520px);z-index:320;display:none;padding:12px 12px 14px;background:rgba(6,14,10,.97);border:2px solid rgba(125,255,77,.55);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.6);">
     <div style="display:flex;gap:8px;max-width:640px;margin:0 auto;">
       <input id="chatInput" maxlength="120" placeholder="พิมพ์ข้อความ…" style="pointer-events:auto;flex:1;padding:11px;border-radius:8px;border:1px solid rgba(125,255,77,.4);background:#0c1410;color:#eafff0;font-size:15px;" />
@@ -163,7 +163,7 @@
       <button id="chatClose" style="pointer-events:auto;padding:11px 14px;border-radius:8px;border:none;background:#3a3a3a;color:#ddd;font-size:15px;">✕</button>
     </div>
   </div>
-  <div id="bossWrap" style="display:none;position:absolute;top:54px;left:50%;transform:translateX(-50%);width:62%;max-width:520px;text-align:center;">
+  <div id="bossWrap" style="display:none;position:absolute;top:60px;left:50%;transform:translateX(-50%);width:62%;max-width:520px;text-align:center;">
     <div style="font-size:13px;letter-spacing:3px;color:#ff5a4a;text-shadow:0 0 8px #000;margin-bottom:4px;">จอมอสูรแห่งความตาย</div>
     <div style="height:12px;background:rgba(0,0,0,.5);border:1px solid #803030;border-radius:6px;overflow:hidden;"><div id="bossbar" style="height:100%;width:100%;background:linear-gradient(90deg,#5a0000,#ff2a1a);"></div></div>
   </div>
@@ -186,7 +186,7 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v8.8 20/06 20:04</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v8.9 20/06 20:25</div>
 <div id="start" class="screen">
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
@@ -5307,7 +5307,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v8.8 20/06 20:04 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v8.9 20/06 20:25 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var po=document.getElementById('pauseOverlay'), ph=document.getElementById('pauseHome'); var _resume=function(e){ if(e){try{e.preventDefault();}catch(_x){}} paused=false; if(po)po.style.display='none'; var pb=document.getElementById('pauseBtn'); if(pb)pb.textContent='⏸'; if(net.on){try{netSend({t:'pause',p:false});}catch(_e){}} }; var _home=function(e){ if(e){try{e.preventDefault();e.stopPropagation();}catch(_x){}} try{location.reload();}catch(_r){location.href=location.pathname;} }; window.__resumeGame=_resume; window.__homeGame=_home; if(ph){ ph.addEventListener('click',_home); ph.addEventListener('touchend',_home,{passive:false}); ph.addEventListener('pointerup',_home); } if(po){ var _isHome=function(t){ return ph&&(t===ph||ph.contains(t)); }; po.addEventListener('click',function(e){ if(_isHome(e.target))return; _resume(e); }); po.addEventListener('touchend',function(e){ if(_isHome(e.target))return; _resume(e); },{passive:false}); } var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -5970,7 +5970,7 @@ function objectiveText(){
 }
 function updateObjective(){
   if(window._bossKilledFlag && !exitOpen && state==='play' && (!net.on||net.isHost)){ openExit(); }
-  { const ob=el('objective'); if(ob) ob.textContent = (state==='play')?objectiveText():''; }
+  { const ob=el('objective'); if(ob){ var _ot=(state==='play')?objectiveText():''; ob.textContent=_ot; if(_ot!==window.__objLastTxt){ window.__objLastTxt=_ot; window.__objT0=performance.now(); ob.style.opacity='1'; } else if(_ot && performance.now()-(window.__objT0||0)>120000){ ob.style.opacity='0.18'; } } }
   if(!exitGroup) return;
   const dx=exitPos.x-player.pos.x,dz=exitPos.z-player.pos.z,dist=Math.hypot(dx,dz);
   const bExit=Math.atan2(dx,dz),bFace=Math.atan2(-Math.sin(player.yaw),-Math.cos(player.yaw));
@@ -6221,7 +6221,7 @@ boot();
   function ready(){ try{ var S=GS(),P=GP(); return (!!S&&!!P&&!!P.pos&&typeof THREE!=='undefined'&&GSG()!=null&&GST()!=null); }catch(e){ return false; } }
   function R_(){ try{ return (typeof R!=='undefined'&&R)?R:42; }catch(e){ return 42; } }
   function exitP(){ try{ if(typeof exitPos!=='undefined'&&exitPos)return exitPos; }catch(e){} return {x:0,z:-30}; }
-  function hud(){ if(M.banner)return M.banner; var d=document.createElement('div'); d.id='coopObj'; d.style.cssText='position:fixed;top:116px;left:50%;transform:translateX(-50%);z-index:60;max-width:94%;text-align:center;font-size:14px;font-weight:bold;color:#eaf6ff;background:rgba(8,16,30,.82);padding:7px 16px;border-radius:14px;border:2px solid rgba(120,200,255,.7);box-shadow:0 0 16px rgba(60,140,255,.4);text-shadow:0 0 6px #000;pointer-events:none;line-height:1.45;'; try{(document.body||document.documentElement).appendChild(d);}catch(e){} M.banner=d; return d; }
+  function hud(){ if(M.banner)return M.banner; var d=document.createElement('div'); d.id='coopObj'; d.style.cssText='position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:60;max-width:94%;text-align:center;font-size:14px;font-weight:bold;color:#eaf6ff;background:rgba(8,16,30,.82);padding:7px 16px;border-radius:14px;border:2px solid rgba(120,200,255,.7);box-shadow:0 0 16px rgba(60,140,255,.4);text-shadow:0 0 6px #000;pointer-events:none;line-height:1.45;'; try{(document.body||document.documentElement).appendChild(d);}catch(e){} M.banner=d; return d; }
   function mkNode(x,z,col,kind){ var grp=new THREE.Group(); var gy=0; try{gy=terrainH(x,z);}catch(e){}
     var pil=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.7,3.4,8),new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:0.6,roughness:0.5,transparent:true,opacity:0.92})); pil.position.y=1.7;
     var ring=new THREE.Mesh(new THREE.RingGeometry(2.4,3.0,28),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.4,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending})); ring.rotation.x=-Math.PI/2; ring.position.y=0.08;
@@ -6290,7 +6290,7 @@ boot();
           }
           if(_isHost&&typeof net!=='undefined'&&net&&net.on){ for(var _bi=0;_bi<M.nodes.length;_bi++){ var _bn=M.nodes[_bi]; if(_bn.done&&!_bn._bc){ _bn._bc=true; try{netSend({t:'mnd',i:_bi});}catch(e){} } } }
           var total=M.nodes.length;
-          b.style.display=(window.__objHidden?'none':'block');
+          b.style.display=((window.__objHidden||M.done)?'none':'block');
           b.innerHTML='<span style="font-size:15px;color:#ffe27a;">🎯 '+(LABEL[M.type]||'')+'</span><br><span style="color:#8fffba;font-size:14px;">คืบหน้า '+doneCt+' / '+total+(M.done?'  ✅ สำเร็จ!':'')+'</span>';
           try{ var cam=GC(); var wp=document.getElementById('coopWP'); if(!wp){ wp=document.createElement('div'); wp.id='coopWP'; wp.style.cssText='position:fixed;z-index:61;pointer-events:none;transform:translate(-50%,-50%);font-weight:bold;color:#ffe27a;text-shadow:0 0 6px #000,0 0 10px #000;font-size:17px;text-align:center;white-space:nowrap;background:rgba(8,16,30,.55);padding:3px 9px;border-radius:11px;border:1px solid rgba(255,210,120,.5);'; document.body.appendChild(wp); }
             var tgt=null,bd=1e9; for(var wi=0;wi<M.nodes.length;wi++){ var nn=M.nodes[wi]; if(nn.done)continue; var dd=Math.hypot(nn.pos.x-_P.pos.x,nn.pos.z-_P.pos.z); if(dd<bd){bd=dd;tgt=nn;} }
