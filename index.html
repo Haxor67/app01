@@ -17,7 +17,7 @@
   canvas{display:block;}
 
   #hud{position:fixed;inset:0;pointer-events:none;z-index:20;display:none;}
-  #objective{position:absolute;top:40px;left:50%;transform:translateX(-50%);max-width:88%;text-align:center;font-size:14px;font-weight:bold;letter-spacing:.3px;color:#eafff0;background:rgba(0,0,0,.45);padding:6px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.14);text-shadow:0 0 6px #000;white-space:nowrap;}
+  #objective{position:absolute;top:114px;left:50%;transform:translateX(-50%);max-width:88%;text-align:center;font-size:14px;font-weight:bold;letter-spacing:.3px;color:#eafff0;background:rgba(0,0,0,.45);padding:6px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.14);text-shadow:0 0 6px #000;white-space:nowrap;}
   #powerup{position:absolute;top:72px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:bold;color:#ffe24d;background:rgba(40,30,0,.55);padding:4px 14px;border-radius:14px;border:1px solid rgba(255,210,77,.5);text-shadow:0 0 6px #000;display:none;}
   #crosshair{position:absolute;top:50%;left:50%;width:22px;height:22px;transform:translate(-50%,-50%);opacity:.85;transition:width .05s,height .05s,opacity .1s;}
   #crosshair span{position:absolute;background:rgba(255,255,255,.85);box-shadow:0 0 3px rgba(0,0,0,.9);}
@@ -147,15 +147,15 @@
   <div id="fsBtn" style="position:absolute;top:12px;right:14px;pointer-events:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;">⛶</div>
   <div id="pauseBtn" style="position:absolute;top:14px;right:14px;pointer-events:auto;background:rgba(18,42,28,.92);border:2px solid rgba(125,255,77,.85);color:#fff;width:48px;height:48px;border-radius:13px;display:none;align-items:center;justify-content:center;font-size:23px;box-shadow:0 0 12px rgba(0,0,0,.6);position:fixed !important;z-index:250;">⏸</div>
   <div id="chatBtn" style="position:absolute;left:14px;bottom:64px;pointer-events:auto;background:rgba(18,30,48,.92);border:2px solid rgba(120,170,255,.9);color:#fff;width:48px;height:48px;border-radius:13px;display:none;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 12px rgba(0,0,0,.6);position:fixed !important;z-index:250;">💬</div>
-  <div id="pauseOverlay" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;flex-direction:column;color:#eafff0;">
+  <div id="pauseOverlay" onclick="if(event.target===this){window.__resumeGame&&window.__resumeGame()}" ontouchend="if(event.target===this){event.preventDefault();window.__resumeGame&&window.__resumeGame()}" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;flex-direction:column;color:#eafff0;touch-action:manipulation;">
     <div style="font-size:30px;font-weight:bold;letter-spacing:2px;">⏸ หยุดชั่วคราว</div>
     <div id="pauseSub" style="margin-top:8px;color:#9fb6a0;font-size:14px;">โฮสต์หยุดเกมไว้…</div>
     <div style="margin-top:24px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">
-      <button id="pauseResume" style="padding:13px 22px;border-radius:10px;border:none;font-size:16px;font-weight:bold;pointer-events:auto;cursor:pointer;background:linear-gradient(180deg,#2f9b4e,#13662f);color:#eafff0;">▶ เล่นต่อ</button>
-      <button id="pauseHome" style="padding:13px 22px;border-radius:10px;border:none;font-size:16px;font-weight:bold;pointer-events:auto;cursor:pointer;background:linear-gradient(180deg,#7a3030,#451818);color:#ffe0e0;">🏠 กลับหน้าแรก</button>
+      <button id="pauseResume" onclick="window.__resumeGame&&window.__resumeGame()" ontouchend="event.preventDefault();window.__resumeGame&&window.__resumeGame()" style="padding:15px 26px;border-radius:10px;border:none;font-size:17px;font-weight:bold;pointer-events:auto;cursor:pointer;touch-action:manipulation;background:linear-gradient(180deg,#2f9b4e,#13662f);color:#eafff0;">▶ เล่นต่อ</button>
+      <button id="pauseHome" onclick="window.__homeGame&&window.__homeGame()" ontouchend="event.preventDefault();event.stopPropagation();window.__homeGame&&window.__homeGame()" style="padding:15px 26px;border-radius:10px;border:none;font-size:17px;font-weight:bold;pointer-events:auto;cursor:pointer;touch-action:manipulation;background:linear-gradient(180deg,#7a3030,#451818);color:#ffe0e0;">🏠 กลับหน้าแรก</button>
     </div>
   </div>
-  <div id="chatLog" style="position:fixed;left:50%;transform:translateX(-50%);top:52px;width:84%;max-height:200px;overflow-y:auto;pointer-events:auto;display:flex;flex-direction:column;gap:2px;z-index:140;-webkit-overflow-scrolling:touch;transition:opacity .5s;text-align:center;"></div>
+  <div id="chatLog" style="position:fixed;left:50%;transform:translateX(-50%);top:28px;width:78%;max-height:78px;overflow-y:auto;pointer-events:auto;display:flex;flex-direction:column;gap:2px;z-index:140;-webkit-overflow-scrolling:touch;transition:opacity .5s;text-align:center;"></div>
   <div id="chatBox" style="position:fixed;left:50%;top:13%;transform:translateX(-50%);width:min(92%,520px);z-index:320;display:none;padding:12px 12px 14px;background:rgba(6,14,10,.97);border:2px solid rgba(125,255,77,.55);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.6);">
     <div style="display:flex;gap:8px;max-width:640px;margin:0 auto;">
       <input id="chatInput" maxlength="120" placeholder="พิมพ์ข้อความ…" style="pointer-events:auto;flex:1;padding:11px;border-radius:8px;border:1px solid rgba(125,255,77,.4);background:#0c1410;color:#eafff0;font-size:15px;" />
@@ -186,9 +186,9 @@
   <div id="potionBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🧪<small id="potionCount" style="font-size:11px;font-weight:bold;">1</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v8.2 20/06 14:27</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v8.4 20/06 17:47</div>
 <div id="start" class="screen">
-  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v8.2 20/06 14:27</div>
+  <div style="position:absolute;top:10px;right:12px;color:#7dff7d;font-size:13px;font-weight:bold;background:rgba(0,0,0,.5);padding:4px 11px;border-radius:6px;border:1px solid rgba(125,255,77,.35);z-index:5;">v8.4 20/06 17:47</div>
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
   <button class="start-btn" id="startBtn">เริ่มภารกิจใหม่ (คนเดียว)</button>
@@ -4770,7 +4770,7 @@ const WEAPONS=[
 ];
 const up={dmg:0,mag:0,reload:0,hp:0,speed:0,armor:0,crit:0}; let pendingPower=false;
 let coins=0,points=0,lifePts=0,curW=WEAPONS[0],firePrev=false,shopMode='play';
-let exitOpen=false, boss=null, deathMode=false, lightAcc=4, lockMsgT=0; const EXIT_KILLS=25; let paused=false;
+let exitOpen=false, boss=null, deathMode=false, lightAcc=4, lockMsgT=0; const EXIT_KILLS=25; let paused=false; window.__resumeGame=function(){ paused=false; var po=document.getElementById('pauseOverlay'); if(po)po.style.display='none'; var pb=document.getElementById('pauseBtn'); if(pb)pb.textContent='⏸'; try{ if(typeof net!=='undefined'&&net.on)netSend({t:'pause',p:false}); }catch(e){} }; window.__homeGame=function(){ try{location.reload();}catch(e){location.href=location.pathname;} };
 let stage=1, stageKills=0, bossActive=false, baseSeed=12345, campaignDone=false; const STAGES=20;
 let enraged=false, enrageMul=1, medicAlive=false, medicCd=5;
 let reviveProg=0, reviveTarget=-1, lastRevive=0, exitTimer=10, exitInZone=0, exitTotal=0; const EXITZONE=6;
@@ -5180,8 +5180,9 @@ function gltfOverlay(g,key,opt){ var src=(opt&&opt.src)||MODELS[key]||MODELS.min
   if(opt.weapon){ var _hr=null,_hr2=null; model.traverse(function(o){ var _n=(o.name||'').toLowerCase().replace(/[^a-z]/g,''); if(_n==='handslotr'){_hr=o;} else if(_n==='handr'){_hr2=o;} }); _hr=_hr||_hr2; if(!WPN[opt.weapon]){window.__wpnMiss=(window.__wpnMiss||0)+1;} else if(!_hr){window.__hsMiss=(window.__hsMiss||0)+1;} else { try{ var _wp=WPN[opt.weapon].clone(true); styleWeapon(_wp); _wp.scale.multiplyScalar(opt.wpnScale||1.15); _wp.rotation.set(WPN_ROT.x,WPN_ROT.y,WPN_ROT.z); _hr.add(_wp); window.__wA=(window.__wA||0)+1; }catch(_we){ window.__wErr=(''+(_we&&_we.message||_we)).slice(0,22); } } }
   if(opt.shield&&WPN.shield){ var _hl=null; model.traverse(function(o){ var _n2=(o.name||'').toLowerCase().replace(/[^a-z]/g,''); if(!_hl&&(_n2==='handslotl'||_n2==='handl'))_hl=o; }); if(_hl){ try{ var _sh=WPN.shield.clone(true); styleWeapon(_sh); _hl.add(_sh); }catch(_e2){} } }
   var hr=opt.hitR||0.42,hh=opt.hitH||1.55,hy=opt.hitY||0.85;
-  var hbB=new THREE.Mesh(new THREE.CylinderGeometry(hr,hr*1.1,hh,6),new THREE.MeshBasicMaterial({visible:false})); hbB.position.y=hy; g.add(hbB);
-  var hbH=new THREE.Mesh(new THREE.SphereGeometry(hr*0.72,8,6),new THREE.MeshBasicMaterial({visible:false})); hbH.position.y=hy+hh*0.5; g.add(hbH);
+  if(opt.boss){ var _BH=opt.scale||(hh*2.2); hh=_BH; hy=_BH*0.5; hr=Math.max(hr,_BH*0.16); }
+  var hbB=new THREE.Mesh(new THREE.CylinderGeometry(hr,hr*1.15,hh,8),new THREE.MeshBasicMaterial({visible:false})); hbB.position.y=hy; hbB.userData.isHead=false; g.add(hbB);
+  var hbH=new THREE.Mesh(new THREE.SphereGeometry(hr*(opt.boss?0.95:0.72),10,8),new THREE.MeshBasicMaterial({visible:false})); hbH.position.y=opt.boss?(hh*0.84):(hy+hh*0.5); hbH.userData.isHead=true; g.add(hbH);
   g.userData.hitMeshes=[hbH,hbB];
   if(opt.boss){ var _lc=opt.colossus?0xff2a2a:el.col; var pl=new THREE.PointLight(_lc,2.2,16,2); pl.position.y=hh*0.7; g.add(pl); var _rc=opt.colossus?0xff3030:el.glow; var ring=new THREE.Mesh(new THREE.RingGeometry(0.9,1.7,30),new THREE.MeshBasicMaterial({color:_rc,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending})); ring.rotation.x=-Math.PI/2; ring.position.y=0.06; g.add(ring); g.userData.bossRing=ring; if(opt.dino){ var pl2=new THREE.PointLight(0xff6622,2.2,15,2); pl2.position.y=hh*0.45; g.add(pl2); ring.scale.setScalar(1.9); } if(opt.colossus){ var pl3=new THREE.PointLight(0x8a20ff,1.8,15,2); pl3.position.y=hh*0.35; g.add(pl3); ring.scale.setScalar(1.7); } }
   var mixer=new THREE.AnimationMixer(model); var cl=src.animations; var find=function(n){ if(!n)return null; var fc=THREE.AnimationClip.findByName(cl,n); if(fc)return fc; for(var fi=0;fi<cl.length;fi++){ if(cl[fi].name&&cl[fi].name.indexOf(n)>=0)return cl[fi]; } return null; };
@@ -5297,7 +5298,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v8.2 20/06 14:27 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v8.4 20/06 17:47 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var po=document.getElementById('pauseOverlay'), ph=document.getElementById('pauseHome'); var _resume=function(e){ if(e){try{e.preventDefault();}catch(_x){}} paused=false; if(po)po.style.display='none'; var pb=document.getElementById('pauseBtn'); if(pb)pb.textContent='⏸'; if(net.on){try{netSend({t:'pause',p:false});}catch(_e){}} }; var _home=function(e){ if(e){try{e.preventDefault();e.stopPropagation();}catch(_x){}} try{location.reload();}catch(_r){location.href=location.pathname;} }; window.__resumeGame=_resume; window.__homeGame=_home; if(ph){ ph.addEventListener('click',_home); ph.addEventListener('touchend',_home,{passive:false}); ph.addEventListener('pointerup',_home); } if(po){ var _isHome=function(t){ return ph&&(t===ph||ph.contains(t)); }; po.addEventListener('click',function(e){ if(_isHome(e.target))return; _resume(e); }); po.addEventListener('touchend',function(e){ if(_isHome(e.target))return; _resume(e); },{passive:false}); } var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -5730,7 +5731,7 @@ function updateExitZone(dt){ if(!net.on||!net.isHost||!exitOpen)return;
 function campaignWin(){ if(net.on && !net._won){ net._won=true; netSend({t:'win'}); } campaignDone=true; win(); }
 function loadStage(st){
   state='play'; stage=st; wave=st; stageKills=0; try{ if(!net.on)localStorage.setItem('zf_save',JSON.stringify({stage:st,points:(typeof points!=='undefined'?points:0),coins:(typeof coins!=='undefined'?coins:0),kills:(typeof kills!=='undefined'?kills:0),t:Date.now()})); }catch(_se){} bossActive=false; exitOpen=false; net._won=false; lockMsgT=0; window._bossKilledFlag=false;
-  enraged=false; enrageMul=1; medicAlive=false; medicCd=rand(4,7); exitTimer=10; exitInZone=0; exitTotal=0; reviveProg=0; prestart=false; safeRing=null;
+  enraged=false; enrageMul=1; medicAlive=false; medicCd=rand(4,7); exitTimer=10; exitInZone=0; exitTotal=0; reviveProg=0; prestart=false; if(safeRing){try{worldRoot.remove(safeRing);}catch(_sr){}} safeRing=null;
   shopMode='play'; { const sh=el('shop'); if(sh) sh.style.display='none'; } if(IS_TOUCH) touchUI.style.display='block';
   curBiome=biomeForStage(st);
   terrAmp=curBiome.terrAmp||1; terrJag=curBiome.terrJag||0;
@@ -5747,7 +5748,7 @@ function loadStage(st){
   clearArr(bloodBursts); clearArr(smokePuffs); clearArr(tracers); clearArr(shells); clearArr(goreDecals); clearArr(potionPickups); contraType=null; powerType=null; clearArr(coinPickups);
   for(const p of projectiles){ scene.remove(p.m); } projectiles.length=0; for(const a of ammoPickups){ scene.remove(a.mesh); } ammoPickups.length=0; for(const a of powerPickups){ scene.remove(a.mesh); } powerPickups.length=0;
   boss=null; const bw=el('bossWrap'); if(bw)bw.style.display='none';
-  player.pos.set(0,terrainH(0,0),0); player.vx=0; player.vz=0; player.down=false; gun.visible=true;
+  player.pos.set(0,terrainH(0,0),0); player.vx=0; player.vz=0; player.down=false; gun.visible=true; if(net.on){ var _gy0=terrainH(0,0); for(var _rid in net.players){ var _rp=net.players[_rid]; if(_rp&&_rp.pos){ _rp.pos.set(0,_gy0,0); if(_rp.tpos)_rp.tpos.set(0,_gy0,0); } } }
   if(player.hp<player.maxHP*0.5) player.hp=player.maxHP*0.5; healthFill.style.width=(player.hp/player.maxHP*100)+'%';
   weapon.mag=weapon.magSize; weapon.reloading=false; reloadHint.textContent=''; updateAmmo(); if(typeof styleGun==='function'&&typeof curW!=='undefined')styleGun(curW);
   targetZombies=Math.min(IS_TOUCH?13:18, 5+st);
@@ -6065,7 +6066,7 @@ function beginPlay(seed,doSpawn){
   resetState();
   startScreen.style.display='none';overScreen.style.display='none';winScreen.style.display='none';coopScreen.style.display='none';{const lb=el('lobby');if(lb)lb.style.display='none';}
   hud.style.display='block'; if(IS_TOUCH) touchUI.style.display='block'; if(actx&&actx.state==='suspended')actx.resume(); updatePotionHUD();
-  campaignDone=false; loadStage(1); checkOrientation();
+  window.__gameGen=(window.__gameGen||0)+1; campaignDone=false; loadStage(1); checkOrientation();
   { const cbn=el('chatBtn'), pbn=el('pauseBtn'); if(cbn)cbn.style.display='flex'; if(pbn)pbn.style.display='flex'; paused=false; const po=el('pauseOverlay'); if(po)po.style.display='none'; }
   if(net.on) broadcastName();
 }
@@ -6210,7 +6211,7 @@ boot();
   function ready(){ try{ var S=GS(),P=GP(); return (!!S&&!!P&&!!P.pos&&typeof THREE!=='undefined'&&GSG()!=null&&GST()!=null); }catch(e){ return false; } }
   function R_(){ try{ return (typeof R!=='undefined'&&R)?R:42; }catch(e){ return 42; } }
   function exitP(){ try{ if(typeof exitPos!=='undefined'&&exitPos)return exitPos; }catch(e){} return {x:0,z:-30}; }
-  function hud(){ if(M.banner)return M.banner; var d=document.createElement('div'); d.id='coopObj'; d.style.cssText='position:fixed;top:120px;left:50%;transform:translateX(-50%);z-index:60;max-width:94%;text-align:center;font-size:14px;font-weight:bold;color:#eaf6ff;background:rgba(8,16,30,.82);padding:7px 16px;border-radius:14px;border:2px solid rgba(120,200,255,.7);box-shadow:0 0 16px rgba(60,140,255,.4);text-shadow:0 0 6px #000;pointer-events:none;line-height:1.45;'; try{(document.body||document.documentElement).appendChild(d);}catch(e){} M.banner=d; return d; }
+  function hud(){ if(M.banner)return M.banner; var d=document.createElement('div'); d.id='coopObj'; d.style.cssText='position:fixed;top:152px;left:50%;transform:translateX(-50%);z-index:60;max-width:94%;text-align:center;font-size:14px;font-weight:bold;color:#eaf6ff;background:rgba(8,16,30,.82);padding:7px 16px;border-radius:14px;border:2px solid rgba(120,200,255,.7);box-shadow:0 0 16px rgba(60,140,255,.4);text-shadow:0 0 6px #000;pointer-events:none;line-height:1.45;'; try{(document.body||document.documentElement).appendChild(d);}catch(e){} M.banner=d; return d; }
   function mkNode(x,z,col,kind){ var grp=new THREE.Group(); var gy=0; try{gy=terrainH(x,z);}catch(e){}
     var pil=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.7,3.4,8),new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:0.6,roughness:0.5,transparent:true,opacity:0.92})); pil.position.y=1.7;
     var ring=new THREE.Mesh(new THREE.RingGeometry(2.4,3.0,28),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.4,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending})); ring.rotation.x=-Math.PI/2; ring.position.y=0.08;
@@ -6253,6 +6254,7 @@ boot();
     if(ready()){
       if(_st!=='play'){ try{window.__missionDone=true;}catch(e){} if(M.banner)M.banner.style.display='none'; var _w=document.getElementById('coopWP'); if(_w)_w.style.display='none'; }
       else {
+        if(M._gen!==window.__gameGen){ M._gen=window.__gameGen; clearM(); M.done=false; M.stage=-999; }
         if(_sg!==M.stage){ M.stage=_sg; clearM(); M.type=TYPES[((_sg-1)%TYPES.length+TYPES.length)%TYPES.length]; M.t0=performance.now(); spawn(); brief(); }
         try{ window.__mi=M.type||'none'; window.__missionDone=(M.type?!!M.done:true); }catch(e){}
         var b=hud();
