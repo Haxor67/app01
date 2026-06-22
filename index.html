@@ -192,7 +192,7 @@
   <div id="molotovBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🔥<small id="molotovCount" style="font-size:11px;font-weight:bold;">2</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v11.1 22/06</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v11.2 22/06</div>
 <div id="start" class="screen">
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
@@ -5407,7 +5407,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v11.1 22/06 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 mon'+(LD.mon||0)+'/25 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v11.2 22/06 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 mon'+(LD.mon||0)+'/25 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var po=document.getElementById('pauseOverlay'), ph=document.getElementById('pauseHome'); var _resume=function(e){ if(e){try{e.preventDefault();}catch(_x){}} paused=false; if(po)po.style.display='none'; var pb=document.getElementById('pauseBtn'); if(pb)pb.textContent='⏸'; if(net.on){try{netSend({t:'pause',p:false});}catch(_e){}} }; var _home=function(e){ if(e){try{e.preventDefault();e.stopPropagation();}catch(_x){}} try{location.reload();}catch(_r){location.href=location.pathname;} }; window.__resumeGame=_resume; window.__homeGame=_home; if(ph){ ph.addEventListener('click',_home); ph.addEventListener('touchend',_home,{passive:false}); ph.addEventListener('pointerup',_home); } if(po){ var _isHome=function(t){ return ph&&(t===ph||ph.contains(t)); }; po.addEventListener('click',function(e){ if(_isHome(e.target))return; _resume(e); }); po.addEventListener('touchend',function(e){ if(_isHome(e.target))return; _resume(e); },{passive:false}); } var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -5533,13 +5533,48 @@ function spawnProjectile(from,tx,ty,tz,kind,dmg,tid){
   let col=0x7bff1a,r=0.2; if(kind==='bone'){col=0xff7a2a;r=0.18;} else if(kind==='sting'){col=0xff2418;r=0.18;}
   const m=(function(){var _mm=new THREE.Mesh(new THREE.SphereGeometry(r,10,8),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.96,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));_mm.add(new THREE.Mesh(new THREE.SphereGeometry(r*2.2,10,8),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.26,blending:THREE.AdditiveBlending,depthWrite:false,fog:false})));var _ppl=new THREE.PointLight(col,1.8,8,2);_mm.add(_ppl);return _mm;})(); m.position.set(from.x,from.y,from.z); scene.add(m);
   const dx=tx-from.x,dy=ty-from.y,dz=tz-from.z,dist=Math.hypot(dx,dy,dz)||1,spd=19;
-  projectiles.push({m,vx:dx/dist*spd,vy:dy/dist*spd+2.2,vz:dz/dist*spd,life:2.4,dmg,kind,grav:6.5});
+  projectiles.push({m,vx:dx/dist*spd,vy:dy/dist*spd+2.2,vz:dz/dist*spd,life:2.4,dmg,kind,grav:6.5,boss:!!window.__projFromBoss});
   if(net.on&&net.isHost) netSend({t:'proj',x:from.x,y:from.y,z:from.z,vx:dx/dist*spd,vy:dy/dist*spd+2.2,vz:dz/dist*spd,k:kind});
   if(kind==='bone') sndThrow(); else sndSpit();
 }
 function spawnProjectileVisual(d){ let col=0x7bff1a,r=0.2; if(d.k==='bone'){col=0xff7a2a;r=0.18;} else if(d.k==='sting'){col=0xff2418;r=0.18;}
   const m=(function(){var _mm=new THREE.Mesh(new THREE.SphereGeometry(r,10,8),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.96,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));_mm.add(new THREE.Mesh(new THREE.SphereGeometry(r*2.2,10,8),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.26,blending:THREE.AdditiveBlending,depthWrite:false,fog:false})));var _ppl=new THREE.PointLight(col,1.8,8,2);_mm.add(_ppl);return _mm;})(); m.position.set(d.x,d.y,d.z); scene.add(m);
   projectiles.push({m,vx:d.vx,vy:d.vy,vz:d.vz,life:2.4,dmg:0,kind:d.k,grav:6.5}); if(d.k==='bone')sndThrow();else sndSpit(); }
+function pickBossMode(u,d,bz){ var pool; if(d<9){ pool=bz?['slam','spread','summon','nova']:['slam','spread','summon']; } else if(d<20){ pool=bz?['volley','spread','nova','summon','aimed']:['spread','volley','aimed','summon']; } else { pool=bz?['nova','volley','summon','aimed']:['aimed','volley','summon']; } var c=[]; for(var i=0;i<pool.length;i++){ if(pool[i]!==u._mode)c.push(pool[i]); } if(!c.length)c=pool; return c[(Math.random()*c.length)|0]; }
+function bossDirector(z,u,d,tid,dt){
+  if(typeof net!=='undefined'&&net&&net.on&&!net.isHost)return;
+  if(typeof paused!=='undefined'&&paused)return;
+  var now=performance.now();
+  if(window.__bossHitT===undefined)window.__bossHitT=now;
+  if(u._modeStart===undefined){ u._modeStart=0; u._mode=null; u._cast=0; u._seq=0; window.__bossHitT=now; }
+  if(!u._berserk && u.maxhp && u.hp/u.maxhp<=0.30){ u._berserk=true; u._mode=null; u._cast=0.4;
+    try{ u.speed*=1.45; }catch(e){}
+    try{ if(u.bossRing&&u.bossRing.material){ u.bossRing.material.color.setHex(0xff2020); u.bossRing.scale.setScalar(2.4); } }catch(e){}
+    try{ if(typeof sndBossRoar==='function')sndBossRoar(); }catch(e){}
+    try{ if(typeof showMsg==='function')showMsg('😡 บอสคลั่ง! โจมตีดุเดือดขึ้น!',2200); }catch(e){}
+  }
+  var bz=!!u._berserk;
+  var lastEff=Math.max(u._modeStart||0, window.__bossHitT||0);
+  if(!u._mode || (now-(u._modeStart||0))>(bz?3200:5200) || (now-lastEff)>5000){ u._mode=pickBossMode(u,d,bz); u._modeStart=now; u._cast=0.25; u._seq=0; }
+  u._cast-=dt; if(u._cast>0)return;
+  var T=(tid>0&&net.players&&net.players[tid]&&net.players[tid].pos)?net.players[tid].pos:player.pos;
+  var tgx=T.x,tgy=(T.y||0)+1.2,tgz=T.z;
+  var fx=z.position.x, fy=terrainH(z.position.x,z.position.z)+1.1+1.6, fz=z.position.z;
+  var base=Math.atan2(tgx-fx,tgz-fz);
+  var dmgR=u.projDmg||[16,24];
+  function shoot(ang){ var dxx=Math.sin(ang),dzz=Math.cos(ang); window.__projFromBoss=true; try{ spawnProjectile({x:fx,y:fy,z:fz}, fx+dxx*22, tgy, fz+dzz*22, u.proj||'bone', rand(dmgR[0],dmgR[1])*(bz?1.3:1), tid); }catch(e){} window.__projFromBoss=false; }
+  function shootAt(){ window.__projFromBoss=true; try{ spawnProjectile({x:fx,y:fy,z:fz}, tgx, tgy, tgz, u.proj||'bone', rand(dmgR[0],dmgR[1])*(bz?1.3:1), tid); }catch(e){} window.__projFromBoss=false; }
+  try{ if(u.atk&&(u._mode==='slam'||u._mode==='spread'))u.atk(u,1); }catch(e){}
+  switch(u._mode){
+    case 'aimed': shootAt(); u._cast=bz?0.7:1.1; break;
+    case 'spread': { var n=bz?5:3; for(var i=0;i<n;i++) shoot(base+(i-(n-1)/2)*0.22); u._cast=bz?1.0:1.6; } break;
+    case 'volley': shoot(base+(Math.random()-0.5)*0.12); u._seq=(u._seq||0)+1; u._cast=0.12; if(u._seq>=(bz?9:6)){ u._cast=bz?0.9:1.6; u._seq=0; } break;
+    case 'nova': { var m=bz?16:10; for(var j=0;j<m;j++) shoot(j/m*6.283); u._cast=bz?1.3:2.0; } break;
+    case 'summon': { try{ if(window.__spawnAt)window.__spawnAt(z.position.x,z.position.z,bz?4:2); }catch(e){} try{ if(typeof showMsg==='function')showMsg('🌀 บอสเรียกพวกมา!',1300); }catch(e){} u._cast=bz?2.2:3.4; u._mode=null; } break;
+    case 'slam': { var k=bz?14:9; for(var s=0;s<k;s++) shoot(s/k*6.283); try{ if(d<9&&tid===0&&!player.down){ hurtPlayer(rand(bz?34:24,bz?52:38),z.position); window.__bossHitT=now; } }catch(e){} u._cast=bz?1.5:2.3; } break;
+    default: shootAt(); u._cast=1.1;
+  }
+}
 let grenades=3; let molotovs=2;
 function throwMolotov(){ if(state!=='play'||player.down)return; if(molotovs<=0){ showMsg('🔥 ไม่มีระเบิดเพลิงแล้ว',900); return; } molotovs--; updateGrenadeHUD();
   var dir=new THREE.Vector3(); camera.getWorldDirection(dir);
@@ -5589,7 +5624,7 @@ function updateProjectiles(dt){
     }
     let hit=false;
     if(p.dmg>0 && (!net.on||net.isHost)){
-      if(!player.down){ const dd=Math.hypot(p.m.position.x-player.pos.x,p.m.position.z-player.pos.z); if(dd<1.3 && p.m.position.y<player.pos.y+2.0){ hurtPlayer(p.dmg,{x:p.m.position.x,z:p.m.position.z}); hit=true; } }
+      if(!player.down){ const dd=Math.hypot(p.m.position.x-player.pos.x,p.m.position.z-player.pos.z); if(dd<1.3 && p.m.position.y<player.pos.y+2.0){ hurtPlayer(p.dmg,{x:p.m.position.x,z:p.m.position.z}); if(p.boss)window.__bossHitT=performance.now(); hit=true; } }
       if(!hit && net.on){ for(const id in net.players){ const r=net.players[id]; if(r.present&&!r.down){ const dd=Math.hypot(p.m.position.x-r.pos.x,p.m.position.z-r.pos.z); if(dd<1.3){ sendTo(+id,{t:'dmg',amount:p.dmg,fx:p.m.position.x,fz:p.m.position.z}); hit=true; break; } } } }
     }
     if(hit||p.life<=0||p.m.position.y<gy-0.2){ scene.remove(p.m); p.m.material.dispose&&p.m.material.dispose(); projectiles.splice(i,1); }
@@ -6102,7 +6137,7 @@ function updateZombies(dt){
       z.position.y=terrainH(z.position.x,z.position.z)+Math.abs(sw)*0.05; z.rotation.y=Math.atan2(mx,mz);
       if(u.gait){u.gait(u);} else { u.legL.root.rotation.x=sw*0.6-0.08; u.legR.root.rotation.x=-sw*0.6-0.08; u.armL.root.rotation.x=-0.9+sw*0.2; u.armR.root.rotation.x=-0.9-sw*0.2; }
       if(u.lite) u.lite.intensity=1.2+Math.sin(performance.now()/170)*0.5; if(u.halo){ u.halo.rotation.z+=dt*2.6; u.halo.position.y=2.15+Math.sin(performance.now()/250)*0.12; } continue; }
-    if(u.rng&&u.proj&&tid>=0){ u.rangeCd-=dt; if(d>4&&d<(u.boss?34:22)&&u.rangeCd<=0){ u.rangeCd=rand(1.8,3.2); let ty=player.pos.y+1.2; if(tid>0&&net.players[tid]) ty=net.players[tid].pos.y+1.2; spawnProjectile({x:z.position.x,y:terrainH(z.position.x,z.position.z)+1.1+(u.boss?1.6:0),z:z.position.z},tx,ty,tz,u.proj,(u.projDmg?rand(u.projDmg[0],u.projDmg[1]):rand(u.dmg[0],u.dmg[1])*1.3),tid); } }
+    if(u.boss){ try{ bossDirector(z,u,d,tid,dt); }catch(_bd){} } else if(u.rng&&u.proj&&tid>=0){ u.rangeCd-=dt; if(d>4&&d<22&&u.rangeCd<=0){ u.rangeCd=rand(1.8,3.2); let ty=player.pos.y+1.2; if(tid>0&&net.players[tid]) ty=net.players[tid].pos.y+1.2; spawnProjectile({x:z.position.x,y:terrainH(z.position.x,z.position.z)+1.1,z:z.position.z},tx,ty,tz,u.proj,(u.projDmg?rand(u.projDmg[0],u.projDmg[1]):rand(u.dmg[0],u.dmg[1])*1.3),tid); } }
     const gy=terrainH(z.position.x,z.position.z);
     if(d>u.hitR+0.4){
       var _vx=dx/d,_vz=dz/d,_sp=u.speed;
@@ -6119,7 +6154,8 @@ function updateZombies(dt){
       z.position.y=gy; u.attackCd-=dt; const a=Math.sin(performance.now()/120);
       if(u.atk){ u.atk(u,a); } else { u.armL.root.rotation.x=-1.5+a*0.5; u.armR.root.rotation.x=-1.5-a*0.5; }
       if(u.attackCd<=0){ u.attackCd=(u.type==='brute'||u.boss)?1.4:1.0; const dmg=rand(u.dmg[0],u.dmg[1]);
-        if(tid===0){ if(!player.down) hurtPlayer(dmg,z.position); }
+        try{ if(u.atk)u.atk(u,1); }catch(_ae){} try{ var _ll=Math.hypot(dx,dz)||1; z.position.x+=dx/_ll*0.16; z.position.z+=dz/_ll*0.16; }catch(_le){}
+        if(tid===0){ if(!player.down){ hurtPlayer(dmg,z.position); if(u.boss)window.__bossHitT=performance.now(); } }
         else if(tid>0){ sendTo(tid,{t:'dmg',amount:dmg,fx:z.position.x,fz:z.position.z}); }
         sndGroan(0.2,0.3); }
     }
@@ -6397,7 +6433,7 @@ boot();
 <script>/* COOP MISSIONS v1 - isolated, fail-safe */
 (function(){
   var M={stage:-1,type:null,nodes:[],group:null,done:false,banner:null,t0:0};
-  var TYPES=['beacon','horde','collect','hunt','nests','carry','switches','escort','bombs','portals','sequence','souls','crystals','keys'];
+  var TYPES=['beacon','horde','collect','hunt','nests','carry','switches','escort','bombs','portals','sequence','souls','crystals','keys','refuel','protectnpc','wires','breakthrough','bossrush','shrink'];
   var LABEL={beacon:'ภารกิจ: ชาร์จสัญญาณ — ยืนใกล้เสาให้เต็ม (คนอื่นกันซอมบี้)',
     switches:'ภารกิจ: เปิดสวิตช์ทุกจุด — แยกกันไปยืนคนละจุด',
     nests:'ภารกิจ: ชำระรังทั้งหมด — ยืนใกล้รังเพื่อทำลาย',
@@ -6411,7 +6447,13 @@ boot();
     sequence:'ภารกิจ: จุดสัญญาณตามลำดับ — จุดให้ถูกเรียง 1→2→3',
     souls:'ภารกิจ: ตามเก็บวิญญาณ 👻 — มันจะหนี ไล่ต้อนให้จนมุมแล้วแตะ',
     crystals:'ภารกิจ: ทำลายเกราะคริสตัล — ยืนใกล้คริสตัลให้แตกทุกแท่ง',
-    keys:'ภารกิจ: เก็บกุญแจเปิดประตู 🔑 — เก็บให้ครบแล้วไปเปิดประตูใหญ่'};
+    keys:'ภารกิจ: เก็บกุญแจเปิดประตู 🔑 — เก็บให้ครบแล้วไปเปิดประตูใหญ่',
+    refuel:'ภารกิจ: เติมน้ำมันเครื่องปั่นไฟ — เก็บถังน้ำมันไปส่งที่เครื่องกลางแผนที่',
+    protectnpc:'ภารกิจ: ปกป้อง NPC 🆘 — กันซอมบี้ไม่ให้เข้าถึงผู้รอดชีวิตจนหมดเวลา',
+    wires:'ภารกิจ: ลากสายไฟเชื่อม 2 จุด — ต้องมีคนยืนทั้ง 2 จุดพร้อมกัน (เล่น co-op)',
+    breakthrough:'ภารกิจ: บุกฝ่าไปจุดออก 🏁 — ฝ่าซอมบี้ไปให้ถึงธงปลายทาง',
+    bossrush:'ภารกิจ: บอสรัช — ล้มมินิบอสทุกตัว (ตัวแดงเรืองแสง)',
+    shrink:'ภารกิจ: เอาตัวรอดในวงปลอดภัย — วงหดลงเรื่อยๆ อยู่นอกวงจะโดนดาเมจ'};
   function GS(){ try{ if(typeof scene!=='undefined'&&scene)return scene; }catch(e){} return window.gScene; }
   function GP(){ try{ if(typeof player!=='undefined'&&player)return player; }catch(e){} return window.gPlayer; }
   function GC(){ try{ if(typeof camera!=='undefined'&&camera)return camera; }catch(e){} return window.gCamera; }
@@ -6428,7 +6470,7 @@ boot();
     var pl=new THREE.PointLight(col,1.6,16,2); pl.position.y=2.2;
     grp.add(pil); grp.add(ring); grp.add(beam); grp.add(pl); grp.position.set(x,gy,z);
     return {grp:grp,pos:{x:x,z:z},rad:(kind==='beacon'?5:3.4),prog:0,done:false,kind:kind,ring:ring,pil:pil,col:col}; }
-  function clearM(){ try{ var sc=GS(); if(M.group&&sc)sc.remove(M.group); }catch(e){} M.nodes=[];M.group=null;M.done=false; }
+  function clearM(){ try{ var sc=GS(); if(M.group&&sc)sc.remove(M.group); }catch(e){} try{ if(M._sring){worldRoot.remove(M._sring);M._sring=null;} }catch(e){} M.nodes=[];M.group=null;M.done=false; M.hordeEnd=null;M.bombEnd=null;M.shrinkEnd=null;M.npcEnd=null;M._fuelN=0; }
   window.__mNodeDone=function(i){ try{ var nd=M.nodes[i]; if(nd&&!nd.done){ nd.done=true; nd.prog=1; if(nd.kind==='orb'){try{nd.grp.visible=false;}catch(e){}} try{ nd.ring.material.color.setHex(0x33ff88); nd.pil.material.color.setHex(0x33ff88); nd.pil.material.emissive.setHex(0x33ff88);}catch(e){} } }catch(e){} };
   window.__mMissionDone=function(){ try{ M.done=true; window.__missionDone=true; }catch(e){} };
   window.__mDrop=function(){ try{ for(var i=0;i<M.nodes.length;i++){ var nd=M.nodes[i]; if(nd.kind==='pkg'&&nd.picked&&!nd.done){ if(typeof net!=='undefined'&&net&&net.on&&!net.isHost){ try{netSend({t:'mdrop'});}catch(e){} } nd.picked=false; nd._dropCd=performance.now()+1600; window.__carrying=false; window.__carrySlow=1; window.__carryNoFire=false; try{if(typeof showMsg==='function')showMsg('📦 วางหีบแล้ว — เดินมาแตะใหม่เพื่อแบกต่อ',1800);}catch(e){} break; } } }catch(e){} };
@@ -6447,9 +6489,19 @@ boot();
     else if(M.type==='souls'){ var _son=4+_sb; defs=[]; for(var _soi=0;_soi<_son;_soi++){ var _soa=_soi/_son*6.283+0.7,_sor=R*(0.5+0.45*((_soi%2)?1:0.6)); defs.push([Math.cos(_soa)*_sor,Math.sin(_soa)*_sor,0xbfe6ff,'soul']); } }
     else if(M.type==='crystals'){ var _cn=3+_sb; defs=[]; for(var _ci=0;_ci<_cn;_ci++){ var _ca=_ci/_cn*6.283+1.1; defs.push([Math.cos(_ca)*R*0.72,Math.sin(_ca)*R*0.72,0x66ffe0,'crystal']); } }
     else if(M.type==='keys'){ var _kn=3+_sb; defs=[]; for(var _ki=0;_ki<_kn;_ki++){ var _ka=_ki/_kn*6.283+0.5; defs.push([Math.cos(_ka)*R,Math.sin(_ka)*R,0xffd83a,'key']); } defs.push([0,0,0x46b6ff,'gate']); }
+    else if(M.type==='refuel'){ var _rfn=3+_sb; defs=[]; for(var _rfi=0;_rfi<_rfn;_rfi++){ var _rfa=_rfi/_rfn*6.283+0.4; defs.push([Math.cos(_rfa)*R,Math.sin(_rfa)*R,0xffaa22,'fuel']); } defs.push([0,0,0x33ffcc,'gen']); }
+    else if(M.type==='protectnpc'){ defs=[[Math.cos(0.6)*R*0.45,Math.sin(0.6)*R*0.45,0x66ff88,'npc']]; }
+    else if(M.type==='wires'){ defs=[[Math.cos(0.4)*R*0.95,Math.sin(0.4)*R*0.95,0xffe24a,'wire'],[Math.cos(3.55)*R*0.95,Math.sin(3.55)*R*0.95,0xffe24a,'wire']]; }
+    else if(M.type==='breakthrough'){ defs=[[Math.cos(2.0)*R*0.98,Math.sin(2.0)*R*0.98,0x66ff88,'reach']]; }
+    else if(M.type==='bossrush'){ defs=[]; }
+    else if(M.type==='shrink'){ defs=[]; }
     for(var i=0;i<defs.length;i++){ var n=mkNode(defs[i][0],defs[i][1],defs[i][2],defs[i][3]); M.nodes.push(n); M.group.add(n.grp); }
     if(M.type==='hunt'){ var hx=Math.cos(1.1)*R*0.92,hz=Math.sin(1.1)*R*0.92; var hn=mkNode(hx,hz,0xff3030,'hunt'); hn.rad=2.6; try{hn.grp.visible=false;}catch(e){} try{ if(window.__spawnTagged){ var _hz=window.__spawnTagged(hx,hz); if(_hz){ hn.z=_hz; hn.pos.x=_hz.position.x; hn.pos.z=_hz.position.z; } } }catch(e){} M.nodes.push(hn); M.group.add(hn.grp); }
     if(M.type==='horde'){ M.hordeEnd=performance.now()+(30000+(((typeof stage!=='undefined'?stage:1))-1)*2500); M._remOverride=null; }
+    if(M.type==='bossrush'){ var _brn=2+Math.floor((((typeof stage!=='undefined'?stage:1)))/8); for(var _bri=0;_bri<_brn;_bri++){ var _bra=_bri/_brn*6.283+0.6; var _brx=Math.cos(_bra)*R*0.9,_brz=Math.sin(_bra)*R*0.9; var _brnode=mkNode(_brx,_brz,0xff3030,'hunt'); _brnode.rad=2.8; try{_brnode.grp.visible=false;}catch(e){} try{ if(window.__spawnTagged){ var _bz=window.__spawnTagged(_brx,_brz); if(_bz){ _brnode.z=_bz; _brnode.pos.x=_bz.position.x; _brnode.pos.z=_bz.position.z; try{ _bz.userData.hp=Math.round((_bz.userData.hp||200)*1.8); _bz.userData.maxhp=_bz.userData.hp; _bz.scale.multiplyScalar(1.3); }catch(e){} } } }catch(e){} M.nodes.push(_brnode); M.group.add(_brnode.grp); } }
+    if(M.type==='shrink'){ M.shrinkEnd=performance.now()+(33000+(((typeof stage!=='undefined'?stage:1))-1)*2000); M.shrinkDur=(33000+(((typeof stage!=='undefined'?stage:1))-1)*2000); M.shrinkR0=R_()*0.82; M.shrinkR1=5.5; try{ if(M._sring){worldRoot.remove(M._sring);} var _rg=new THREE.Mesh(new THREE.RingGeometry(0.965,1.0,64),new THREE.MeshBasicMaterial({color:0x4dd2ff,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending})); _rg.rotation.x=-Math.PI/2; _rg.position.set(0,terrainH(0,0)+0.14,0); _rg.scale.setScalar(M.shrinkR0); worldRoot.add(_rg); M._sring=_rg; }catch(e){} }
+    if(M.type==='protectnpc'){ M.npcEnd=performance.now()+(34000+(((typeof stage!=='undefined'?stage:1))-1)*2200); for(var _pni=0;_pni<M.nodes.length;_pni++){ if(M.nodes[_pni].kind==='npc'){ M.nodes[_pni].hp=100; M.nodes[_pni].maxhp=100; } } }
+    if(M.type==='refuel'){ M._fuelN=0; for(var _rfj=0;_rfj<M.nodes.length;_rfj++){ if(M.nodes[_rfj].kind==='fuel')M._fuelN++; if(M.nodes[_rfj].kind==='gen')M.nodes[_rfj]._fill=0; } }
     var sc=GS(); if(sc)sc.add(M.group);
   }catch(e){ M.type=null; } }
   function reward(){ try{ if(typeof points!=='undefined')points+=240; if(typeof lifePts!=='undefined')lifePts+=240; if(typeof updateEcon==='function')updateEcon(); }catch(e){}
@@ -6468,7 +6520,13 @@ boot();
     sequence:'วิธีทำ: ดูเลขลำดับ จุดทีละจุดเรียง 1→2→3 (ผิดลำดับจะยังไม่ติด)',
     souls:'วิธีทำ: วิญญาณ 👻 จะหนีเรา ไล่ต้อนเข้ามุมแผนที่แล้วเดินทับ',
     crystals:'วิธีทำ: เดินไปยืนใกล้คริสตัลเรืองแสงค้างจนแตก ให้ครบทุกแท่ง',
-    keys:'วิธีทำ: เดินเก็บกุญแจ 🔑 ให้ครบ แล้วไปยืนที่ประตู 🚪 กลางแผนที่ค้างจนเปิด'};
+    keys:'วิธีทำ: เดินเก็บกุญแจ 🔑 ให้ครบ แล้วไปยืนที่ประตู 🚪 กลางแผนที่ค้างจนเปิด',
+    refuel:'วิธีทำ: เดินทับถังน้ำมันสีส้มเพื่อหยิบ มันจะตามเรา พาไปวางที่เครื่องปั่นไฟกลางแผนที่ให้ครบ',
+    protectnpc:'วิธีทำ: ยืนใกล้ NPC แล้วยิงซอมบี้ที่เข้ามาใกล้ ป้องกันจนหมดเวลา',
+    wires:'วิธีทำ: เล่น 2 คน ยืนคนละจุดพร้อมกันค้างไว้จนสายไฟเชื่อมครบ',
+    breakthrough:'วิธีทำ: ตามธง 🏁 ฝ่าซอมบี้ไปให้ถึงจุดออก',
+    bossrush:'วิธีทำ: ตามป้ายไปล้มมินิบอสตัวแดงให้ครบทุกตัว',
+    shrink:'วิธีทำ: อยู่ในวงสีฟ้าที่หดลงเรื่อยๆ อย่าออกนอกวง รอดให้ครบเวลา'};
   function brief(){ try{
     var d=document.getElementById('coopBrief');
     if(!d){ d=document.createElement('div'); d.id='coopBrief'; d.style.cssText='position:fixed;top:44%;left:50%;transform:translate(-50%,-50%);z-index:140;max-width:90%;text-align:center;color:#eaf2ff;background:linear-gradient(180deg,#10203a,#0a1422);padding:18px 22px;border-radius:16px;border:2px solid rgba(120,170,255,.65);box-shadow:0 0 40px rgba(60,120,255,.45);pointer-events:none;'; try{(document.body||document.documentElement).appendChild(d);}catch(e){} }
@@ -6486,7 +6544,7 @@ boot();
       if(_st!=='play'){ try{window.__missionDone=true;window.__carrySlow=1;window.__carryNoFire=false;window.__carrying=false;}catch(e){} if(M.banner)M.banner.style.display='none'; var _w=document.getElementById('coopWP'); if(_w)_w.style.display='none'; }
       else {
         if(M._gen!==window.__gameGen){ M._gen=window.__gameGen; clearM(); M.done=false; M.stage=-999; }
-        if(_sg!==M.stage){ M.stage=_sg; clearM(); var _seed; try{ _seed=(typeof net!=='undefined'&&net&&net.on)?(net.seed||12345):((12345^((window.__gameGen||1)*2654435761))>>>0); }catch(e){ _seed=12345; } var _POOL=((typeof net!=='undefined'&&net&&net.on)?TYPES:TYPES.filter(function(_t){return _t!=='carry';})); var _L=_POOL.length,_cyc=Math.floor((_sg-1)/_L),_idx=((_sg-1)%_L+_L)%_L; var _s=((_seed>>>0)^(_cyc*2654435761))>>>0; var _rnd=function(){ _s=(_s*1664525+1013904223)>>>0; return _s/4294967296; }; var _deck=_POOL.slice(); for(var _ii=_deck.length-1;_ii>0;_ii--){ var _jj=Math.floor(_rnd()*(_ii+1)); var _tt=_deck[_ii];_deck[_ii]=_deck[_jj];_deck[_jj]=_tt; } M.type=_deck[_idx]; M.t0=performance.now(); spawn(); brief(); }
+        if(_sg!==M.stage){ M.stage=_sg; clearM(); var _seed; try{ _seed=(typeof net!=='undefined'&&net&&net.on)?(net.seed||12345):((12345^((window.__gameGen||1)*2654435761))>>>0); }catch(e){ _seed=12345; } var _POOL=((typeof net!=='undefined'&&net&&net.on)?TYPES:TYPES.filter(function(_t){return _t!=='carry'&&_t!=='wires';})); var _L=_POOL.length,_cyc=Math.floor((_sg-1)/_L),_idx=((_sg-1)%_L+_L)%_L; var _s=((_seed>>>0)^(_cyc*2654435761))>>>0; var _rnd=function(){ _s=(_s*1664525+1013904223)>>>0; return _s/4294967296; }; var _deck=_POOL.slice(); for(var _ii=_deck.length-1;_ii>0;_ii--){ var _jj=Math.floor(_rnd()*(_ii+1)); var _tt=_deck[_ii];_deck[_ii]=_deck[_jj];_deck[_jj]=_tt; } M.type=_deck[_idx]; M.t0=performance.now(); spawn(); brief(); }
         try{ window.__mi=M.type||'none'; window.__missionDone=(M.type?!!M.done:true); }catch(e){}
         var b=hud();
         var _pz=false; try{_pz=(typeof paused!=='undefined'&&paused);}catch(e){}
@@ -6510,6 +6568,36 @@ boot();
             try{ window.__missionDone=!!M.done; }catch(e){}
             requestAnimationFrame(update); return;
           }
+          if(M.type==='shrink'){
+            if(!M.shrinkEnd){ M.shrinkEnd=now+33000; M.shrinkDur=33000; M.shrinkR0=R_()*0.82; M.shrinkR1=5.5; }
+            var _sdt=(M._slt&&now>M._slt)?Math.min(0.05,(now-M._slt)/1000):0.016; M._slt=now;
+            var _sd=Math.max(0,M.shrinkEnd-now); var _sfrac=1-Math.min(1,_sd/(M.shrinkDur||33000)); var _curR=Math.max(M.shrinkR1||5.5,(M.shrinkR0||30)*(1-_sfrac)+(M.shrinkR1||5.5)*_sfrac);
+            try{ if(M._sring){ M._sring.scale.setScalar(_curR); M._sring.material.opacity=0.42+Math.sin(now/200)*0.16; } }catch(e){}
+            try{ if(_P&&_P.pos){ var _pdc=Math.hypot(_P.pos.x,_P.pos.z); if(_pdc>_curR){ player._shrinkAcc=(player._shrinkAcc||0)+14*_sdt; player.shake=Math.max(player.shake||0,0.12); if(player._shrinkAcc>=7){ player._shrinkAcc=0; if(!player.down)hurtPlayer(7); } } else { player._shrinkAcc=0; } } }catch(e){}
+            if(_isHost){ if(!M._ssp||now-M._ssp>1700){ M._ssp=now; try{ if(window.__spawnAt&&_P&&_P.pos)window.__spawnAt(_P.pos.x,_P.pos.z,2); }catch(e){} }
+              if(_sd<=0&&!M.done){ M.done=true; reward(); try{if(typeof net!=='undefined'&&net&&net.on)netSend({t:'mdone'});}catch(e){} }
+              if(typeof net!=='undefined'&&net&&net.on){ if(!M._pt||now-M._pt>500){ M._pt=now; try{netSend({t:'mprog',a:[{i:-1,v:+(_sd/1000).toFixed(1)}]});}catch(e){} } } }
+            var _ssec=Math.ceil((M._remOverride!=null&&!_isHost)?M._remOverride:_sd/1000); if(_ssec<0)_ssec=0;
+            b.style.display=((window.__objHidden||M.done)?'none':'block');
+            b.innerHTML='<span style="font-size:15px;color:#ffe27a;">🌀 '+(LABEL[M.type]||'')+'</span><br><span style="color:#8fffba;font-size:17px;">⏱️ '+_ssec+' วิ'+(M.done?'  ✅ รอดแล้ว!':'')+'</span>';
+            try{ window.__missionDone=!!M.done; }catch(e){}
+            requestAnimationFrame(update); return;
+          }
+          if(M.type==='protectnpc'){
+            if(!M.npcEnd){ M.npcEnd=now+34000; }
+            var _ndt=(M._nlt&&now>M._nlt)?Math.min(0.05,(now-M._nlt)/1000):0.016; M._nlt=now;
+            var _nd2=Math.max(0,M.npcEnd-now); var _npc=null,_npi=-2; for(var _nn=0;_nn<M.nodes.length;_nn++){ if(M.nodes[_nn].kind==='npc'){_npc=M.nodes[_nn];_npi=_nn;break;} }
+            if(_npc&&_isHost){ var _zc=0; try{ for(var _zi=0;_zi<zombies.length;_zi++){ var _zz=zombies[_zi]; if(_zz.userData.dead)continue; if(Math.hypot(_zz.position.x-_npc.pos.x,_zz.position.z-_npc.pos.z)<6)_zc++; } }catch(e){} _npc.hp=(typeof _npc.hp==='number'?_npc.hp:100)-_zc*9*_ndt; if(_npc.hp<5)_npc.hp=5; if(_npc.hp>100)_npc.hp=100; _npc.prog=_npc.hp/100;
+              if(!M._nsp||now-M._nsp>2000){ M._nsp=now; try{ if(window.__spawnAt)window.__spawnAt(_npc.pos.x,_npc.pos.z,2); }catch(e){} }
+              if(_nd2<=0&&!M.done){ M.done=true; reward(); try{if(typeof net!=='undefined'&&net&&net.on)netSend({t:'mdone'});}catch(e){} }
+              if(typeof net!=='undefined'&&net&&net.on){ if(!M._pt||now-M._pt>500){ M._pt=now; try{netSend({t:'mprog',a:[{i:-1,v:+(_nd2/1000).toFixed(1)},{i:_npi,v:+(_npc.prog).toFixed(2)}]});}catch(e){} } } }
+            try{ if(_npc){ _npc.pil.material.emissiveIntensity=0.6+Math.sin(now/200)*0.3; _npc.ring.material.color.setHex((_npc.prog||1)<0.3?0xff3030:0x66ff88); } }catch(e){}
+            var _nsec=Math.ceil((M._remOverride!=null&&!_isHost)?M._remOverride:_nd2/1000); if(_nsec<0)_nsec=0;
+            b.style.display=((window.__objHidden||M.done)?'none':'block');
+            b.innerHTML='<span style="font-size:15px;color:#ffe27a;">🆘 '+(LABEL[M.type]||'')+'</span><br><span style="color:#8fffba;font-size:17px;">⏱️ '+_nsec+' วิ · NPC '+Math.round((_npc?_npc.prog:1)*100)+'%'+(M.done?'  ✅ สำเร็จ!':'')+'</span>';
+            try{ window.__missionDone=!!M.done; }catch(e){}
+            requestAnimationFrame(update); return;
+          }
           for(var i=0;i<M.nodes.length;i++){ var nd=M.nodes[i];
             if(nd.kind==='escort'){ var ex=exitP(); var near=false; for(var k=0;k<pts.length;k++){ if(Math.hypot(pts[k].x-nd.pos.x,pts[k].z-nd.pos.z)<5){near=true;break;} }
               if(near&&!nd.done&&!_pz&&_isHost){ var ddx=ex.x-nd.pos.x,ddz=ex.z-nd.pos.z,dl=Math.hypot(ddx,ddz)||1; var step=Math.min(dl,0.06); nd.pos.x+=ddx/dl*step; nd.pos.z+=ddz/dl*step; var gy=0;try{gy=terrainH(nd.pos.x,nd.pos.z);}catch(e){} nd.grp.position.set(nd.pos.x,gy,nd.pos.z); if(dl<3){nd.done=true;} nd.prog=1-Math.min(1,dl/ (Math.hypot(ex.x,ex.z)||30)); }
@@ -6530,6 +6618,18 @@ boot();
               var _allK=true; for(var _gk=0;_gk<M.nodes.length;_gk++){ if(M.nodes[_gk].kind==='key'&&!M.nodes[_gk].done){_allK=false;break;} }
               if(_allK){ var nearG=false; for(var _kg=0;_kg<pts.length;_kg++){ if(Math.hypot(pts[_kg].x-nd.pos.x,pts[_kg].z-nd.pos.z)<nd.rad){nearG=true;break;} } if(nearG&&!nd.done&&_isHost&&!_pz){ var _cg=0.016/(4*(1+(((typeof stage!=='undefined'?stage:1))-1)*0.12)); nd.prog+=_cg; if(nd.prog>=1){nd.done=true;nd.prog=1;} } }
               else { nd.prog=0; }
+            } else if(nd.kind==='reach'){
+              var nearR=false; for(var _kr=0;_kr<pts.length;_kr++){ if(Math.hypot(pts[_kr].x-nd.pos.x,pts[_kr].z-nd.pos.z)<nd.rad){nearR=true;break;} }
+              if(nearR&&!nd.done&&_isHost){ nd.done=true; nd.prog=1; }
+              else if(!nd.done){ if(_P&&_P.pos){ nd.prog=Math.max(nd.prog||0,1-Math.min(1,Math.hypot(_P.pos.x-nd.pos.x,_P.pos.z-nd.pos.z)/30)); } if(_isHost&&!_pz&&(!nd._rsp||now-nd._rsp>2600)){ nd._rsp=now; try{ if(window.__spawnAt&&_P&&_P.pos)window.__spawnAt((_P.pos.x+nd.pos.x)/2,(_P.pos.z+nd.pos.z)/2,2); }catch(e){} } }
+            } else if(nd.kind==='wire'){
+              if(!nd.done&&_isHost&&!_pz){ var _allOcc=true; for(var _wq=0;_wq<M.nodes.length;_wq++){ var _wn=M.nodes[_wq]; if(_wn.kind!=='wire')continue; var _occ=false; for(var _wp=0;_wp<pts.length;_wp++){ if(Math.hypot(pts[_wp].x-_wn.pos.x,pts[_wp].z-_wn.pos.z)<_wn.rad){_occ=true;break;} } if(!_occ){_allOcc=false;break;} } var _wc=0.016/(5*(1+(((typeof stage!=='undefined'?stage:1))-1)*0.10)); if(_allOcc){ nd.prog+=_wc; if(nd.prog>=1){nd.done=true;nd.prog=1;} } else { nd.prog=Math.max(0,nd.prog-_wc*1.4); } }
+            } else if(nd.kind==='fuel'){
+              if(!nd.done){ if(!nd.picked){ for(var _fp=0;_fp<pts.length;_fp++){ if(Math.hypot(pts[_fp].x-nd.pos.x,pts[_fp].z-nd.pos.z)<2.6){ nd.picked=true; break; } } }
+                if(nd.picked&&_isHost){ var _fnp=null,_fdm=1e9; for(var _fp2=0;_fp2<pts.length;_fp2++){ var _fd2=Math.hypot(pts[_fp2].x-nd.pos.x,pts[_fp2].z-nd.pos.z); if(_fd2<_fdm){_fdm=_fd2;_fnp=pts[_fp2];} } if(_fnp){ nd.pos.x+=(_fnp.x-nd.pos.x)*0.2; nd.pos.z+=(_fnp.z-nd.pos.z)*0.2; var _gyf=0;try{_gyf=terrainH(nd.pos.x,nd.pos.z);}catch(e){} try{nd.grp.position.set(nd.pos.x,_gyf+0.5,nd.pos.z);}catch(e){} } var _gN=null; for(var _gg=0;_gg<M.nodes.length;_gg++){ if(M.nodes[_gg].kind==='gen'){_gN=M.nodes[_gg];break;} } if(_gN&&Math.hypot(nd.pos.x-_gN.pos.x,nd.pos.z-_gN.pos.z)<4){ nd.done=true; nd.prog=1; try{nd.grp.visible=false;}catch(e){} _gN._fill=(_gN._fill||0)+1; try{if(typeof sndCoin==='function')sndCoin();}catch(e){} } }
+                nd.prog=nd.picked?0.5:0; }
+            } else if(nd.kind==='gen'){
+              var _gfn=M._fuelN||1; nd.prog=Math.min(1,(nd._fill||0)/_gfn); if(nd.prog>=1&&!nd.done&&_isHost){ nd.done=true; }
             } else {
               var near2=false; for(var k2=0;k2<pts.length;k2++){ if(Math.hypot(pts[k2].x-nd.pos.x,pts[k2].z-nd.pos.z)<nd.rad){near2=true;break;} }
               if(nd.kind==='orb'||nd.kind==='key'){ if(near2&&!nd.done&&_isHost){ nd.done=true; nd.prog=1; try{nd.grp.visible=false;if(typeof sndCoin==='function')sndCoin();}catch(e){} } }
@@ -6540,14 +6640,14 @@ boot();
             if(nd.done)doneCt++;
           }
           if(_isHost&&typeof net!=='undefined'&&net&&net.on){ for(var _bi=0;_bi<M.nodes.length;_bi++){ var _bn=M.nodes[_bi]; if(_bn.done&&!_bn._bc){ _bn._bc=true; try{netSend({t:'mnd',i:_bi});}catch(e){} } } }
-          if(_isHost&&typeof net!=='undefined'&&net&&net.on){ if(!M._pt||now-M._pt>300){ M._pt=now; var _pa=[]; for(var _pi=0;_pi<M.nodes.length;_pi++){ var _pn=M.nodes[_pi]; if(_pn.done)continue; if(_pn.kind==='pkg'||_pn.kind==='hunt'||_pn.kind==='soul'){ _pa.push({i:_pi,v:+_pn.prog.toFixed(3),x:+_pn.pos.x.toFixed(1),z:+_pn.pos.z.toFixed(1)}); } else if(_pn.prog>0.001&&_pn.kind!=='orb'){ _pa.push({i:_pi,v:+_pn.prog.toFixed(3)}); } } if(_pa.length){ try{netSend({t:'mprog',a:_pa});}catch(e){} } } }
+          if(_isHost&&typeof net!=='undefined'&&net&&net.on){ if(!M._pt||now-M._pt>300){ M._pt=now; var _pa=[]; for(var _pi=0;_pi<M.nodes.length;_pi++){ var _pn=M.nodes[_pi]; if(_pn.done)continue; if(_pn.kind==='pkg'||_pn.kind==='hunt'||_pn.kind==='soul'||_pn.kind==='fuel'){ _pa.push({i:_pi,v:+_pn.prog.toFixed(3),x:+_pn.pos.x.toFixed(1),z:+_pn.pos.z.toFixed(1)}); } else if(_pn.prog>0.001&&_pn.kind!=='orb'){ _pa.push({i:_pi,v:+_pn.prog.toFixed(3)}); } } if(_pa.length){ try{netSend({t:'mprog',a:_pa});}catch(e){} } } }
           var total=M.nodes.length;
           b.style.display=((window.__objHidden||M.done)?'none':'block');
           var _act=null; for(var _ai=0;_ai<M.nodes.length;_ai++){ var _an=M.nodes[_ai]; if(!_an.done&&_an.kind!=='orb'&&_an.kind!=='escort'){ if(!_act||_an.prog>_act.prog)_act=_an; } } var _pct=(_act?(' · ชาร์จ '+Math.round(_act.prog*100)+'%'):'');
           b.innerHTML='<span style="font-size:15px;color:#ffe27a;">🎯 '+(LABEL[M.type]||'')+'</span><br><span style="color:#8fffba;font-size:14px;">คืบหน้า '+doneCt+' / '+total+_pct+(M.done?'  ✅ สำเร็จ!':'')+'</span>';
           try{ var cam=GC(); var wp=document.getElementById('coopWP'); if(!wp){ wp=document.createElement('div'); wp.id='coopWP'; wp.style.cssText='position:fixed;z-index:61;pointer-events:none;transform:translate(-50%,-50%);font-weight:bold;color:#ffe27a;text-shadow:0 0 6px #000,0 0 10px #000;font-size:17px;text-align:center;white-space:nowrap;background:rgba(8,16,30,.55);padding:3px 9px;border-radius:11px;border:1px solid rgba(255,210,120,.5);'; document.body.appendChild(wp); }
             var tgt=null,bd=1e9; for(var wi=0;wi<M.nodes.length;wi++){ var nn=M.nodes[wi]; if(nn.done)continue; var dd=Math.hypot(nn.pos.x-_P.pos.x,nn.pos.z-_P.pos.z); if(dd<bd){bd=dd;tgt=nn;} } try{ if(M.type==='carry'){ var _pk=null; for(var _wpi=0;_wpi<M.nodes.length;_wpi++){ if(M.nodes[_wpi].kind==='pkg'){_pk=M.nodes[_wpi];break;} } if(_pk&&_pk.picked&&!_pk.done){ var _ex=exitP(); tgt={pos:{x:_ex.x,z:_ex.z},kind:'exitgoal',done:false,prog:0}; bd=Math.hypot(_ex.x-_P.pos.x,_ex.z-_P.pos.z); } } }catch(_e){}
-            if(tgt&&cam&&!M.done){ var _Pp=_P; var gy2=0;try{gy2=terrainH(tgt.pos.x,tgt.pos.z);}catch(e){} var v=new THREE.Vector3(tgt.pos.x,gy2+2.6,tgt.pos.z); v.project(cam); var W=window.innerWidth,H=window.innerHeight; var dm=Math.round(bd); var _ICN={orb:'💎',key:'🔑',gate:'🚪',escort:'🚶',pkg:'📦',hunt:'🎯',exitgoal:'🚪',soul:'👻',bomb:'💣',portal:'🌀',crystal:'💎',seq:'🔘',nest:'🟣',switch:'🔘',beacon:'▼'}; var ic=_ICN[tgt.kind]||'▼';
+            if(tgt&&cam&&!M.done){ var _Pp=_P; var gy2=0;try{gy2=terrainH(tgt.pos.x,tgt.pos.z);}catch(e){} var v=new THREE.Vector3(tgt.pos.x,gy2+2.6,tgt.pos.z); v.project(cam); var W=window.innerWidth,H=window.innerHeight; var dm=Math.round(bd); var _ICN={orb:'💎',key:'🔑',gate:'🚪',escort:'🚶',pkg:'📦',hunt:'🎯',exitgoal:'🚪',soul:'👻',bomb:'💣',portal:'🌀',crystal:'💎',seq:'🔘',nest:'🟣',switch:'🔘',beacon:'▼',fuel:'⛽',gen:'🔌',npc:'🆘',wire:'🔗',reach:'🏁'}; var ic=_ICN[tgt.kind]||'▼';
               if(v.z<1){ var sx=(v.x*0.5+0.5)*W, sy=(-v.y*0.5+0.5)*H; sx=Math.max(30,Math.min(W-30,sx)); sy=Math.max(74,Math.min(H-96,sy)); var _wpc=((tgt.kind==='beacon'||tgt.kind==='nest'||tgt.kind==='switch')&&tgt.prog>0&&tgt.prog<1)?(Math.round(tgt.prog*100)+'% · '):''; wp.style.left=sx+'px'; wp.style.top=sy+'px'; wp.innerHTML=ic+'<br>'+_wpc+dm+'ม.'; }
               else { wp.style.left=(W*0.5)+'px'; wp.style.top=(H-104)+'px'; wp.innerHTML='↻ หันกลับ '+dm+'ม.'; }
               wp.style.display=(window.__objHidden?'none':'block');
