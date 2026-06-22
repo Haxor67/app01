@@ -192,7 +192,7 @@
   <div id="molotovBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🔥<small id="molotovCount" style="font-size:11px;font-weight:bold;">2</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v11.0 22/06</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v11.1 22/06</div>
 <div id="start" class="screen">
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
@@ -5407,7 +5407,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v11.0 22/06 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 mon'+(LD.mon||0)+'/25 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v11.1 22/06 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 mon'+(LD.mon||0)+'/25 wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var po=document.getElementById('pauseOverlay'), ph=document.getElementById('pauseHome'); var _resume=function(e){ if(e){try{e.preventDefault();}catch(_x){}} paused=false; if(po)po.style.display='none'; var pb=document.getElementById('pauseBtn'); if(pb)pb.textContent='⏸'; if(net.on){try{netSend({t:'pause',p:false});}catch(_e){}} }; var _home=function(e){ if(e){try{e.preventDefault();e.stopPropagation();}catch(_x){}} try{location.reload();}catch(_r){location.href=location.pathname;} }; window.__resumeGame=_resume; window.__homeGame=_home; if(ph){ ph.addEventListener('click',_home); ph.addEventListener('touchend',_home,{passive:false}); ph.addEventListener('pointerup',_home); } if(po){ var _isHome=function(t){ return ph&&(t===ph||ph.contains(t)); }; po.addEventListener('click',function(e){ if(_isHome(e.target))return; _resume(e); }); po.addEventListener('touchend',function(e){ if(_isHome(e.target))return; _resume(e); },{passive:false}); } var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -6397,7 +6397,7 @@ boot();
 <script>/* COOP MISSIONS v1 - isolated, fail-safe */
 (function(){
   var M={stage:-1,type:null,nodes:[],group:null,done:false,banner:null,t0:0};
-  var TYPES=['beacon','horde','collect','hunt','nests','carry','switches','escort'];
+  var TYPES=['beacon','horde','collect','hunt','nests','carry','switches','escort','bombs','portals','sequence','souls','crystals','keys'];
   var LABEL={beacon:'ภารกิจ: ชาร์จสัญญาณ — ยืนใกล้เสาให้เต็ม (คนอื่นกันซอมบี้)',
     switches:'ภารกิจ: เปิดสวิตช์ทุกจุด — แยกกันไปยืนคนละจุด',
     nests:'ภารกิจ: ชำระรังทั้งหมด — ยืนใกล้รังเพื่อทำลาย',
@@ -6405,7 +6405,13 @@ boot();
     collect:'ภารกิจ: เก็บแคปซูลเสบียง — เดินเก็บให้ครบทุกชิ้น',
     horde:'ภารกิจ: เอาตัวรอดให้ครบเวลา — ซอมบี้ถล่มไม่หยุด!',
     carry:'ภารกิจ: แบกหีบไปจุดออก 🚪 — ตอนแบกวิ่งช้า+ยิงไม่ได้ กดปุ่ม “วางหีบ” เพื่อสู้ก่อนได้',
-    hunt:'ภารกิจ: ล่าตัวเป้าหมาย (ตัวแดงเรืองแสง) ให้ตาย'};
+    hunt:'ภารกิจ: ล่าตัวเป้าหมาย (ตัวแดงเรืองแสง) ให้ตาย',
+    bombs:'ภารกิจ: กู้ระเบิดเวลา — ยืนใกล้ระเบิดแต่ละลูกให้ครบ ระวังซอมบี้รุม!',
+    portals:'ภารกิจ: ปิดประตูมิติ — ยืนใกล้เพื่อปิด มันปล่อยซอมบี้เรื่อยๆ จนกว่าจะปิดหมด',
+    sequence:'ภารกิจ: จุดสัญญาณตามลำดับ — จุดให้ถูกเรียง 1→2→3',
+    souls:'ภารกิจ: ตามเก็บวิญญาณ 👻 — มันจะหนี ไล่ต้อนให้จนมุมแล้วแตะ',
+    crystals:'ภารกิจ: ทำลายเกราะคริสตัล — ยืนใกล้คริสตัลให้แตกทุกแท่ง',
+    keys:'ภารกิจ: เก็บกุญแจเปิดประตู 🔑 — เก็บให้ครบแล้วไปเปิดประตูใหญ่'};
   function GS(){ try{ if(typeof scene!=='undefined'&&scene)return scene; }catch(e){} return window.gScene; }
   function GP(){ try{ if(typeof player!=='undefined'&&player)return player; }catch(e){} return window.gPlayer; }
   function GC(){ try{ if(typeof camera!=='undefined'&&camera)return camera; }catch(e){} return window.gCamera; }
@@ -6435,6 +6441,12 @@ boot();
     else if(M.type==='escort'){ defs=[[Math.cos(2.0)*R,Math.sin(2.0)*R,0xffc23a,'escort']]; }
     else if(M.type==='collect'){ var _no=Math.max(3,pc+2)+_sb; defs=[]; for(var _oi=0;_oi<_no;_oi++){ var _oa=_oi/_no*6.283+0.4,_rr=R*(0.45+0.5*((_oi%2)?1:0.55)); defs.push([Math.cos(_oa)*_rr,Math.sin(_oa)*_rr,0x33ffcc,'orb']); } }
     else if(M.type==='carry'){ defs=[[Math.cos(2.3)*R*0.92,Math.sin(2.3)*R*0.92,0x33ffcc,'pkg']]; }
+    else if(M.type==='bombs'){ var _bn=3+_sb; defs=[]; for(var _bi=0;_bi<_bn;_bi++){ var _ba=_bi/_bn*6.283+0.3; defs.push([Math.cos(_ba)*R,Math.sin(_ba)*R,0xff5522,'bomb']); } }
+    else if(M.type==='portals'){ var _ptn=2+_sb; defs=[]; for(var _pti=0;_pti<_ptn;_pti++){ var _pta=_pti/_ptn*6.283+0.9; defs.push([Math.cos(_pta)*R,Math.sin(_pta)*R,0x9b3aff,'portal']); } }
+    else if(M.type==='sequence'){ var _qn=3+_sb; defs=[]; for(var _qi=0;_qi<_qn;_qi++){ var _qa=_qi/_qn*6.283+0.2; defs.push([Math.cos(_qa)*R,Math.sin(_qa)*R,0x46b6ff,'seq']); } }
+    else if(M.type==='souls'){ var _son=4+_sb; defs=[]; for(var _soi=0;_soi<_son;_soi++){ var _soa=_soi/_son*6.283+0.7,_sor=R*(0.5+0.45*((_soi%2)?1:0.6)); defs.push([Math.cos(_soa)*_sor,Math.sin(_soa)*_sor,0xbfe6ff,'soul']); } }
+    else if(M.type==='crystals'){ var _cn=3+_sb; defs=[]; for(var _ci=0;_ci<_cn;_ci++){ var _ca=_ci/_cn*6.283+1.1; defs.push([Math.cos(_ca)*R*0.72,Math.sin(_ca)*R*0.72,0x66ffe0,'crystal']); } }
+    else if(M.type==='keys'){ var _kn=3+_sb; defs=[]; for(var _ki=0;_ki<_kn;_ki++){ var _ka=_ki/_kn*6.283+0.5; defs.push([Math.cos(_ka)*R,Math.sin(_ka)*R,0xffd83a,'key']); } defs.push([0,0,0x46b6ff,'gate']); }
     for(var i=0;i<defs.length;i++){ var n=mkNode(defs[i][0],defs[i][1],defs[i][2],defs[i][3]); M.nodes.push(n); M.group.add(n.grp); }
     if(M.type==='hunt'){ var hx=Math.cos(1.1)*R*0.92,hz=Math.sin(1.1)*R*0.92; var hn=mkNode(hx,hz,0xff3030,'hunt'); hn.rad=2.6; try{hn.grp.visible=false;}catch(e){} try{ if(window.__spawnTagged){ var _hz=window.__spawnTagged(hx,hz); if(_hz){ hn.z=_hz; hn.pos.x=_hz.position.x; hn.pos.z=_hz.position.z; } } }catch(e){} M.nodes.push(hn); M.group.add(hn.grp); }
     if(M.type==='horde'){ M.hordeEnd=performance.now()+(30000+(((typeof stage!=='undefined'?stage:1))-1)*2500); M._remOverride=null; }
@@ -6450,7 +6462,13 @@ boot();
     collect:'วิธีทำ: เดินไปทับแคปซูลเรืองแสง 💎 ให้ครบทุกชิ้นทั่วแผนที่',
     horde:'วิธีทำ: อยู่ให้รอดจนหมดเวลา ยิงกันไม่ให้ตาย',
     carry:'วิธีทำ: เดินไปแตะหีบเพื่อแบก ตามป้าย 🚪 ไปจุดออก · กด “วางหีบ” เพื่อวางแล้วสู้ จากนั้นเดินมาแบกต่อ',
-    hunt:'วิธีทำ: ตามป้ายไปหาเป้าหมายตัวแดง รุมยิงให้ตาย'};
+    hunt:'วิธีทำ: ตามป้ายไปหาเป้าหมายตัวแดง รุมยิงให้ตาย',
+    bombs:'วิธีทำ: เดินไปยืนในวงระเบิดสีส้มทีละลูกค้างจนเขียว ให้ครบทุกลูก',
+    portals:'วิธีทำ: เข้าใกล้ประตูมิติสีม่วงค้างไว้เพื่อปิด รีบปิดก่อนซอมบี้ทะลัก',
+    sequence:'วิธีทำ: ดูเลขลำดับ จุดทีละจุดเรียง 1→2→3 (ผิดลำดับจะยังไม่ติด)',
+    souls:'วิธีทำ: วิญญาณ 👻 จะหนีเรา ไล่ต้อนเข้ามุมแผนที่แล้วเดินทับ',
+    crystals:'วิธีทำ: เดินไปยืนใกล้คริสตัลเรืองแสงค้างจนแตก ให้ครบทุกแท่ง',
+    keys:'วิธีทำ: เดินเก็บกุญแจ 🔑 ให้ครบ แล้วไปยืนที่ประตู 🚪 กลางแผนที่ค้างจนเปิด'};
   function brief(){ try{
     var d=document.getElementById('coopBrief');
     if(!d){ d=document.createElement('div'); d.id='coopBrief'; d.style.cssText='position:fixed;top:44%;left:50%;transform:translate(-50%,-50%);z-index:140;max-width:90%;text-align:center;color:#eaf2ff;background:linear-gradient(180deg,#10203a,#0a1422);padding:18px 22px;border-radius:16px;border:2px solid rgba(120,170,255,.65);box-shadow:0 0 40px rgba(60,120,255,.45);pointer-events:none;'; try{(document.body||document.documentElement).appendChild(d);}catch(e){} }
@@ -6478,6 +6496,7 @@ boot();
           try{ if(typeof net!=='undefined'&&net&&net.on&&net.players){ for(var id in net.players){ var pp=net.players[id]; if(pp&&pp.present&&pp.pos)pts.push(pp.pos); } } }catch(e){}
           var doneCt=0, now=performance.now();
           try{ window.__carrySlow=1; window.__carryNoFire=false; window.__carrying=false; }catch(e){}
+          if(M.type==='portals'&&_isHost&&!_pz){ for(var _pq=0;_pq<M.nodes.length;_pq++){ var _pqn=M.nodes[_pq]; if(_pqn.kind==='portal'&&!_pqn.done){ if(!_pqn._psp||now-_pqn._psp>2200){ _pqn._psp=now; try{if(window.__spawnAt)window.__spawnAt(_pqn.pos.x,_pqn.pos.z,1);}catch(e){} } } } }
           if(M.type==='horde'){
             if(!M.hordeEnd){ M.hordeEnd=now+30000; }
             var _rem=Math.max(0,M.hordeEnd-now);
@@ -6503,24 +6522,32 @@ boot();
               }
             } else if(nd.kind==='hunt'){
               if(nd.z){ if(typeof zombies!=='undefined'&&zombies.indexOf(nd.z)<0){ if(!nd.done&&_isHost){nd.done=true;nd.prog=1;} } else { nd.pos.x=nd.z.position.x; nd.pos.z=nd.z.position.z; nd.prog=0.5; try{var gyh=terrainH(nd.pos.x,nd.pos.z);nd.grp.position.set(nd.pos.x,gyh,nd.pos.z);}catch(e){} } }
+            } else if(nd.kind==='soul'){
+              var nearS=false; for(var ksx=0;ksx<pts.length;ksx++){ if(Math.hypot(pts[ksx].x-nd.pos.x,pts[ksx].z-nd.pos.z)<nd.rad){nearS=true;break;} }
+              if(nearS&&!nd.done&&_isHost){ nd.done=true; nd.prog=1; try{nd.grp.visible=false;if(typeof sndCoin==='function')sndCoin();}catch(e){} }
+              else if(!nd.done&&_isHost&&!_pz){ var sp=null,sdm=1e9; for(var psx=0;psx<pts.length;psx++){ var dsx=Math.hypot(pts[psx].x-nd.pos.x,pts[psx].z-nd.pos.z); if(dsx<sdm){sdm=dsx;sp=pts[psx];} } if(sp&&sdm<15){ var sfx=nd.pos.x-sp.x,sfz=nd.pos.z-sp.z,sfl=Math.hypot(sfx,sfz)||1; var sspd=0.14*(1+(((typeof stage!=='undefined'?stage:1)))*0.02); nd.pos.x+=sfx/sfl*sspd; nd.pos.z+=sfz/sfl*sspd; var _Rr=R_()*0.95,_dc=Math.hypot(nd.pos.x,nd.pos.z); if(_dc>_Rr){ nd.pos.x*=_Rr/_dc; nd.pos.z*=_Rr/_dc; } var _gys=0;try{_gys=terrainH(nd.pos.x,nd.pos.z);}catch(e){} try{nd.grp.position.set(nd.pos.x,_gys+0.3,nd.pos.z);}catch(e){} } }
+            } else if(nd.kind==='gate'){
+              var _allK=true; for(var _gk=0;_gk<M.nodes.length;_gk++){ if(M.nodes[_gk].kind==='key'&&!M.nodes[_gk].done){_allK=false;break;} }
+              if(_allK){ var nearG=false; for(var _kg=0;_kg<pts.length;_kg++){ if(Math.hypot(pts[_kg].x-nd.pos.x,pts[_kg].z-nd.pos.z)<nd.rad){nearG=true;break;} } if(nearG&&!nd.done&&_isHost&&!_pz){ var _cg=0.016/(4*(1+(((typeof stage!=='undefined'?stage:1))-1)*0.12)); nd.prog+=_cg; if(nd.prog>=1){nd.done=true;nd.prog=1;} } }
+              else { nd.prog=0; }
             } else {
               var near2=false; for(var k2=0;k2<pts.length;k2++){ if(Math.hypot(pts[k2].x-nd.pos.x,pts[k2].z-nd.pos.z)<nd.rad){near2=true;break;} }
-              if(nd.kind==='orb'){ if(near2&&!nd.done&&_isHost){ nd.done=true; nd.prog=1; try{nd.grp.visible=false;if(typeof sndCoin==='function')sndCoin();}catch(e){} } }
-              else if(!nd.done&&!_pz&&_isHost){ var _cs=0.016/((nd.kind==='beacon'?7:3.5)*(1+(((typeof stage!=='undefined'?stage:1))-1)*0.12)); if(near2){ nd.prog+=_cs; if(nd.prog>=1){ nd.done=true; nd.prog=1; } if(nd.kind==='beacon'&&(!nd._sg||now-nd._sg>1700)){ nd._sg=now; try{if(window.__spawnAt)window.__spawnAt(nd.pos.x,nd.pos.z,1);}catch(e){} } } else if(nd.kind==='beacon'){ nd.prog=Math.max(0,nd.prog-_cs*1.7); } }
+              if(nd.kind==='orb'||nd.kind==='key'){ if(near2&&!nd.done&&_isHost){ nd.done=true; nd.prog=1; try{nd.grp.visible=false;if(typeof sndCoin==='function')sndCoin();}catch(e){} } }
+              else if(!nd.done&&!_pz&&_isHost){ var _canSeq=true; if(nd.kind==='seq'){ for(var _sq=0;_sq<i;_sq++){ if(M.nodes[_sq].kind==='seq'&&!M.nodes[_sq].done){_canSeq=false;break;} } } var _cs=0.016/((nd.kind==='beacon'?7:3.5)*(1+(((typeof stage!=='undefined'?stage:1))-1)*0.12)); if(near2&&(nd.kind!=='seq'||_canSeq)){ nd.prog+=_cs; if(nd.prog>=1){ nd.done=true; nd.prog=1; } if((nd.kind==='beacon'||nd.kind==='bomb')&&(!nd._sg||now-nd._sg>1700)){ nd._sg=now; try{if(window.__spawnAt)window.__spawnAt(nd.pos.x,nd.pos.z,1);}catch(e){} } } else if(nd.kind==='beacon'){ nd.prog=Math.max(0,nd.prog-_cs*1.7); } }
               if(nd.done){ try{ nd.ring.material.color.setHex(0x33ff88); nd.pil.material.color.setHex(0x33ff88); nd.pil.material.emissive.setHex(0x33ff88);}catch(e){} if(nd.kind==='nest'&&!nd._sab){ nd._sab=true; try{if(_isHost&&window.__spawnAt)window.__spawnAt(nd.pos.x,nd.pos.z,3);}catch(e){} try{if(typeof showMsg==='function')showMsg('🔥 รังแตก! ซอมบี้ทะลัก!',1400);}catch(e){} } }
               else { try{ nd.pil.material.emissiveIntensity=0.5+nd.prog*1.3+Math.sin(now/200)*0.25; nd.ring.material.opacity=0.4+nd.prog*0.5; }catch(e){} if(nd.kind==='beacon'){ var _pc=Math.floor(nd.prog*100); var _ml=nd._mile||0; if(_pc>=90&&_ml<90){nd._mile=90;try{if(typeof showMsg==='function')showMsg('🔵 ชาร์จ 90% — เกือบเต็ม! กันไว้!',1500);}catch(e){}} else if(_pc>=50&&_ml<50){nd._mile=50;try{if(typeof showMsg==='function')showMsg('🌊 ชาร์จ 50% — คลื่นซอมบี้บุก! กันเสาไว้!',1700);}catch(e){} try{if(_isHost&&window.__spawnAt)window.__spawnAt(nd.pos.x,nd.pos.z,4);}catch(e){}} if(_pc<8&&_ml>0){nd._mile=0;} } }
             }
             if(nd.done)doneCt++;
           }
           if(_isHost&&typeof net!=='undefined'&&net&&net.on){ for(var _bi=0;_bi<M.nodes.length;_bi++){ var _bn=M.nodes[_bi]; if(_bn.done&&!_bn._bc){ _bn._bc=true; try{netSend({t:'mnd',i:_bi});}catch(e){} } } }
-          if(_isHost&&typeof net!=='undefined'&&net&&net.on){ if(!M._pt||now-M._pt>300){ M._pt=now; var _pa=[]; for(var _pi=0;_pi<M.nodes.length;_pi++){ var _pn=M.nodes[_pi]; if(_pn.done)continue; if(_pn.kind==='pkg'||_pn.kind==='hunt'){ _pa.push({i:_pi,v:+_pn.prog.toFixed(3),x:+_pn.pos.x.toFixed(1),z:+_pn.pos.z.toFixed(1)}); } else if(_pn.prog>0.001&&_pn.kind!=='orb'){ _pa.push({i:_pi,v:+_pn.prog.toFixed(3)}); } } if(_pa.length){ try{netSend({t:'mprog',a:_pa});}catch(e){} } } }
+          if(_isHost&&typeof net!=='undefined'&&net&&net.on){ if(!M._pt||now-M._pt>300){ M._pt=now; var _pa=[]; for(var _pi=0;_pi<M.nodes.length;_pi++){ var _pn=M.nodes[_pi]; if(_pn.done)continue; if(_pn.kind==='pkg'||_pn.kind==='hunt'||_pn.kind==='soul'){ _pa.push({i:_pi,v:+_pn.prog.toFixed(3),x:+_pn.pos.x.toFixed(1),z:+_pn.pos.z.toFixed(1)}); } else if(_pn.prog>0.001&&_pn.kind!=='orb'){ _pa.push({i:_pi,v:+_pn.prog.toFixed(3)}); } } if(_pa.length){ try{netSend({t:'mprog',a:_pa});}catch(e){} } } }
           var total=M.nodes.length;
           b.style.display=((window.__objHidden||M.done)?'none':'block');
           var _act=null; for(var _ai=0;_ai<M.nodes.length;_ai++){ var _an=M.nodes[_ai]; if(!_an.done&&_an.kind!=='orb'&&_an.kind!=='escort'){ if(!_act||_an.prog>_act.prog)_act=_an; } } var _pct=(_act?(' · ชาร์จ '+Math.round(_act.prog*100)+'%'):'');
           b.innerHTML='<span style="font-size:15px;color:#ffe27a;">🎯 '+(LABEL[M.type]||'')+'</span><br><span style="color:#8fffba;font-size:14px;">คืบหน้า '+doneCt+' / '+total+_pct+(M.done?'  ✅ สำเร็จ!':'')+'</span>';
           try{ var cam=GC(); var wp=document.getElementById('coopWP'); if(!wp){ wp=document.createElement('div'); wp.id='coopWP'; wp.style.cssText='position:fixed;z-index:61;pointer-events:none;transform:translate(-50%,-50%);font-weight:bold;color:#ffe27a;text-shadow:0 0 6px #000,0 0 10px #000;font-size:17px;text-align:center;white-space:nowrap;background:rgba(8,16,30,.55);padding:3px 9px;border-radius:11px;border:1px solid rgba(255,210,120,.5);'; document.body.appendChild(wp); }
             var tgt=null,bd=1e9; for(var wi=0;wi<M.nodes.length;wi++){ var nn=M.nodes[wi]; if(nn.done)continue; var dd=Math.hypot(nn.pos.x-_P.pos.x,nn.pos.z-_P.pos.z); if(dd<bd){bd=dd;tgt=nn;} } try{ if(M.type==='carry'){ var _pk=null; for(var _wpi=0;_wpi<M.nodes.length;_wpi++){ if(M.nodes[_wpi].kind==='pkg'){_pk=M.nodes[_wpi];break;} } if(_pk&&_pk.picked&&!_pk.done){ var _ex=exitP(); tgt={pos:{x:_ex.x,z:_ex.z},kind:'exitgoal',done:false,prog:0}; bd=Math.hypot(_ex.x-_P.pos.x,_ex.z-_P.pos.z); } } }catch(_e){}
-            if(tgt&&cam&&!M.done){ var _Pp=_P; var gy2=0;try{gy2=terrainH(tgt.pos.x,tgt.pos.z);}catch(e){} var v=new THREE.Vector3(tgt.pos.x,gy2+2.6,tgt.pos.z); v.project(cam); var W=window.innerWidth,H=window.innerHeight; var dm=Math.round(bd); var ic=(tgt.kind==='orb')?'💎':(tgt.kind==='escort'?'🚶':(tgt.kind==='pkg'?'📦':(tgt.kind==='hunt'?'🎯':(tgt.kind==='exitgoal'?'🚪':'▼'))));
+            if(tgt&&cam&&!M.done){ var _Pp=_P; var gy2=0;try{gy2=terrainH(tgt.pos.x,tgt.pos.z);}catch(e){} var v=new THREE.Vector3(tgt.pos.x,gy2+2.6,tgt.pos.z); v.project(cam); var W=window.innerWidth,H=window.innerHeight; var dm=Math.round(bd); var _ICN={orb:'💎',key:'🔑',gate:'🚪',escort:'🚶',pkg:'📦',hunt:'🎯',exitgoal:'🚪',soul:'👻',bomb:'💣',portal:'🌀',crystal:'💎',seq:'🔘',nest:'🟣',switch:'🔘',beacon:'▼'}; var ic=_ICN[tgt.kind]||'▼';
               if(v.z<1){ var sx=(v.x*0.5+0.5)*W, sy=(-v.y*0.5+0.5)*H; sx=Math.max(30,Math.min(W-30,sx)); sy=Math.max(74,Math.min(H-96,sy)); var _wpc=((tgt.kind==='beacon'||tgt.kind==='nest'||tgt.kind==='switch')&&tgt.prog>0&&tgt.prog<1)?(Math.round(tgt.prog*100)+'% · '):''; wp.style.left=sx+'px'; wp.style.top=sy+'px'; wp.innerHTML=ic+'<br>'+_wpc+dm+'ม.'; }
               else { wp.style.left=(W*0.5)+'px'; wp.style.top=(H-104)+'px'; wp.innerHTML='↻ หันกลับ '+dm+'ม.'; }
               wp.style.display=(window.__objHidden?'none':'block');
