@@ -192,7 +192,7 @@
   <div id="molotovBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🔥<small id="molotovCount" style="font-size:11px;font-weight:bold;">2</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v11.32 23/06</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v11.33 23/06</div>
 <div id="start" class="screen">
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
@@ -4456,7 +4456,7 @@ const FOG=0x141d18, BASE_FOV=80, ADS_FOV=52;
 function initThree(){
   renderer=new THREE.WebGLRenderer({antialias:!IS_TOUCH,powerPreference:'high-performance'});
   renderer.setPixelRatio(Math.min(devicePixelRatio,IS_TOUCH?1.5:2));
-  window.__dprTiers=[Math.min(devicePixelRatio,IS_TOUCH?1.5:2),1.2,1.0,0.8]; window.__dprIdx=0;
+  window.__fpsCap=0;
   renderer.setSize(innerWidth,innerHeight);
   el('game').appendChild(renderer.domElement);
   scene=new THREE.Scene();
@@ -5457,7 +5457,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v11.32 23/06 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 mon'+(LD.mon||0)+'/25 pc'+(LD.pc||0)+'/12 hb:'+((window.__charHand||'-')+'').slice(0,10)+' g'+(window.__charGunOK||'-')+' cl'+(window.__charClips?window.__charClips.split(',').length:0)+(window.__pcMiss?('!miss:'+window.__pcMiss.trim().replace(/ /g,',')):'')+' wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' rig'+(LD.rig?'OK':'-')+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v11.33 23/06 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 mon'+(LD.mon||0)+'/25 pc'+(LD.pc||0)+'/12 hb:'+((window.__charHand||'-')+'').slice(0,10)+' g'+(window.__charGunOK||'-')+' cl'+(window.__charClips?window.__charClips.split(',').length:0)+(window.__pcMiss?('!miss:'+window.__pcMiss.trim().replace(/ /g,',')):'')+' wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' rig'+(LD.rig?'OK':'-')+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var po=document.getElementById('pauseOverlay'), ph=document.getElementById('pauseHome'); var _resume=function(e){ if(e){try{e.preventDefault();}catch(_x){}} paused=false; if(po)po.style.display='none'; var pb=document.getElementById('pauseBtn'); if(pb)pb.textContent='⏸'; if(net.on){try{netSend({t:'pause',p:false});}catch(_e){}} }; var _home=function(e){ if(e){try{e.preventDefault();e.stopPropagation();}catch(_x){}} try{location.reload();}catch(_r){location.href=location.pathname;} }; window.__resumeGame=_resume; window.__homeGame=_home; if(ph){ ph.addEventListener('click',_home); ph.addEventListener('touchend',_home,{passive:false}); ph.addEventListener('pointerup',_home); } if(po){ var _isHome=function(t){ return ph&&(t===ph||ph.contains(t)); }; po.addEventListener('click',function(e){ if(_isHome(e.target))return; _resume(e); }); po.addEventListener('touchend',function(e){ if(_isHome(e.target))return; _resume(e); },{passive:false}); } var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -6383,7 +6383,6 @@ function win(){ state='win'; sndWin(); try{ el('win').querySelector('h1').textCo
 function checkOrientation(){ if(!IS_TOUCH){rotateScreen.style.display='none';return;} rotateScreen.style.display=(innerHeight>innerWidth&&state==='play')?'flex':'none'; }
 
 function loop(){ requestAnimationFrame(loop); if(window.__fpsCap){ var _np=performance.now(); if(_np-(window.__lf||0)<window.__fpsCap){ return; } window.__lf=_np; } const dt=Math.min(0.05,clock.getDelta());
-  try{ var _fp=1/Math.max(dt,1e-3); window.__fpsEMA=window.__fpsEMA?(window.__fpsEMA*0.9+_fp*0.1):_fp; window.__adT=(window.__adT||0)+dt; if(window.__adT>1.3){ window.__adT=0; var _tz=window.__dprTiers||[1.5,1.2,1.0,0.8]; if(window.__dprIdx==null)window.__dprIdx=0; var _chg=0; if(window.__fpsEMA<42&&window.__dprIdx<_tz.length-1){window.__dprIdx++;_chg=1;} else if(window.__fpsEMA>56&&window.__dprIdx>0){window.__dprIdx--;_chg=1;} if(_chg){try{renderer.setPixelRatio(_tz[window.__dprIdx]);renderer.setSize(innerWidth,innerHeight);}catch(_re){}} window.__pq=(window.__dprIdx>=3)?0.55:((window.__dprIdx>=2)?0.8:1); window.__fpsCap=(window.__dprIdx>=3)?32:0; } }catch(_ap){}
   try{window.gState=state;window.gStage=stage;window.gScene=scene;window.gPlayer=player;window.gCamera=camera;window.gPaused=paused;window.gBiome=(typeof curBiome!=='undefined'?curBiome:null);window.gKills=(typeof kills!=='undefined'?kills:0);window.gPoints=(typeof points!=='undefined'?points:0);window.gBossKilled=window._bossKilledFlag;window.gCoop=net.on;}catch(e){}
   if(state==='play' && !paused){ updatePlayer(dt); updateZombies(dt); updateObjective(); updateExitZone(dt); updateSafeZone(dt); } updateEffects(dt); renderer.render(scene,camera); }
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); checkOrientation(); });
@@ -6469,7 +6468,7 @@ function closeChat(){ try{ var ci=el('chatInput'); if(ci)ci.blur(); }catch(e){} 
 window.closeChat=closeChat;
 function openChat(){ const cb=el('chatBox'); if(cb){ var bd=document.getElementById('chatBackdrop'); if(!bd){ bd=document.createElement('div'); bd.id='chatBackdrop'; bd.style.cssText='position:fixed;inset:0;z-index:318;background:rgba(0,0,0,0.18);'; bd.addEventListener('click',function(){ closeChat(); }); bd.addEventListener('touchend',function(e){ e.preventDefault(); closeChat(); },{passive:false}); (document.body||document.documentElement).appendChild(bd); } bd.style.display='block'; cb.style.display='block'; const ci=el('chatInput'); if(ci){ try{ci.focus({preventScroll:true});}catch(_e){try{ci.focus();}catch(_e2){}} } } }
 function sendChat(){ const ci=el('chatInput'); if(!ci)return; const m=ci.value.trim(); if(m){ addChat(myName,m); netSend({t:'chat',id:net.myId,name:myName,msg:m}); ci.value=''; } closeChat(); }
-window.__quickChat=function(t){ try{ if(!net.on)return; addChat(myName,t); netSend({t:'chat',id:net.myId,name:myName,msg:t}); }catch(e){} };
+window.__quickChat=function(t){ try{ addChat(myName,t); if(net.on)netSend({t:'chat',id:net.myId,name:myName,msg:t}); }catch(e){} };
 el('pauseBtn').addEventListener('click',()=>{ if(net.on&&!net.isHost)return; paused=!paused; el('pauseOverlay').style.display=paused?'flex':'none'; const ps=el('pauseSub'); if(ps)ps.textContent=net.on?'โฮสต์หยุดเกมไว้…':'แตะที่ว่างเพื่อเล่นต่อ · หรือปุ่มด้านล่าง'; el('pauseBtn').textContent=paused?'▶':'⏸'; if(net.on)netSend({t:'pause',p:paused}); });
 el('chatBtn').addEventListener('click',openChat); el('chatBtn').addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();openChat();},{passive:false});
 el('potionBtn').addEventListener('click',usePotion); el('potionBtn').addEventListener('touchstart',function(e){e.preventDefault();usePotion();},{passive:false});
@@ -6950,7 +6949,7 @@ window.__dmgNum=function(nx,ny,nz,dmg,head){ try{ if(nz>1)return; if((window.__d
   btn.addEventListener('click',open); btn.addEventListener('touchend',function(e){e.preventDefault();open();},{passive:false});
   panel.addEventListener('click',function(e){ if(e.target===panel)close(); });
   panel.addEventListener('touchend',function(e){ if(e.target===panel){e.preventDefault();close();} },{passive:false});
-  setInterval(function(){ try{ btn.style.display=(window.gCoop&&window.gState==='play')?'flex':'none'; }catch(e){} },800);
+  setInterval(function(){ try{ btn.style.display=(window.gState==='play')?'flex':'none'; }catch(e){} },800);
   function init(){ (document.body||document.documentElement).appendChild(btn); (document.body||document.documentElement).appendChild(panel); }
   if(document.body)init(); else window.addEventListener('DOMContentLoaded',init);
 })();
