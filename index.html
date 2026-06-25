@@ -195,7 +195,42 @@
   <div id="molotovBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🔥<small id="molotovCount" style="font-size:11px;font-weight:bold;">2</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v11.48 24/06</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v11.49 24/06</div>
+<div id="loadScreen" style="position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 38%,#13280f,#05100a 70%,#000);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,Arial,sans-serif;color:#bdffb0;text-align:center;padding:20px;">
+  <div style="font-size:clamp(30px,8vw,56px);font-weight:900;letter-spacing:2px;color:#9dff6a;text-shadow:0 2px 14px rgba(40,255,60,.5),0 0 42px rgba(40,255,60,.35);">DEAD FOREST</div>
+  <div style="font-size:13px;opacity:.8;margin-top:2px;">ปฏิบัติการป่ามรณะ</div>
+  <div style="width:min(78vw,360px);height:16px;border:2px solid #2f6b27;border-radius:10px;margin-top:30px;overflow:hidden;background:#0a1c08;box-shadow:inset 0 0 16px rgba(40,255,60,.25);">
+    <div id="loadBar" style="height:100%;width:4%;background:linear-gradient(90deg,#3aff5e,#c6ff3a);box-shadow:0 0 12px #6f6;transition:width .3s ease;"></div>
+  </div>
+  <div id="loadTxt" style="margin-top:14px;font-size:14px;color:#dfffcf;">กำลังเตรียมการ…</div>
+  <div style="margin-top:22px;font-size:12px;opacity:.55;max-width:80vw;line-height:1.6;">กำลังโหลดโมเดลและทรัพยากรทั้งหมด<br>กรุณารอจนเสร็จก่อนเริ่มเกม เพื่อภาพที่สมบูรณ์</div>
+  <button id="loadEnter" style="display:none;margin-top:26px;padding:14px 42px;font-size:18px;font-weight:800;color:#06210a;background:linear-gradient(180deg,#7dff4d,#3fbf2a);border:none;border-radius:12px;box-shadow:0 0 26px rgba(80,255,90,.6);cursor:pointer;">เข้าเกม &#9654;</button>
+</div>
+<script>
+(function(){
+  function $(i){return document.getElementById(i);}
+  var scr=$('loadScreen'); if(!scr) return;
+  var bar=$('loadBar'), txt=$('loadTxt'), enter=$('loadEnter');
+  var t0=Date.now(), lastDone=-1, stableAt=Date.now(), ready=false, shown=4;
+  function done(){ try{ var d=window.LD||LD; return (d.sk||0)+(d.nat||0)+(d.an||0)+(d.dino||0)+(d.wpn||0)+(d.zm||0)+(d.mon||0)+(d.pc||0)+(d.rig||0); }catch(e){ return 0; } }
+  function glr(){ try{ return !!(window.GLTF_READY||GLTF_READY); }catch(e){ return false; } }
+  function finish(){ ready=true; if(bar)bar.style.width='100%'; if(txt)txt.textContent='พร้อมแล้ว!'; if(enter)enter.style.display='inline-block'; }
+  function tick(){
+    if(ready) return;
+    var el=Date.now()-t0, d=done();
+    if(d!==lastDone){ lastDone=d; stableAt=Date.now(); }
+    var stableFor=Date.now()-stableAt;
+    var target=Math.min(92, 6 + d*3.2);
+    shown += (target-shown)*0.22; if(shown<4)shown=4;
+    if(bar)bar.style.width=Math.round(shown)+'%';
+    if(txt)txt.textContent='กำลังโหลดทรัพยากร… ('+d+' ชิ้น)';
+    if( (d>0 && stableFor>1600 && (glr()||el>5000)) || el>11000 ){ finish(); return; }
+    setTimeout(tick,150);
+  }
+  if(enter) enter.addEventListener('click',function(){ try{ if(typeof audioStart==='function') audioStart(); }catch(e){} scr.style.transition='opacity .45s'; scr.style.opacity='0'; setTimeout(function(){ scr.style.display='none'; },460); });
+  setTimeout(tick,350);
+})();
+</script>
 <div id="start" class="screen">
   <h1>DEAD FOREST<span class="sub">ปฏิบัติการป่ามรณะ</span></h1>
   <p class="story">เฮลิคอปเตอร์ตกกลางป่าลึกตอนพลบค่ำ ทีมของคุณหายไปทั้งหมด<br>มีบางอย่างเคลื่อนไหวอยู่ในพงไม้… พวกมันได้กลิ่นคุณแล้ว<br>มุ่งหน้าไปยัง<b style="color:var(--toxic)">พลุสัญญาณสีเขียว</b> — จุดอพยพแห่งเดียวที่เหลืออยู่</p>
@@ -5466,7 +5501,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v11.48 24/06 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 mon'+(LD.mon||0)+'/25 pc'+(LD.pc||0)+'/12 hb:'+((window.__charHand||'-')+'').slice(0,10)+' g'+(window.__charGunOK||'-')+' cl'+(window.__charClips?window.__charClips.split(',').length:0)+(window.__pcMiss?('!miss:'+window.__pcMiss.trim().replace(/ /g,',')):'')+' wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' rig'+(LD.rig?'OK':'-')+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v11.49 24/06 L'+(THREE.GLTFLoader?1:0)+' sk'+LD.sk+'/4 nat'+LD.nat+'/11 an'+LD.an+'/10 di'+LD.dino+'/5 mon'+(LD.mon||0)+'/25 pc'+(LD.pc||0)+'/12 hb:'+((window.__charHand||'-')+'').slice(0,10)+' g'+(window.__charGunOK||'-')+' cl'+(window.__charClips?window.__charClips.split(',').length:0)+(window.__pcMiss?('!miss:'+window.__pcMiss.trim().replace(/ /g,',')):'')+' wp'+LD.wpn+'/5 gn'+(LD.gun||0)+' zm'+(LD.zm||0)+' rig'+(LD.rig?'OK':'-')+' vm'+(window.__pvm?'OK':(window.__pvmErr?('ERR:'+window.__pvmErr):(LD.zm?'wait':'NOzm')))+' mi:'+(window.__mi||'-')+(LD.le?(' '+LD.le):''); },800);
 setTimeout(function(){ var po=document.getElementById('pauseOverlay'), ph=document.getElementById('pauseHome'); var _resume=function(e){ if(e){try{e.preventDefault();}catch(_x){}} paused=false; if(po)po.style.display='none'; var pb=document.getElementById('pauseBtn'); if(pb)pb.textContent='⏸'; if(net.on){try{netSend({t:'pause',p:false});}catch(_e){}} }; var _home=function(e){ if(e){try{e.preventDefault();e.stopPropagation();}catch(_x){}} try{location.reload();}catch(_r){location.href=location.pathname;} }; window.__resumeGame=_resume; window.__homeGame=_home; if(ph){ ph.addEventListener('click',_home); ph.addEventListener('touchend',_home,{passive:false}); ph.addEventListener('pointerup',_home); } if(po){ var _isHome=function(t){ return ph&&(t===ph||ph.contains(t)); }; po.addEventListener('click',function(e){ if(_isHome(e.target))return; _resume(e); }); po.addEventListener('touchend',function(e){ if(_isHome(e.target))return; _resume(e); },{passive:false}); } var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
