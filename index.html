@@ -195,7 +195,7 @@
   <div id="molotovBtn" class="btn" style="display:none;flex-direction:column;line-height:1;">🔥<small id="molotovCount" style="font-size:11px;font-weight:bold;">2</small></div>
 </div>
 
-<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v11.51 24/06</div>
+<div id="vinfo" style="position:fixed;top:1px;left:6px;z-index:60;color:#9dff9d;font-size:10px;font-family:monospace;text-shadow:0 1px 2px #000;pointer-events:none;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;">v11.52 25/06</div>
 <div id="loadScreen" style="position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 38%,#13280f,#05100a 70%,#000);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,Arial,sans-serif;color:#bdffb0;text-align:center;padding:20px;">
   <div style="font-size:clamp(30px,8vw,56px);font-weight:900;letter-spacing:2px;color:#9dff6a;text-shadow:0 2px 14px rgba(40,255,60,.5),0 0 42px rgba(40,255,60,.35);">DEAD FOREST</div>
   <div style="font-size:13px;opacity:.8;margin-top:2px;">ปฏิบัติการป่ามรณะ</div>
@@ -4999,7 +4999,7 @@ function onData(raw){ net.lastRecv=performance.now(); let d; try{ d=JSON.parse(r
     case 'bex': { try{ if(typeof explodeBarrel==='function'&&barrels[d.i]) explodeBarrel(barrels[d.i], net.isHost); }catch(e){} } break;
     case 'gex': { try{ if(typeof grenadeExplode==='function') grenadeExplode(d.x,d.z, net.isHost); }catch(e){} } break;
     case 'mex': { try{ if(typeof molotovExplode==='function') molotovExplode(d.x,d.z, net.isHost); }catch(e){} } break;
-    case 'begin': if(!net.isHost){ prestart=false; if(safeRing)safeRing.visible=false; } break;
+    case 'begin': if(!net.isHost){ prestart=false; window.__prestart=false; if(safeRing)safeRing.visible=false; } break;
     case 'inter': if(!net.isHost) enterIntermission(true); break;
     case 'proj': if(!net.isHost) spawnProjectileVisual(d); break;
     case 'win': if(!net._won){ net._won=true; if(net.isHost) broadcast({t:'win'}); win(); } break;
@@ -5491,7 +5491,7 @@ function buildWX(el){ if(typeof scene==='undefined'||!scene)return; if(WX.pts){s
 }
 function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene==='undefined'||!scene||typeof camera==='undefined'||!camera)return;
   if(typeof stage!=='undefined'&&stage!==DECOR.stage){ if(buildDecor()) DECOR.stage=stage; }
-  var el=stageElement(); if(el.wx!==WX.type) buildWX(el); try{window.__SND&&window.__SND.weather(el.wx);}catch(_we){} try{window.__SND&&window.__SND.prep(typeof prestart!=='undefined'&&prestart);}catch(_pe){} if(!WX.pts)return;
+  var el=stageElement(); if(el.wx!==WX.type) buildWX(el); try{window.__SND&&window.__SND.weather(el.wx);}catch(_we){} try{window.__SND&&window.__SND.prep(window.__prestart);}catch(_pe){} if(!WX.pts)return;
   var p=WX.pts.geometry.attributes.position.array; var cx=camera.position.x,cy=camera.position.y,cz=camera.position.z; var t=WX.type;
   for(var i=0;i<p.length;i+=3){ if(t==='ember'||t==='spore'){ p[i+1]+=(t==='ember'?0.05:0.018); } else { p[i+1]-=(t==='snow'?0.09:0.5); p[i]+=(t==='storm'?0.16:0.03); }
     if(p[i+1]>cy+24)p[i+1]=cy-9; if(p[i+1]<cy-12)p[i+1]=cy+24;
@@ -5501,7 +5501,7 @@ function weatherLoop(){ requestAnimationFrame(weatherLoop); try{ if(typeof scene
 }catch(e){} }
 function initWeather(){ if(WX._init)return; WX._init=true; weatherLoop(); }
 window.__ovl=window.__ovl||0; window.__ovlfail=window.__ovlfail||'';
-setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v11.51 24/06'; },800);
+setInterval(function(){ var e=document.getElementById('vinfo'); if(e)e.textContent='v11.52 25/06'; },800);
 setTimeout(function(){ var po=document.getElementById('pauseOverlay'), ph=document.getElementById('pauseHome'); var _resume=function(e){ if(e){try{e.preventDefault();}catch(_x){}} paused=false; if(po)po.style.display='none'; var pb=document.getElementById('pauseBtn'); if(pb)pb.textContent='⏸'; if(net.on){try{netSend({t:'pause',p:false});}catch(_e){}} }; var _home=function(e){ if(e){try{e.preventDefault();e.stopPropagation();}catch(_x){}} try{location.reload();}catch(_r){location.href=location.pathname;} }; window.__resumeGame=_resume; window.__homeGame=_home; if(ph){ ph.addEventListener('click',_home); ph.addEventListener('touchend',_home,{passive:false}); ph.addEventListener('pointerup',_home); } if(po){ var _isHome=function(t){ return ph&&(t===ph||ph.contains(t)); }; po.addEventListener('click',function(e){ if(_isHome(e.target))return; _resume(e); }); po.addEventListener('touchend',function(e){ if(_isHome(e.target))return; _resume(e); },{passive:false}); } var ol=document.getElementById('overLobbyBtn'); if(ol)ol.addEventListener('click',function(){ var ov=document.getElementById('over'); if(ov)ov.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); var wl=document.getElementById('winLobbyBtn'); if(wl)wl.addEventListener('click',function(){ var wv=document.getElementById('win'); if(wv)wv.style.display='none'; if(typeof showLobby==='function')showLobby(net.isHost); }); },1200);
 setTimeout(function(){ if(document.getElementById('tpsBtn'))return; var b=document.createElement('button'); b.id='tpsBtn'; b.textContent='👁 \u0E21\u0E38\u0E21\u0E21\u0E2D\u0E07'; b.style.cssText='position:fixed;top:52px;right:12px;z-index:55;padding:7px 11px;border-radius:9px;border:1px solid rgba(125,255,77,.45);background:rgba(0,0,0,.55);color:#bfffa0;font-size:13px;font-weight:bold;pointer-events:auto;'; b.addEventListener('click',function(){ window.tpsMode=!window.tpsMode; b.style.background=window.tpsMode?'rgba(125,255,77,.3)':'rgba(0,0,0,.55)'; }); document.body.appendChild(b); },1400);
 function clawHand(boneMat){ const h=new THREE.Group(); h.add(ball(0.05,boneMat)); const bt=new THREE.MeshBasicMaterial({color:0x6e0c0c}); for(let f=0;f<3;f++){ const fin=new THREE.Mesh(new THREE.ConeGeometry(0.018,0.17,4),boneMat); fin.position.set((f-1)*0.045,-0.09,0.02); fin.rotation.x=2.95; fin.rotation.z=(f-1)*0.2; h.add(fin); const tip=new THREE.Mesh(new THREE.ConeGeometry(0.01,0.05,4),bt); tip.position.set((f-1)*0.045,-0.17,0.03); tip.rotation.x=2.95; h.add(tip); } return h; }
@@ -6053,7 +6053,7 @@ function buildSafeRing(){ safeRing=new THREE.Mesh(new THREE.RingGeometry(SAFE_R-
 function updateSafeZone(dt){ if(!prestart)return; if(net.on&&!net.isHost)return;
   let out=Math.hypot(player.pos.x,player.pos.z)>SAFE_R;
   if(net.on&&!out){ for(const id in net.players){ const r=net.players[id]; if(r.present && Math.hypot(r.pos.x,r.pos.z)>SAFE_R){ out=true; break; } } }
-  if(out){ prestart=false; if(safeRing)safeRing.visible=false; for(let i=0;i<6;i++) spawnZombie(); if(net.on)netSend({t:'begin'}); bmsg('🎯 ภารกิจเริ่ม! ฆ่าซอมบี้ให้ครบ '+stageQuota()+' ตัว เพื่อเรียกบอส',3600); }
+  if(out){ prestart=false; window.__prestart=false; if(safeRing)safeRing.visible=false; for(let i=0;i<6;i++) spawnZombie(); if(net.on)netSend({t:'begin'}); bmsg('🎯 ภารกิจเริ่ม! ฆ่าซอมบี้ให้ครบ '+stageQuota()+' ตัว เพื่อเรียกบอส',3600); }
 }
 function updateExitZone(dt){ if(!net.on||!net.isHost||!exitOpen)return;
   let aliveTotal = player.down?0:1; let aliveIn = (!player.down && Math.hypot(player.pos.x-exitPos.x,player.pos.z-exitPos.z)<EXITZONE)?1:0;
@@ -6065,7 +6065,7 @@ function updateExitZone(dt){ if(!net.on||!net.isHost||!exitOpen)return;
 function campaignWin(){ if(net.on && !net._won){ net._won=true; netSend({t:'win'}); } campaignDone=true; win(); }
 function loadStage(st){
   state='play'; stage=st; wave=st; stageKills=0; try{grenades=Math.min(6,(typeof grenades!=='undefined'?grenades:0)+1); molotovs=Math.min(4,(typeof molotovs!=='undefined'?molotovs:0)+1); if(typeof updateGrenadeHUD==='function')updateGrenadeHUD();}catch(_ge){} try{ if(!net.on)localStorage.setItem('zf_save',JSON.stringify({stage:st,points:(typeof points!=='undefined'?points:0),coins:(typeof coins!=='undefined'?coins:0),kills:(typeof kills!=='undefined'?kills:0),t:Date.now()})); }catch(_se){} bossActive=false; exitOpen=false; net._won=false; lockMsgT=0; window._bossKilledFlag=false;
-  enraged=false; enrageMul=1; medicAlive=false; medicCd=rand(4,7); exitTimer=10; exitInZone=0; exitTotal=0; reviveProg=0; prestart=false; if(safeRing){try{worldRoot.remove(safeRing);}catch(_sr){}} safeRing=null;
+  enraged=false; enrageMul=1; medicAlive=false; medicCd=rand(4,7); exitTimer=10; exitInZone=0; exitTotal=0; reviveProg=0; prestart=false; window.__prestart=false; if(safeRing){try{worldRoot.remove(safeRing);}catch(_sr){}} safeRing=null;
   shopMode='play'; { const sh=el('shop'); if(sh) sh.style.display='none'; } if(IS_TOUCH) touchUI.style.display='block';
   curBiome=biomeForStage(st);
   terrAmp=curBiome.terrAmp||1; terrJag=curBiome.terrJag||0;
@@ -6088,7 +6088,7 @@ function loadStage(st){
   weapon.mag=weapon.magSize; weapon.reloading=false; reloadHint.textContent=''; updateAmmo(); if(typeof styleGun==='function'&&typeof curW!=='undefined')styleGun(curW);
   targetZombies=Math.min(IS_TOUCH?13:18, 5+st);
   setExitColor(false); updateStageHUD();
-  prestart=true;
+  prestart=true; window.__prestart=true;
   if(!prestart && (!net.on || net.isHost)){ for(let i=0;i<6;i++) spawnZombie(); }
   if(prestart){ buildSafeRing(); bmsg('เขตปลอดภัย — เดินออกจากวงสีฟ้าเพื่อเริ่มภารกิจ!',4200); }
   if(pendingPower && !prestart){ pendingPower=false; setTimeout(()=>activateContra(CONTRA_KEYS[(RNG()*CONTRA_KEYS.length)|0]),700); }
@@ -6615,7 +6615,7 @@ boot();
     for(var i=0;i<defs.length;i++){ var n=mkNode(defs[i][0],defs[i][1],defs[i][2],defs[i][3]); M.nodes.push(n); M.group.add(n.grp); }
     if(M.type==='hunt'){ var hx=Math.cos(1.1)*R*0.92,hz=Math.sin(1.1)*R*0.92; var hn=mkNode(hx,hz,0xff3030,'hunt'); hn.rad=2.6; try{hn.grp.visible=false;}catch(e){} try{ if(window.__spawnTagged){ var _hz=window.__spawnTagged(hx,hz); if(_hz){ hn.z=_hz; hn.pos.x=_hz.position.x; hn.pos.z=_hz.position.z; } } }catch(e){} M.nodes.push(hn); M.group.add(hn.grp); }
     if(M.type==='horde'){ M.hordeDur=(30000+(((typeof stage!=='undefined'?stage:1))-1)*2500); M.hordeEnd=0; M._remOverride=null; }
-    if(M.type==='bossrush'){ var _brn=2+Math.floor((((typeof stage!=='undefined'?stage:1)))/8); for(var _bri=0;_bri<_brn;_bri++){ var _bra=_bri/_brn*6.283+0.6; var _brx=Math.cos(_bra)*R*0.5,_brz=Math.sin(_bra)*R*0.5; var _brnode=mkNode(_brx,_brz,0xff3030,'hunt'); _brnode.rad=2.8; try{ if(window.__spawnTagged){ var _bz=window.__spawnTagged(_brx,_brz); if(_bz){ _brnode.z=_bz; _brnode.pos.x=_bz.position.x; _brnode.pos.z=_bz.position.z; try{ _bz.userData.hp=Math.round((_bz.userData.hp||200)*1.8); _bz.userData.maxhp=_bz.userData.hp; _bz.scale.multiplyScalar(1.3); }catch(e){} } } }catch(e){} M.nodes.push(_brnode); M.group.add(_brnode.grp); } }
+    if(M.type==='bossrush'){ var _brn=2+Math.floor((((typeof stage!=='undefined'?stage:1)))/8); for(var _bri=0;_bri<_brn;_bri++){ var _bra=_bri/_brn*6.283+0.6; var _brx=Math.cos(_bra)*R*0.32,_brz=Math.sin(_bra)*R*0.32; var _brnode=mkNode(_brx,_brz,0xff3030,'hunt'); _brnode.rad=2.8; try{ if(window.__spawnTagged){ var _bz=window.__spawnTagged(_brx,_brz); if(_bz){ _brnode.z=_bz; _brnode.pos.x=_bz.position.x; _brnode.pos.z=_bz.position.z; try{ _bz.userData.hp=Math.round((_bz.userData.hp||200)*1.8); _bz.userData.maxhp=_bz.userData.hp; _bz.scale.multiplyScalar(1.3); }catch(e){} } } }catch(e){} try{_brnode.grp.visible=true;}catch(e){} M.nodes.push(_brnode); M.group.add(_brnode.grp); } }
     if(M.type==='shrink'){ M.shrinkEnd=0; M.shrinkDur=(33000+(((typeof stage!=='undefined'?stage:1))-1)*2000); M.shrinkR0=R_()*0.82; M.shrinkR1=5.5; try{ if(M._sring){worldRoot.remove(M._sring);} var _rg=new THREE.Mesh(new THREE.RingGeometry(0.965,1.0,64),new THREE.MeshBasicMaterial({color:0x4dd2ff,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending})); _rg.rotation.x=-Math.PI/2; _rg.position.set(0,terrainH(0,0)+0.14,0); _rg.scale.setScalar(M.shrinkR0); worldRoot.add(_rg); M._sring=_rg; }catch(e){} }
     if(M.type==='protectnpc'){ M.npcDur=(34000+(((typeof stage!=='undefined'?stage:1))-1)*2200); M.npcEnd=0; for(var _pni=0;_pni<M.nodes.length;_pni++){ if(M.nodes[_pni].kind==='npc'){ M.nodes[_pni].hp=100; M.nodes[_pni].maxhp=100; try{ if(window.__makeChar){ var _npcCh=window.__makeChar((((typeof stage!=='undefined'?stage:1))*5+3)); if(_npcCh){ try{M.nodes[_pni].pil.visible=false;}catch(e){} _npcCh.visible=true; M.nodes[_pni].grp.add(_npcCh); M.nodes[_pni]._char=_npcCh; } } }catch(e){} } } }
     if(M.type==='refuel'){ M._fuelN=0; for(var _rfj=0;_rfj<M.nodes.length;_rfj++){ if(M.nodes[_rfj].kind==='fuel')M._fuelN++; if(M.nodes[_rfj].kind==='gen')M.nodes[_rfj]._fill=0; } }
@@ -6668,13 +6668,13 @@ boot();
         var _pz=false; try{_pz=(typeof paused!=='undefined'&&paused);}catch(e){}
         if(!M.type){ b.style.display='none'; }
         else {
-          var _isHost=(typeof net==='undefined'||!net||!net.on||net.isHost); var _P=GP(); var pts=[]; if(_P&&_P.pos)pts.push(_P.pos); if(typeof prestart!=='undefined'&&prestart){ var _pf=performance.now(); if(M.hordeDur)M.hordeEnd=_pf+M.hordeDur; if(M.shrinkDur)M.shrinkEnd=_pf+M.shrinkDur; if(M.npcDur)M.npcEnd=_pf+M.npcDur; }
+          var _isHost=(typeof net==='undefined'||!net||!net.on||net.isHost); var _P=GP(); var pts=[]; if(_P&&_P.pos)pts.push(_P.pos); if(window.__prestart){ var _pf=performance.now(); if(M.hordeDur)M.hordeEnd=_pf+M.hordeDur; if(M.shrinkDur)M.shrinkEnd=_pf+M.shrinkDur; if(M.npcDur)M.npcEnd=_pf+M.npcDur; }
           try{ if(typeof net!=='undefined'&&net&&net.on&&net.players){ for(var id in net.players){ var pp=net.players[id]; if(pp&&pp.present&&pp.pos)pts.push(pp.pos); } } }catch(e){}
           var doneCt=0, now=performance.now();
           try{ window.__carrySlow=1; window.__carryNoFire=false; window.__carrying=false; }catch(e){}
           if(M.type==='portals'&&_isHost&&!_pz){ for(var _pq=0;_pq<M.nodes.length;_pq++){ var _pqn=M.nodes[_pq]; if(_pqn.kind==='portal'&&!_pqn.done){ if(!_pqn._psp||now-_pqn._psp>3400){ _pqn._psp=now; try{if(window.__spawnAt)window.__spawnAt(_pqn.pos.x,_pqn.pos.z,1);}catch(e){} } } } }
           if(M.type==='horde'){
-            if(!M.hordeEnd||(typeof prestart!=='undefined'&&prestart)){ M.hordeEnd=now+(M.hordeDur||30000); }
+            if(!M.hordeEnd||(window.__prestart)){ M.hordeEnd=now+(M.hordeDur||30000); }
             var _rem=Math.max(0,M.hordeEnd-now);
             if(_isHost){ if(!M._hsp||now-M._hsp>1500){ M._hsp=now; try{ if(window.__spawnAt&&_P&&_P.pos)window.__spawnAt(_P.pos.x,_P.pos.z,2); }catch(e){} }
               if(_rem<=0&&!M.done){ M.done=true; reward(); try{if(typeof net!=='undefined'&&net&&net.on)netSend({t:'mdone'});}catch(e){} }
@@ -6687,7 +6687,7 @@ boot();
             requestAnimationFrame(update); return;
           }
           if(M.type==='shrink'){
-            if(!M.shrinkEnd||(typeof prestart!=='undefined'&&prestart)){ M.shrinkEnd=now+(M.shrinkDur||33000); if(!M.shrinkR0){M.shrinkR0=R_()*0.82; M.shrinkR1=5.5;} }
+            if(!M.shrinkEnd||(window.__prestart)){ M.shrinkEnd=now+(M.shrinkDur||33000); if(!M.shrinkR0){M.shrinkR0=R_()*0.82; M.shrinkR1=5.5;} }
             var _sdt=(M._slt&&now>M._slt)?Math.min(0.05,(now-M._slt)/1000):0.016; M._slt=now;
             var _sd=Math.max(0,M.shrinkEnd-now); var _sfrac=1-Math.min(1,_sd/(M.shrinkDur||33000)); var _curR=Math.max(M.shrinkR1||5.5,(M.shrinkR0||30)*(1-_sfrac)+(M.shrinkR1||5.5)*_sfrac);
             try{ if(M._sring){ M._sring.scale.setScalar(_curR); M._sring.material.opacity=0.42+Math.sin(now/200)*0.16; } }catch(e){}
@@ -6702,7 +6702,7 @@ boot();
             requestAnimationFrame(update); return;
           }
           if(M.type==='protectnpc'){
-            if(!M.npcEnd||(typeof prestart!=='undefined'&&prestart)){ M.npcEnd=now+(M.npcDur||34000); }
+            if(!M.npcEnd||(window.__prestart)){ M.npcEnd=now+(M.npcDur||34000); }
             var _ndt=(M._nlt&&now>M._nlt)?Math.min(0.05,(now-M._nlt)/1000):0.016; M._nlt=now;
             var _nd2=Math.max(0,M.npcEnd-now); var _npc=null,_npi=-2; for(var _nn=0;_nn<M.nodes.length;_nn++){ if(M.nodes[_nn].kind==='npc'){_npc=M.nodes[_nn];_npi=_nn;break;} }
             if(_npc&&_isHost){ var _zc=0; try{ for(var _zi=0;_zi<zombies.length;_zi++){ var _zz=zombies[_zi]; if(_zz.userData.dead)continue; if(Math.hypot(_zz.position.x-_npc.pos.x,_zz.position.z-_npc.pos.z)<6)_zc++; } }catch(e){} _npc.hp=(typeof _npc.hp==='number'?_npc.hp:100)-_zc*9*_ndt; if(_npc.hp<5)_npc.hp=5; if(_npc.hp>100)_npc.hp=100; _npc.prog=_npc.hp/100;
